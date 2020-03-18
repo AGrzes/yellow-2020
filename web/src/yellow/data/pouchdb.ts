@@ -6,7 +6,7 @@ import { DataAccess, ConflictMode, DataWrapper } from '.'
 export const PouchDB = pouchdbCore.plugin(pouchdbAdapterHttp).plugin(pouchdbMapReduce)
 
 
-export class PouchDBDataAccess<DataType> implements DataAccess<DataType, string,string, void> {
+export class PouchDBDataAccess<DataType extends object> implements DataAccess<DataType, string,string, void> {
     async get(key: string, optCounter?: string): Promise<DataWrapper<DataType,string,string>> {
         try {
             const result = await this.db.get(key,{rev: optCounter})
@@ -24,7 +24,7 @@ export class PouchDBDataAccess<DataType> implements DataAccess<DataType, string,
         }
     }
     async set(key: string, value: DataType, optCounter?: string) {
-        throw new Error('Method not implemented.')
+        await this.db.put({_id: key, ...value, _rev: optCounter})
     }
     async update(key: string, value: DataType, conflict?: ConflictMode) {
         throw new Error('Method not implemented.')

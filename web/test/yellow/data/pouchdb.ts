@@ -47,4 +47,32 @@ describe('PouchDBDataAccess', function() {
             expect(result.optCounter).to.be.equals(doc.rev)
         })
     })
+    describe('set', function() {
+        it('should put document',async function() {
+            const db = new PouchDB<{key: string}>('should put document')
+            const access = new PouchDBDataAccess(db)
+            await access.set('abc',{key: 'value'})
+            const result = await db.get( 'abc')
+            
+            expect(result).to.have.property('key','value')
+            expect(result._id).to.be.equals('abc')
+        })
+
+        it('should buble errors',async function() {
+            const db = new PouchDB<{key: string}>('should buble errors')
+            const access = new PouchDBDataAccess(db)
+            expect(access.set('abc',{key: 'value'},'aaa')).to.be.rejected
+        })
+
+        it('should pass opt counter to put',async function() {
+            const db = new PouchDB<{key: string}>('should pass opt counter to put')
+            const doc = await db.put({_id: 'abc', key: '!value'})
+            const access = new PouchDBDataAccess(db)
+            await access.set('abc',{key: 'value'},doc.rev)
+            const result = await db.get( 'abc')
+            
+            expect(result).to.have.property('key','value')
+            expect(result._id).to.be.equals('abc')
+        })
+    })
 })
