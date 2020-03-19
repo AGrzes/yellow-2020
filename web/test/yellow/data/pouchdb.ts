@@ -180,4 +180,24 @@ describe('PouchDBDataAccess', function() {
             expect(db.get( 'abc')).to.be.rejected
         })
     })
+    describe('list', function() {
+        it('should list documents form pouchdb',async function() {
+            const db = createDb()
+            const doc = await db.put({_id: 'abc', key: 'value'})
+            const access = new PouchDBDataAccess(db)
+            const result = await access.list()
+            expect(result).to.have.length(1)
+            expect(result[0].data).to.have.property('key','value')
+            expect(result[0].key).to.be.equals('abc')
+            expect(result[0].optCounter).to.be.equals(doc.rev)
+        })
+
+
+        it('should buble errors',async function() {
+            const db = createDb()
+            db.close()
+            const access = new PouchDBDataAccess(db)
+            expect(access.list()).to.be.rejected
+        })
+    })
 })

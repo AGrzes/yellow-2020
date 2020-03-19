@@ -72,7 +72,11 @@ export class PouchDBDataAccess<DataType extends object> implements DataAccess<Da
         await this.db.remove(key,optCounter)
     }
     async list(query?: void): Promise<DataWrapper<DataType,string,string>[]> {
-        throw new Error('Method not implemented.')
+        return (await this.db.allDocs({include_docs: true})).rows.map(({id, value: { rev}, doc}) => ({
+            data: doc,
+            key: id,
+            optCounter: rev
+        }))
     }
     constructor(private db: PouchDB.Database<DataType>) {}
 }
