@@ -2,6 +2,7 @@ import * as pouchdbCore from 'pouchdb-core'
 import * as pouchdbAdapterHttp from 'pouchdb-adapter-http'
 import * as pouchdbMapReduce from 'pouchdb-mapreduce'
 import { DataAccess, ConflictMode, DataWrapper } from '.'
+import * as _ from 'lodash'
 
 export const PouchDB = pouchdbCore.plugin(pouchdbAdapterHttp).plugin(pouchdbMapReduce)
 
@@ -48,7 +49,21 @@ export class PouchDBDataAccess<DataType extends object> implements DataAccess<Da
         }
     }
     async merge(key: string, value: DataType, merge: (a: DataType, b: DataType) => DataType) {
-        throw new Error('Method not implemented.')
+        let optCounter = null
+        while (true) {
+            try {
+                await this.db.put({_id: key, ...value, _rev: optCounter})
+                break
+            } catch (e) {
+                if (e.name === 'conflict'){
+                    const existing = await this.db.get(key)
+                    optCounter = existing._rev
+                    value = merge(value,existing)
+                } else {
+                    throw e
+                }
+            }
+        }
     }
     async delete(key: string, optCounter?: string) {
         throw new Error('Method not implemented.')

@@ -102,8 +102,8 @@ describe('PouchDBDataAccess', function() {
 
         it('should buble errors in explicit error mode',async function() {
             const db = createDb()
-            await db.put({_id: 'abc', key: '!value'})
             const access = new PouchDBDataAccess(db)
+            db.close()
             expect(access.update('abc',{key: 'value'},ConflictMode.error)).to.be.rejected
         })
 
@@ -124,6 +124,35 @@ describe('PouchDBDataAccess', function() {
             await access.update('abc',{key: 'value'},ConflictMode.override)
             const doc = await db.get('abc')
             expect(doc).to.have.property('key','value')
+        })
+    })
+
+    describe('merge', function() {
+        it('should put document',async function() {
+            const db = createDb()
+            const access = new PouchDBDataAccess(db)
+            await access.merge('abc',{key: 'value'}, null )
+            const result = await db.get( 'abc')
+            
+            expect(result).to.have.property('key','value')
+            expect(result._id).to.be.equals('abc')
+        })
+
+        it('should buble errors',async function() {
+            const db = createDb()
+            const access = new PouchDBDataAccess(db)
+            db.close()
+            expect(access.merge('abc',{key: 'value'}, null)).to.be.rejected
+        })
+
+
+        it('should merge',async function() {
+            const db = createDb()
+            await db.put({_id: 'abc', key: '!value'})
+            const access = new PouchDBDataAccess(db)
+            await access.merge('abc',{key: 'value'},(a,b) => ({...a,...b, key: a.key+b.key}))
+            const doc = await db.get('abc')
+            expect(doc).to.have.property('key','value!value')
         })
     })
 })
