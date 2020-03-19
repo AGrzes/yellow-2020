@@ -13,7 +13,7 @@ const expect = chai.use(chaiAsPromised).expect
 const PouchDB = pouchdbCore.plugin(pouchdbAdapterMemory).plugin(pouchdbMapReduce)
 
 function createDb(): PouchDB.Database<any> {
-    return new PouchDB(randomBytes(16).toString('base64'))
+    return new PouchDB(randomBytes(16).toString('base64'), {adapter: 'memory'})
 }
 
 describe('PouchDBDataAccess', function() {
@@ -153,6 +153,31 @@ describe('PouchDBDataAccess', function() {
             await access.merge('abc',{key: 'value'},(a,b) => ({...a,...b, key: a.key+b.key}))
             const doc = await db.get('abc')
             expect(doc).to.have.property('key','value!value')
+        })
+    })
+
+    describe('delete', function() {
+        it('should delete document',async function() {
+            const db = createDb()
+            const doc = await db.put({_id: 'abc', key: 'value'})
+            const access = new PouchDBDataAccess(db)
+            await access.delete('abc',doc.rev)
+            expect(db.get( 'abc')).to.be.rejected
+        })
+
+        it('should buble errors',async function() {
+            const db = createDb()
+            const access = new PouchDBDataAccess(db)
+            db.close()
+            expect(access.delete('abc')).to.be.rejected
+        })
+
+        it('should force delete if optCounter is not provided',async function() {
+            const db = createDb()
+            await db.put({_id: 'abc', key: 'value'})
+            const access = new PouchDBDataAccess(db)
+            await access.delete('abc')
+            expect(db.get( 'abc')).to.be.rejected
         })
     })
 })

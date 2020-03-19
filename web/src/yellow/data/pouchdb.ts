@@ -66,7 +66,10 @@ export class PouchDBDataAccess<DataType extends object> implements DataAccess<Da
         }
     }
     async delete(key: string, optCounter?: string) {
-        throw new Error('Method not implemented.')
+        if (!optCounter) {
+            optCounter = (await this.db.get(key))._rev
+        }
+        await this.db.remove(key,optCounter)
     }
     async list(query?: void): Promise<DataWrapper<DataType,string,string>[]> {
         throw new Error('Method not implemented.')
