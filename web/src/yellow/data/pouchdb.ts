@@ -27,7 +27,25 @@ export class PouchDBDataAccess<DataType extends object> implements DataAccess<Da
         await this.db.put({_id: key, ...value, _rev: optCounter})
     }
     async update(key: string, value: DataType, conflict?: ConflictMode) {
-        throw new Error('Method not implemented.')
+        let optCounter = null
+        while (true) {
+            try {
+                await this.db.put({_id: key, ...value, _rev: optCounter})
+                break
+            } catch (e) {
+                if (e.name === 'conflict'){
+                    if (conflict === ConflictMode.skip) {
+                        break
+                    } else if (conflict === ConflictMode.override) {
+                        optCounter = (await this.db.get(key))._rev
+                    } else {
+                        throw e
+                    }
+                } else {
+                    throw e
+                }
+            }
+        }
     }
     async merge(key: string, value: DataType, merge: (a: DataType, b: DataType) => DataType) {
         throw new Error('Method not implemented.')
