@@ -28,7 +28,7 @@ describe('SimpleModelAccess', function() {
                                         type: {
                                             $ref: '#dataTypes/length'
                                         }
-                                    } 
+                                    }
                                 }
                             },
                             rectangle: {
@@ -43,7 +43,7 @@ describe('SimpleModelAccess', function() {
                                         type: {
                                             $ref: '#dataTypes/length'
                                         }
-                                    } 
+                                    }
                                 }
                             },
                             circle: {
@@ -58,7 +58,7 @@ describe('SimpleModelAccess', function() {
                                         type: {
                                             $ref: '#dataTypes/length'
                                         }
-                                    } 
+                                    }
                                 }
                             }
                         },
@@ -89,10 +89,9 @@ describe('SimpleModelAccess', function() {
                                         target: {
                                             $ref: 'shapes#classes/shape'
                                         }
-                                    } 
+                                    }
                                 }
-                            },
-                            
+                            }
                         },
                         dataTypes: {
                             text: {
@@ -102,7 +101,7 @@ describe('SimpleModelAccess', function() {
                         }
                     } as ModelDescriptor,
                     key: 'symbols'
-                }] 
+                }]
             }
         } as unknown as DataAccess<ModelDescriptor,string,any,any> )
         expect(modelAccess.models).to.have.property('shapes')
@@ -141,9 +140,9 @@ describe('SimpleModelAccess', function() {
         expect(modelAccess.models.symbols.classes.symbol.features.label).to.have.property('multiplicity','1')
         expect(modelAccess.models.symbols.classes.symbol.features.label).to.have.property('name','label')
         expect(modelAccess.models.symbols.classes.symbol.features.label).to.have.property('type',modelAccess.models.symbols.dataTypes.text)
-        
+
         expect(modelAccess.models.symbols.dataTypes.text).to.have.nested.property('name','text')
         expect(modelAccess.models.symbols.dataTypes.text).to.have.nested.property('nativeType','string')
     })
- 
+
 })

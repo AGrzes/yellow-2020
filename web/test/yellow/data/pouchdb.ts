@@ -59,7 +59,7 @@ describe('PouchDBDataAccess', function() {
             const access = new PouchDBDataAccess(db)
             await access.set('abc',{key: 'value'})
             const result = await db.get( 'abc')
-            
+
             expect(result).to.have.property('key','value')
             expect(result._id).to.be.equals('abc')
         })
@@ -76,7 +76,7 @@ describe('PouchDBDataAccess', function() {
             const access = new PouchDBDataAccess(db)
             await access.set('abc',{key: 'value'},doc.rev)
             const result = await db.get( 'abc')
-            
+
             expect(result).to.have.property('key','value')
             expect(result._id).to.be.equals('abc')
         })
@@ -88,7 +88,7 @@ describe('PouchDBDataAccess', function() {
             const access = new PouchDBDataAccess(db)
             await access.update('abc',{key: 'value'})
             const result = await db.get( 'abc')
-            
+
             expect(result).to.have.property('key','value')
             expect(result._id).to.be.equals('abc')
         })
@@ -133,7 +133,7 @@ describe('PouchDBDataAccess', function() {
             const access = new PouchDBDataAccess(db)
             await access.merge('abc',{key: 'value'}, null )
             const result = await db.get( 'abc')
-            
+
             expect(result).to.have.property('key','value')
             expect(result._id).to.be.equals('abc')
         })
