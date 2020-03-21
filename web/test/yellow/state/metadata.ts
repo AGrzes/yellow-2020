@@ -15,7 +15,7 @@ describe('metadataState', function() {
         expect(metadataModule).to.have.nested.property('state.models')
     })
 
-    it('Should fetch all elements',async function() {
+    it('Should load models',async function() {
         const metadataModule = metadataState({
             async list() {
                 return [{
