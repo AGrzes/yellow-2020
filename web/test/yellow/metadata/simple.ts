@@ -2,7 +2,6 @@ import 'mocha'
 import {ModelDescriptor, SimpleModelAccess, AttributeDescriptor} from '../../../src/yellow/metadata/simple'
 import {expect}  from 'chai'
 import { DataAccess } from '../../../src/yellow/data'
-import { inspect } from 'util'
 
 describe('SimpleModelAccess', function() {
 
