@@ -14,4 +14,12 @@ describe('uiState', function() {
         expect(uiModule).to.have.property('namespaced',true)
         expect(uiModule).to.have.nested.property('actions.fetch')
     })
+
+    it('Should have working fetch method',async function() {
+        const model = {
+
+        } as UIModel
+        const uiModule = uiState(model)
+        await (uiModule.actions.fetch as any).call(null,null)
+    })
 })
