@@ -1,6 +1,6 @@
-import * as pouchdbCore from 'pouchdb-core'
-import * as pouchdbAdapterHttp from 'pouchdb-adapter-http'
-import * as pouchdbMapReduce from 'pouchdb-mapreduce'
+import pouchdbCore from 'pouchdb-core'
+import pouchdbAdapterHttp from 'pouchdb-adapter-http'
+import pouchdbMapReduce from 'pouchdb-mapreduce'
 import { DataAccess, ConflictMode, DataWrapper } from '.'
 import * as _ from 'lodash'
 
