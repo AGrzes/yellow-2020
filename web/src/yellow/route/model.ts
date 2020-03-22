@@ -7,8 +7,9 @@ import { mapState } from 'vuex'
 export function modelRoutes(model: UIModel): RouteConfig[] {
     return _.flatMap(model.views,(view) => ([{
         path: `/${view.pathName}/:key`,
+        name: `${view.pathName}-item`,
         component: Vue.extend({
-            template: view.detailsTemplate,
+            template: `<div v-if="item">${view.detailsTemplate}</div>`,
             computed: {
                 ...mapState(view.dataModel,{
                     item (state) {
@@ -28,6 +29,7 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
         })
     },{
         path: `/${view.pathName}`,
+        name: `${view.pathName}-list`,
         component: Vue.extend({
             template: `<ul><li v-for="item in list">${view.listItemTemplate}</li></ul>`,
             computed: {
