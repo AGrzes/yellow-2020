@@ -26,6 +26,21 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                 next()
             }
         })
+    },{
+        path: `/${view.pathName}`,
+        component: Vue.extend({
+            template: `<ul><li v-for="item in list">${view.listItemTemplate}</li></ul>`,
+            computed: {
+                ...mapState(view.dataModel,{
+                    list (state) {
+                        return state
+                    }
+                })
+            },
+            mounted() {
+                this.$store.dispatch(`${view.dataModel}/fetch`)
+            }
+        })
     }]))
 }
 
