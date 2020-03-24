@@ -141,7 +141,7 @@ function resolveModelsRefs(models: {[name: string]: Model}) {
     _.forEach(models,_.partial(resolveModelRefs,models))
 }
 
-function resolveModels(descriptors: {[name: string]: ModelDescriptor}): {[name: string]: Model} {
+export function resolveModels(descriptors: {[name: string]: ModelDescriptor}): {[name: string]: Model} {
     const result = _.mapValues(descriptors, constructModel)
     resolveModelsRefs(result)
     return result
