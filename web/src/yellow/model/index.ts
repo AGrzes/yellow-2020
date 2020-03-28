@@ -27,19 +27,22 @@ export interface TypedDataAccess<DataType,KeyType,OptCounterType, QueryType> ext
 
 export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAccess<object,string,string,never>[]): Promise<Model> {
     const entries =_.flatten(await Promise.all(_.map(dataAccess,(da) => da.list())))
-    const classMap = new Map<Class,TypedDataWrapper<object,string,string>[]>()
+    const classMap = new Map<Class,{[key: string]: TypedDataWrapper<object,string,string>}>()
     _.forEach(entries, (entry) => {
         if (!classMap.has(entry.type)) {
-            classMap.set(entry.type,[entry])
+            classMap.set(entry.type,{[entry.key]:entry})
         } else {
-            classMap.get(entry.type).push(entry)
+            classMap.get(entry.type)[entry.key]=entry
         }
     })
 
     return {
         metaModel,
         list(type: Class) {
-            return _.map(classMap.get(type),'data')
+            return _.map(_.values(classMap.get(type)),'data')
+        },
+        get(type: Class, key:string) {
+            return _.get(_.get(classMap.get(type),key),'data')
         }
     } as Model
 }

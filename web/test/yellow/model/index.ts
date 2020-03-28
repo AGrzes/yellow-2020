@@ -79,5 +79,11 @@ describe('model', function() {
             expect(model.list(metamodel.models.model.classes.A)).to.have.length(1)
             expect(model.list(metamodel.models.model.classes.B)).to.have.length(1)
         })
+        it('Should expose instances by key',async function() {
+            const metamodel = createMetamodel()
+            const model = await setupModel(metamodel,[createDataAccess(metamodel)])
+            expect(model.get(metamodel.models.model.classes.A,'a')).to.exist
+            expect(model.get(metamodel.models.model.classes.B,'b')).to.exist
+        })
     })
 })
