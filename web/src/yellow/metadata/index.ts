@@ -1,3 +1,5 @@
+import * as _ from 'lodash'
+
 export interface ModelElement {
     model: Model
 }
@@ -39,3 +41,15 @@ export interface ModelAccess {
     models: {[name: string]: Model}
 }
 
+export function fixupModel(model: Model) {
+    _.forEach(model.classes,(clazz) => {
+        if(!clazz.model) {
+            clazz.model = model
+        }
+    })
+    _.forEach(model.dataTypes,(type) => {
+        if(!type.model) {
+            type.model = model
+        }
+    })
+}
