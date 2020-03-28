@@ -46,6 +46,11 @@ export function fixupModel(model: Model) {
         if(!clazz.model) {
             clazz.model = model
         }
+        _.forEach(clazz.features, (feature) => {
+            if(!feature.owner) {
+                feature.owner = clazz
+            }
+        })
     })
     _.forEach(model.dataTypes,(type) => {
         if(!type.model) {
