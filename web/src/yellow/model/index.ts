@@ -1,6 +1,7 @@
 import * as _ from 'lodash'
 import { Class, StructuralFeature, ModelAccess } from '../metadata'
 import { DataWrapper, DataAccess } from '../data'
+import { isRelation } from '../metadata/simple'
 
 
 export interface Model {
@@ -36,13 +37,26 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
         }
     })
 
+    function get(type: Class, key:string) {
+        return _.get(_.get(classMap.get(type),key),'data')
+    }
+
+    function resolveRelations(entry: TypedDataWrapper<object,string,string>) {
+        _.forEach(entry.type.features, (feature) => {
+            if (isRelation(feature)) {
+                if (entry.data[feature.name]) {
+                    entry.data[feature.name] = get(feature.target, entry.data[feature.name])
+                }
+            }
+        })
+    }
+    _.forEach(entries,resolveRelations)
+
     return {
         metaModel,
         list(type: Class) {
             return _.map(_.values(classMap.get(type)),'data')
         },
-        get(type: Class, key:string) {
-            return _.get(_.get(classMap.get(type),key),'data')
-        }
+        get
     } as Model
 }

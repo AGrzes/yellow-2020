@@ -59,7 +59,7 @@ function createDataAccess(meatmodel: ModelAccess): TypedDataAccess<any,string,st
                 key: 'b',
                 type: meatmodel.models.model.classes.B,
                 data: {
-                    b: 'b'
+                    x: 'X'
                 }
             }]
         }
@@ -84,6 +84,12 @@ describe('model', function() {
             const model = await setupModel(metamodel,[createDataAccess(metamodel)])
             expect(model.get(metamodel.models.model.classes.A,'a')).to.exist
             expect(model.get(metamodel.models.model.classes.B,'b')).to.exist
+        })
+
+        it('Should resolve relations',async function() {
+            const metamodel = createMetamodel()
+            const model = await setupModel(metamodel,[createDataAccess(metamodel)])
+            expect(model.get(metamodel.models.model.classes.A,'a')).to.have.property('b',model.get(metamodel.models.model.classes.B,'b'))
         })
     })
 })
