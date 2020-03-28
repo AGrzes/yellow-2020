@@ -59,6 +59,9 @@ export function fixupModel(model: Model) {
             if (!feature.multiplicity) {
                 feature.multiplicity = '?'
             }
+            if(!feature.model) {
+                feature.model = model
+            }
         })
     })
     _.forEach(model.dataTypes,(type, name) => {

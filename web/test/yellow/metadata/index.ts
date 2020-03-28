@@ -90,4 +90,20 @@ describe('fixupModel', function() {
         fixupModel(model)
         expect(model).to.have.nested.property('classes.a.features.a.multiplicity','?')
     })
+    it('Should set feature model',async function() {
+        const model: Model = {
+            classes:{
+                a: {
+                    features: {
+                        a: {
+
+                        } as StructuralFeature
+                    }
+                } as unknown as Class
+            },
+            dataTypes:{}
+        }
+        fixupModel(model)
+        expect(model).to.have.nested.property('classes.a.features.a.model',model)
+    })
 })
