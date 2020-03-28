@@ -39,7 +39,7 @@ describe('fixupModel', function() {
         expect(model).to.have.nested.property('classes.a.features.a.owner',model.classes.a)
     })
 
-    it('Should set name',async function() {
+    it('Should set class and dataType name',async function() {
         const model: Model = {
             classes:{
                 a: {
@@ -55,5 +55,22 @@ describe('fixupModel', function() {
         fixupModel(model)
         expect(model).to.have.nested.property('classes.a.name','a')
         expect(model).to.have.nested.property('dataTypes.a.name','a')
+    })
+
+    it('Should set feature name',async function() {
+        const model: Model = {
+            classes:{
+                a: {
+                    features: {
+                        a: {
+
+                        } as StructuralFeature
+                    }
+                } as unknown as Class
+            },
+            dataTypes:{}
+        }
+        fixupModel(model)
+        expect(model).to.have.nested.property('classes.a.features.a.name','a')
     })
 })
