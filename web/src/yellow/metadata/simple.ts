@@ -45,11 +45,11 @@ function isRelationDescriptor(descriptor: StructuralFeatureDescriptor): descript
     return !!(descriptor as RelationDescriptor).target
 }
 
-function isAttribute(descriptor: StructuralFeature): descriptor is Attribute {
+export function isAttribute(descriptor: StructuralFeature): descriptor is Attribute {
     return !!(descriptor as Attribute).type
 }
 
-function isRelation(descriptor: StructuralFeature): descriptor is Relation {
+export function isRelation(descriptor: StructuralFeature): descriptor is Relation {
     return !!(descriptor as Relation).target
 }
 
