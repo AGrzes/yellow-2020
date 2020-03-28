@@ -16,7 +16,12 @@ function createMetamodel() : ModelAccess {
             b: {
                 name: 'b',
                 multiplicity: '1',
-                target: B
+                target: B,
+                reverse: {
+                    name: '^b',
+                    owner: B,
+                    multiplicity: '1'
+                }
             } as Relation,
             ba: {
                 name: 'ba',
@@ -26,7 +31,10 @@ function createMetamodel() : ModelAccess {
         },
         model: null
     }
-    A.features.b.owner = A
+    A.features.b.owner = A;
+    (A.features.b as Relation).reverse.target = A
+    B.features['^b'] = (A.features.b as Relation).reverse
+    B.features['^b'].owner = B
 
     const model: Metamodel = {
         classes: {
@@ -101,6 +109,11 @@ describe('model', function() {
             const metamodel = createMetamodel()
             const model = await setupModel(metamodel,[createDataAccess(metamodel)])
             expect(model.get(metamodel.models.model.classes.A,'a')).to.have.deep.property('ba',[model.get(metamodel.models.model.classes.B,'b')])
+        })
+        it('Should resolve reverse relations',async function() {
+            const metamodel = createMetamodel()
+            const model = await setupModel(metamodel,[createDataAccess(metamodel)])
+            expect(model.get(metamodel.models.model.classes.B,'b')).to.have.property('^b',model.get(metamodel.models.model.classes.A,'a'))
         })
     })
 })

@@ -25,10 +25,20 @@ export interface TypedDataAccess<DataType,KeyType,OptCounterType, QueryType> ext
     list(query?: QueryType): Promise<TypedDataWrapper<DataType,KeyType,OptCounterType>[]>
 }
 
+interface ModelEntry {
+    type: Class
+    raw: object
+    model: object
+    key: string
+    optCounter?: string
+}
+
 
 export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAccess<object,string,string,never>[]): Promise<Model> {
-    const entries =_.flatten(await Promise.all(_.map(dataAccess,(da) => da.list())))
-    const classMap = new Map<Class,{[key: string]: TypedDataWrapper<object,string,string>}>()
+    const entries: ModelEntry[] =_.map(_.flatten(await Promise.all(_.map(dataAccess,(da) => da.list()))),({type,data,key,optCounter})=>({
+        type,raw: data, model: _.cloneDeep(data),key,optCounter
+    }))
+    const classMap = new Map<Class,{[key: string]: ModelEntry}>()
     _.forEach(entries, (entry) => {
         if (!classMap.has(entry.type)) {
             classMap.set(entry.type,{[entry.key]:entry})
@@ -38,21 +48,24 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
     })
 
     function get(type: Class, key:string) {
-        return _.get(_.get(classMap.get(type),key),'data')
+        return _.get(_.get(classMap.get(type),key),'model')
     }
 
     function isCollection(relation: Relation): boolean {
         return relation.multiplicity === '*' || relation.multiplicity === '+'
     }
 
-    function resolveRelations(entry: TypedDataWrapper<object,string,string>) {
+    function resolveRelations(entry: ModelEntry) {
         _.forEach(entry.type.features, (feature) => {
             if (isRelation(feature)) {
-                if (entry.data[feature.name]) {
+                if (entry.raw[feature.name]) {
                     if (isCollection(feature)){
-                        entry.data[feature.name] = _.map(entry.data[feature.name],(key)=>  get(feature.target, key))
+                        entry.model[feature.name] = _.map(entry.raw[feature.name],(key)=>  get(feature.target, key))
                     } else {
-                        entry.data[feature.name] = get(feature.target, entry.data[feature.name])
+                        entry.model[feature.name] = get(feature.target, entry.raw[feature.name])
+                        if (feature.reverse) {
+                            entry.model[feature.name][feature.reverse.name] = entry.model
+                        }
                     }
                 }
             }
@@ -63,7 +76,7 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
     return {
         metaModel,
         list(type: Class) {
-            return _.map(_.values(classMap.get(type)),'data')
+            return _.map(_.values(classMap.get(type)),'model')
         },
         get
     } as Model
