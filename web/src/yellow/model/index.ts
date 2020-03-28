@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import { Class, StructuralFeature, ModelAccess } from '../metadata'
+import { Class, StructuralFeature, ModelAccess, Relation } from '../metadata'
 import { DataWrapper, DataAccess } from '../data'
 import { isRelation } from '../metadata/simple'
 
@@ -41,11 +41,19 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
         return _.get(_.get(classMap.get(type),key),'data')
     }
 
+    function isCollection(relation: Relation): boolean {
+        return relation.multiplicity === '*' || relation.multiplicity === '+'
+    }
+
     function resolveRelations(entry: TypedDataWrapper<object,string,string>) {
         _.forEach(entry.type.features, (feature) => {
             if (isRelation(feature)) {
                 if (entry.data[feature.name]) {
-                    entry.data[feature.name] = get(feature.target, entry.data[feature.name])
+                    if (isCollection(feature)){
+                        entry.data[feature.name] = _.map(entry.data[feature.name],(key)=>  get(feature.target, key))
+                    } else {
+                        entry.data[feature.name] = get(feature.target, entry.data[feature.name])
+                    }
                 }
             }
         })

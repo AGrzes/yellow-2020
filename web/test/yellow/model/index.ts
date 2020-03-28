@@ -17,6 +17,11 @@ function createMetamodel() : ModelAccess {
                 name: 'b',
                 multiplicity: '1',
                 target: B
+            } as Relation,
+            ba: {
+                name: 'ba',
+                multiplicity: '*',
+                target: B
             } as Relation
         },
         model: null
@@ -53,7 +58,8 @@ function createDataAccess(meatmodel: ModelAccess): TypedDataAccess<any,string,st
                 key: 'a',
                 type: meatmodel.models.model.classes.A,
                 data: {
-                    b: 'b'
+                    b: 'b',
+                    ba: ['b']
                 }
             }, {
                 key: 'b',
@@ -90,6 +96,11 @@ describe('model', function() {
             const metamodel = createMetamodel()
             const model = await setupModel(metamodel,[createDataAccess(metamodel)])
             expect(model.get(metamodel.models.model.classes.A,'a')).to.have.property('b',model.get(metamodel.models.model.classes.B,'b'))
+        })
+        it('Should resolve collection relations',async function() {
+            const metamodel = createMetamodel()
+            const model = await setupModel(metamodel,[createDataAccess(metamodel)])
+            expect(model.get(metamodel.models.model.classes.A,'a')).to.have.deep.property('ba',[model.get(metamodel.models.model.classes.B,'b')])
         })
     })
 })
