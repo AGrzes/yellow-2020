@@ -1,4 +1,5 @@
 import * as _ from 'lodash'
+import { isRelation } from './simple'
 
 export interface ModelElement {
     model: Model
@@ -61,6 +62,9 @@ export function fixupModel(model: Model) {
             }
             if(!feature.model) {
                 feature.model = model
+            }
+            if(isRelation(feature) && feature.reverse && !feature.reverse.reverse) {
+                feature.reverse.reverse = feature
             }
         })
     })
