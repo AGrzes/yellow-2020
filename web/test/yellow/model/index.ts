@@ -1,40 +1,32 @@
 import 'mocha'
 import {setupModel, TypedDataAccess} from '../../../src/yellow/model'
 import {expect}  from 'chai'
-import { ModelAccess, Model as Metamodel, Class, Relation} from '../../../src/yellow/metadata'
+import { ModelAccess, Model as Metamodel, Class, Relation, fixupModel} from '../../../src/yellow/metadata'
 
 
 function createMetamodel() : ModelAccess {
     const B: Class = {
-        name: 'B',
         features: {},
         model: null
-    }
+    } as Class
     const A: Class = {
-        name: 'A',
         features: {
             b: {
-                name: 'b',
                 multiplicity: '1',
-                target: B,
-                reverse: {
-                    name: '^b',
-                    owner: B,
-                    multiplicity: '1'
-                }
+                target: B
             } as Relation,
             ba: {
-                name: 'ba',
                 multiplicity: '*',
                 target: B
             } as Relation
         },
         model: null
-    }
-    A.features.b.owner = A;
-    (A.features.b as Relation).reverse.target = A
-    B.features['^b'] = (A.features.b as Relation).reverse
-    B.features['^b'].owner = B
+    } as unknown as Class
+    B.features['^b'] = {
+        multiplicity: '1',
+        target: A,
+        reverse: A.features.b
+    } as Relation
 
     const model: Metamodel = {
         classes: {
@@ -45,10 +37,8 @@ function createMetamodel() : ModelAccess {
 
         }
     }
-    A.model = model
-    B.model = model
 
-
+    fixupModel(model)
     const access: ModelAccess = {
         models: {
             model
