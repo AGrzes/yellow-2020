@@ -38,4 +38,22 @@ describe('fixupModel', function() {
         fixupModel(model)
         expect(model).to.have.nested.property('classes.a.features.a.owner',model.classes.a)
     })
+
+    it('Should set name',async function() {
+        const model: Model = {
+            classes:{
+                a: {
+
+                } as Class
+            },
+            dataTypes:{
+                a: {
+
+                } as DataType
+            }
+        }
+        fixupModel(model)
+        expect(model).to.have.nested.property('classes.a.name','a')
+        expect(model).to.have.nested.property('dataTypes.a.name','a')
+    })
 })

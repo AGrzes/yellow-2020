@@ -42,9 +42,12 @@ export interface ModelAccess {
 }
 
 export function fixupModel(model: Model) {
-    _.forEach(model.classes,(clazz) => {
+    _.forEach(model.classes,(clazz,name) => {
         if(!clazz.model) {
             clazz.model = model
+        }
+        if (!clazz.name) {
+            clazz.name = name
         }
         _.forEach(clazz.features, (feature) => {
             if(!feature.owner) {
@@ -52,9 +55,12 @@ export function fixupModel(model: Model) {
             }
         })
     })
-    _.forEach(model.dataTypes,(type) => {
+    _.forEach(model.dataTypes,(type, name) => {
         if(!type.model) {
             type.model = model
+        }
+        if (!type.name) {
+            type.name = name
         }
     })
 }
