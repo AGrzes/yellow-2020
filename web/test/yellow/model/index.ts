@@ -27,6 +27,11 @@ function createMetamodel() : ModelAccess {
         target: A,
         reverse: A.features.b
     } as Relation
+    B.features['^ba'] = {
+        multiplicity: '1',
+        target: A,
+        reverse: A.features.ba
+    } as Relation
 
     const model: Metamodel = {
         classes: {
@@ -104,6 +109,11 @@ describe('model', function() {
             const metamodel = createMetamodel()
             const model = await setupModel(metamodel,[createDataAccess(metamodel)])
             expect(model.get(metamodel.models.model.classes.B,'b')).to.have.property('^b',model.get(metamodel.models.model.classes.A,'a'))
+        })
+        it('Should resolve reverse relations of collection',async function() {
+            const metamodel = createMetamodel()
+            const model = await setupModel(metamodel,[createDataAccess(metamodel)])
+            expect(model.get(metamodel.models.model.classes.B,'b')).to.have.property('^ba',model.get(metamodel.models.model.classes.A,'a'))
         })
     })
 })
