@@ -18,6 +18,14 @@ function createMetamodel() : ModelAccess {
             ba: {
                 multiplicity: '*',
                 target: B
+            } as Relation,
+            bb: {
+                multiplicity: '1',
+                target: B
+            } as Relation,
+            bba: {
+                multiplicity: '*',
+                target: B
             } as Relation
         },
         model: null
@@ -31,6 +39,16 @@ function createMetamodel() : ModelAccess {
         multiplicity: '1',
         target: A,
         reverse: A.features.ba
+    } as Relation
+    B.features['^bb'] = {
+        multiplicity: '*',
+        target: A,
+        reverse: A.features.bb
+    } as Relation
+    B.features['^bba'] = {
+        multiplicity: '*',
+        target: A,
+        reverse: A.features.bba
     } as Relation
 
     const model: Metamodel = {
@@ -62,7 +80,9 @@ function createDataAccess(meatmodel: ModelAccess): TypedDataAccess<any,string,st
                 type: meatmodel.models.model.classes.A,
                 data: {
                     b: 'b',
-                    ba: ['b']
+                    ba: ['b'],
+                    bb: 'b',
+                    bba: ['b']
                 }
             }, {
                 key: 'b',
@@ -114,6 +134,16 @@ describe('model', function() {
             const metamodel = createMetamodel()
             const model = await setupModel(metamodel,[createDataAccess(metamodel)])
             expect(model.get(metamodel.models.model.classes.B,'b')).to.have.property('^ba',model.get(metamodel.models.model.classes.A,'a'))
+        })
+        it('Should resolve reverse collection relations',async function() {
+            const metamodel = createMetamodel()
+            const model = await setupModel(metamodel,[createDataAccess(metamodel)])
+            expect(model.get(metamodel.models.model.classes.B,'b')).to.have.nested.property('^bb[0]',model.get(metamodel.models.model.classes.A,'a'))
+        })
+        it('Should resolve reverse collection relations of collection',async function() {
+            const metamodel = createMetamodel()
+            const model = await setupModel(metamodel,[createDataAccess(metamodel)])
+            expect(model.get(metamodel.models.model.classes.B,'b')).to.have.nested.property('^bba[0]',model.get(metamodel.models.model.classes.A,'a'))
         })
     })
 })

@@ -62,12 +62,20 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
                     if (isCollection(feature)){
                         entry.model[feature.name] = _.map(entry.raw[feature.name],(key)=>  get(feature.target, key))
                         if (feature.reverse) {
-                            _.forEach(entry.model[feature.name],(target)=> target[feature.reverse.name] = entry.model)
+                            if (isCollection(feature.reverse)) {
+                                _.forEach(entry.model[feature.name],(target)=> target[feature.reverse.name] = [entry.model])
+                            } else {
+                                _.forEach(entry.model[feature.name],(target)=> target[feature.reverse.name] = entry.model)
+                            }
                         }
                     } else {
                         entry.model[feature.name] = get(feature.target, entry.raw[feature.name])
                         if (feature.reverse) {
-                            entry.model[feature.name][feature.reverse.name] = entry.model
+                            if (isCollection(feature.reverse)) {
+                                entry.model[feature.name][feature.reverse.name] = [entry.model]
+                            } else {
+                                entry.model[feature.name][feature.reverse.name] = entry.model
+                            }
                         }
                     }
                 }
