@@ -33,6 +33,15 @@ interface ModelEntry {
     optCounter?: string
 }
 
+function merge<T>(array:T[], item: T ): T[]{
+    if (array) {
+        array.push(item)
+        return array
+    } else {
+        return [item]
+    }
+}
+
 
 export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAccess<object,string,string,never>[]): Promise<Model> {
     const entries: ModelEntry[] =_.map(_.flatten(await Promise.all(_.map(dataAccess,(da) => da.list()))),({type,data,key,optCounter})=>({
@@ -63,7 +72,7 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
                         entry.model[feature.name] = _.map(entry.raw[feature.name],(key)=>  get(feature.target, key))
                         if (feature.reverse) {
                             if (isCollection(feature.reverse)) {
-                                _.forEach(entry.model[feature.name],(target)=> target[feature.reverse.name] = [entry.model])
+                                _.forEach(entry.model[feature.name],(target)=> target[feature.reverse.name] = merge(target[feature.reverse.name],entry.model))
                             } else {
                                 _.forEach(entry.model[feature.name],(target)=> target[feature.reverse.name] = entry.model)
                             }
@@ -72,7 +81,7 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
                         entry.model[feature.name] = get(feature.target, entry.raw[feature.name])
                         if (feature.reverse) {
                             if (isCollection(feature.reverse)) {
-                                entry.model[feature.name][feature.reverse.name] = [entry.model]
+                                entry.model[feature.name][feature.reverse.name] = merge(entry.model[feature.name][feature.reverse.name],entry.model)
                             } else {
                                 entry.model[feature.name][feature.reverse.name] = entry.model
                             }
