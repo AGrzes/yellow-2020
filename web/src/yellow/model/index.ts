@@ -9,6 +9,7 @@ export interface Model {
     get(type: Class, key: string): object
     resolve(path: string): object
     list(type: Class): object[]
+    map(type: Class): {[key: string]:object}
     create(type: Class): object
     set(instance: object, feature: StructuralFeature, value: any): void
     add(instance: object, feature: StructuralFeature, value: any): void
@@ -39,6 +40,21 @@ function merge<T>(array:T[], item: T ): T[]{
         return array
     } else {
         return [item]
+    }
+}
+
+export function simpleTypedDataAccess<DataType,KeyType,OptCounterType, QueryType>(type: Class, wrapped: DataAccess<DataType,KeyType,OptCounterType, QueryType>): TypedDataAccess<DataType,KeyType,OptCounterType, QueryType> {
+    return {
+        ...wrapped,
+        async get(key: KeyType, optCounter?: OptCounterType) {
+            return {
+                ...await wrapped.get(key,optCounter),
+                type
+            }
+        },
+        async list(query?: QueryType) {
+            return _.map(await wrapped.list(query),(x) => ({...x,type}))
+        }
     }
 }
 
@@ -97,6 +113,9 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
         metaModel,
         list(type: Class) {
             return _.map(_.values(classMap.get(type)),'model')
+        },
+        map(type: Class) {
+            return _.mapValues(classMap.get(type),'model')
         },
         get
     } as Model
