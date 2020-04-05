@@ -1,4 +1,4 @@
-import { Class, DataType, ModelAccess, Model, StructuralFeature, Attribute, Relation } from '.'
+import { Class, DataType, ModelAccess, Model, StructuralFeature, Attribute, Relation, fixupModel } from '.'
 import { DataAccess } from '../data'
 import * as _ from 'lodash'
 
@@ -103,7 +103,7 @@ function resolveRef<T>(models: {[name: string]: Model}, model: Model, ref: Ref):
         if (!_.isEmpty(parts[0])) {
             model = models[parts[0]]
         }
-        return _.get(model, parts[1].replace('/','.'))
+        return _.get(model, parts[1].replace(/\//g,'.'))
     }
 }
 
@@ -144,6 +144,7 @@ function resolveModelsRefs(models: {[name: string]: Model}) {
 export function resolveModels(descriptors: {[name: string]: ModelDescriptor}): {[name: string]: Model} {
     const result = _.mapValues(descriptors, constructModel)
     resolveModelsRefs(result)
+    _.forEach(result,fixupModel)
     return result
 }
 
