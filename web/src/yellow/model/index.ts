@@ -14,6 +14,8 @@ export interface Model {
     set(instance: object, feature: StructuralFeature, value: any): void
     add(instance: object, feature: StructuralFeature, value: any): void
     clear(instance: object, feature: StructuralFeature): void
+    raw(type: Class, key: string): object
+    raw(type: Class, key: string, value: object): Promise<void>
     delete(instance: object): void
 }
 
@@ -24,6 +26,7 @@ export interface TypedDataWrapper<DataType,KeyType,OptCounterType>  extends Data
 export interface TypedDataAccess<DataType,KeyType,OptCounterType, QueryType> extends DataAccess<DataType,KeyType,OptCounterType, QueryType> {
     get(key: KeyType, optCounter?: OptCounterType): Promise<TypedDataWrapper<DataType,KeyType,OptCounterType>>
     list(query?: QueryType): Promise<TypedDataWrapper<DataType,KeyType,OptCounterType>[]>
+    types: Class[]
 }
 
 interface ModelEntry {
@@ -54,7 +57,8 @@ export function simpleTypedDataAccess<DataType,KeyType,OptCounterType, QueryType
         },
         async list(query?: QueryType) {
             return _.map(await wrapped.list(query),(x) => ({...x,type}))
-        }
+        },
+        types: [type]
     }
 }
 
@@ -63,14 +67,33 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
     const entries: ModelEntry[] =_.map(_.flatten(await Promise.all(_.map(dataAccess,(da) => da.list()))),({type,data,key,optCounter})=>({
         type,raw: data, model: _.cloneDeep(data),key,optCounter
     }))
+    const accessMap = new Map<Class, TypedDataAccess<object,string,string,never>[]>()
+    _.forEach(dataAccess, (da) => {
+        _.forEach(da.types,(type)=> {
+            if (!accessMap.has(type)) {
+                accessMap.set(type,[da])
+            } else {
+                accessMap.get(type).push(da)
+            }
+        })
+     })
+
+    function dataAcceddForClass(type: Class): TypedDataAccess<object,string,string,never> {
+        return _.first(accessMap.get(type))
+    }
     const classMap = new Map<Class,{[key: string]: ModelEntry}>()
-    _.forEach(entries, (entry) => {
-        if (!classMap.has(entry.type)) {
-            classMap.set(entry.type,{[entry.key]:entry})
-        } else {
-            classMap.get(entry.type)[entry.key]=entry
-        }
-    })
+    function rebuildModel() {
+        _.forEach(entries, (entry) => {
+            if (!classMap.has(entry.type)) {
+                classMap.set(entry.type,{[entry.key]:entry})
+            } else {
+                classMap.get(entry.type)[entry.key]=entry
+            }
+        })
+
+        _.forEach(entries,resolveRelations)
+    }
+    rebuildModel()
 
     function get(type: Class, key:string) {
         return _.get(_.get(classMap.get(type),key),'model')
@@ -107,8 +130,35 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
             }
         })
     }
-    _.forEach(entries,resolveRelations)
 
+    function rawGet(type: Class, key: string): object {
+        return _.get(_.get(classMap.get(type),key),'raw')
+    }
+
+
+    async function rawSet(type: Class, key: string, value: object): Promise<void> {
+        let entry: ModelEntry = _.get(classMap.get(type),key)
+        if (!entry) {
+            entry = {type,raw: value, model: _.cloneDeep(value),key}
+            entries.push(entry)
+        } else {
+            entry.raw = value
+            entry.model = _.cloneDeep(value)
+        }
+        const da = dataAcceddForClass(type)
+        if (da) {
+            await da.set(entry.key,entry.raw,entry.optCounter)
+        }
+        rebuildModel()
+    }
+
+    function raw(type: Class, key: string, value?: object): Promise<void>|object {
+        if (value) {
+            return rawSet(type,key,value)
+        } else {
+            return rawGet(type,key)
+        }
+    }
     return {
         metaModel,
         list(type: Class) {
@@ -117,6 +167,7 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
         map(type: Class) {
             return _.mapValues(classMap.get(type),'model')
         },
-        get
+        get,
+        raw
     } as Model
 }
