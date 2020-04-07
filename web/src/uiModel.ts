@@ -7,7 +7,8 @@ export const uiModel: UIModel = {
       listItemTemplate: `<h1>{{item.title}}</h1>`,
       detailsTemplate: `
       <h1>{{item.title}}</h1>
-      <h2><small v-for="author in item.author"> {{author.name}}</small></h2>
+      <h2>Authors</h2>
+      <ul><li v-for="author in item.author"><router-link :to="{name:'authors-item', params:{key: author._id}}">{{author.name}}</router-link></li></ul>
       `
     },{
       dataModel: 'author',
@@ -16,7 +17,7 @@ export const uiModel: UIModel = {
       detailsTemplate: `
       <h1>{{item.name}}</h1>
       <h2>Books</h2>
-      <ul><li v-for="book in item.books"> {{book.title}}</li></ul>
+      <ul><li v-for="book in item.books"><router-link :to="{name:'books-item', params:{key: book._id}}"> {{book.title}}</router-link></li></ul>
       `
     }]
   }
