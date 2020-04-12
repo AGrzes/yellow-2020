@@ -16,7 +16,7 @@ export interface Model {
     clear(instance: object, feature: StructuralFeature): void
     raw(type: Class, key: string): object
     raw(type: Class, key: string, value: object): Promise<void>
-    delete(instance: object): void
+    delete(type: Class,key: string): Promise<void>
 }
 
 export interface TypedDataWrapper<DataType,KeyType,OptCounterType>  extends DataWrapper<DataType,KeyType,OptCounterType> {
@@ -160,6 +160,17 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
             return rawGet(type,key)
         }
     }
+    async function _delete(type: Class, key: string) {
+        const entry: ModelEntry = _.get(classMap.get(type),key)
+        if (entry) {
+            _.remove(entries,(e) => e=== entry)
+            const da = dataAcceddForClass(type)
+            if (da) {
+                entry.optCounter = await da.delete(entry.key,entry.optCounter)
+            }
+            rebuildModel()
+        }
+    }
     return {
         metaModel,
         list(type: Class) {
@@ -169,6 +180,7 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
             return _.mapValues(classMap.get(type),'model')
         },
         get,
-        raw
+        raw,
+        delete: _delete
     } as Model
 }

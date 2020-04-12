@@ -17,6 +17,9 @@ export class ModelStateAdapter {
             mutations: {
                 update(state,{key,value}) {
                     Vue.set(state,key,value)
+                },
+                delete(state,key) {
+                    Vue.delete(state,key)
                 }
             },
             actions: {
@@ -30,6 +33,10 @@ export class ModelStateAdapter {
                     } else {
                         return model.raw(type,key)
                     }
+                },
+                async delete(context,key) {
+                    await model.delete(type, key)
+                    context.commit('delete',key)
                 }
             }
         }

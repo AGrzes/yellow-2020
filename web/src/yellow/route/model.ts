@@ -104,6 +104,7 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                     <li v-for="(item,key) in list">
                         ${view.listItemTemplate}
                         <router-link :to="{name:'${view.pathName}-item', params:{key}}">Details</router-link>
+                        <a @click="remove(key)">delete</a>
                     </li>
                     <li><a @click="add()">add</a></li>
                 </ul>`,
@@ -142,12 +143,15 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                           ]
                         })
                     },
+                    async remove(key: string) {
+                        await this.$store.dispatch(`${view.dataModel}/delete`, key)
+                    },
                     async add() {
                         modal({
                           component: Create,
                           host: this.$el,
                           title: 'Create',
-                          props: {content: {}},
+                          props: {content: {key: 'value'}},
                           buttons: [
                             {
                               name: 'Save',
