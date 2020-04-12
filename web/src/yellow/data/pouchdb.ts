@@ -24,8 +24,8 @@ export class PouchDBDataAccess<DataType extends object> implements DataAccess<Da
             }
         }
     }
-    async set(key: string, value: DataType, optCounter?: string) {
-        await this.db.put({_id: key, ...value, _rev: optCounter})
+    async set(key: string, value: DataType, optCounter?: string): Promise<string> {
+        return (await this.db.put({_id: key, ...value, _rev: optCounter})).rev
     }
     async update(key: string, value: DataType, conflict?: ConflictMode) {
         let optCounter = null
