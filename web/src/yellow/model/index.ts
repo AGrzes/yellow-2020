@@ -47,8 +47,7 @@ function merge<T>(array:T[], item: T ): T[]{
 }
 
 export function simpleTypedDataAccess<DataType,KeyType,OptCounterType, QueryType>(type: Class, wrapped: DataAccess<DataType,KeyType,OptCounterType, QueryType>): TypedDataAccess<DataType,KeyType,OptCounterType, QueryType> {
-    return {
-        ...wrapped,
+    const result = {
         async get(key: KeyType, optCounter?: OptCounterType) {
             return {
                 ...await wrapped.get(key,optCounter),
@@ -59,7 +58,9 @@ export function simpleTypedDataAccess<DataType,KeyType,OptCounterType, QueryType
             return _.map(await wrapped.list(query),(x) => ({...x,type}))
         },
         types: [type]
-    }
+    } as TypedDataAccess<DataType,KeyType,OptCounterType, QueryType>
+    Object.setPrototypeOf(result, wrapped)
+    return result
 }
 
 
@@ -147,7 +148,7 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
         }
         const da = dataAcceddForClass(type)
         if (da) {
-            await da.set(entry.key,entry.raw,entry.optCounter)
+            entry.optCounter = await da.set(entry.key,entry.raw,entry.optCounter)
         }
         rebuildModel()
     }
