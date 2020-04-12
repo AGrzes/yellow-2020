@@ -3,6 +3,19 @@ import { RouteConfig } from 'vue-router'
 import { UIModel } from '../ui-model'
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import { modal } from '@agrzes/yellow-vue-components'
+
+const Edit = Vue.extend({
+    props: ['content'],
+    template: `
+  <edit-yaml v-model="current"></edit-yaml>
+    `,
+    data() {
+      return {
+        current: this.content
+      }
+    }
+})
 
 export function modelRoutes(model: UIModel): RouteConfig[] {
     return [{
@@ -37,6 +50,32 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                 beforeRouteUpdate (to, from, next) {
                     this.$store.dispatch(`${view.dataModel}/fetch`,to.params.key)
                     next()
+                },
+                methods: {
+                    async edit() {
+                        modal({
+                          component: Edit,
+                          host: this.$el,
+                          title: 'Confirm',
+                          props: {content: await this.$store.dispatch(`${view.dataModel}/raw`,{key:this.$route.params.key})},
+                          buttons: [
+                            {
+                              name: 'Confirm',
+                              onclick:async (m) => {
+                                await this.$store.dispatch(`${view.dataModel}/raw`,{key: this.$route.params.key,value: m.component.current})
+                                m.close()
+                              },
+                              class: 'btn-primary'
+                            }, {
+                              name: 'Cancel',
+                              onclick(m) {
+                                m.close()
+                              },
+                              class: 'btn-secondary'
+                            }
+                          ]
+                        })
+                    }
                 }
             })
         },{
