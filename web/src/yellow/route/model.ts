@@ -16,6 +16,24 @@ const Edit = Vue.extend({
       }
     }
 })
+const Create = Vue.extend({
+    props: ['content'],
+    template: `
+    <form>
+        <div class="form-group">
+            <label for="key">Key</label>
+            <input type="text" class="form-control" id="key" v-model="key">
+        </div>
+        <edit-yaml v-model="current"></edit-yaml>
+    </form>
+    `,
+    data() {
+      return {
+        current: this.content,
+        key: ''
+      }
+    }
+})
 
 export function modelRoutes(model: UIModel): RouteConfig[] {
     return [{
@@ -87,6 +105,7 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                         ${view.listItemTemplate}
                         <router-link :to="{name:'${view.pathName}-item', params:{key}}">Details</router-link>
                     </li>
+                    <li><a @click="add()">add</a></li>
                 </ul>`,
                 computed: {
                     ...mapState(view.dataModel,{
@@ -110,6 +129,30 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                               name: 'Save',
                               onclick:async (m) => {
                                 await this.$store.dispatch(`${view.dataModel}/raw`,{key,value: m.component.current})
+                                m.close()
+                              },
+                              class: 'btn-primary'
+                            }, {
+                              name: 'Cancel',
+                              onclick(m) {
+                                m.close()
+                              },
+                              class: 'btn-secondary'
+                            }
+                          ]
+                        })
+                    },
+                    async add() {
+                        modal({
+                          component: Create,
+                          host: this.$el,
+                          title: 'Create',
+                          props: {content: {}},
+                          buttons: [
+                            {
+                              name: 'Save',
+                              onclick:async (m) => {
+                                await this.$store.dispatch(`${view.dataModel}/raw`,{key: m.component.key,value: m.component.current})
                                 m.close()
                               },
                               class: 'btn-primary'
