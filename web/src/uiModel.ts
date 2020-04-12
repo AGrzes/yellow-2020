@@ -4,7 +4,7 @@ export const uiModel: UIModel = {
     views: [{
       dataModel: 'book',
       pathName: 'books',
-      listItemTemplate: `<h1>{{item.title}}</h1>`,
+      listItemTemplate: `<h1>{{item.title}}<small><a @click="edit(key)">edit</a></small></h1>`,
       detailsTemplate: `
       <h1>{{item.title}}</h1>
       <h2>Authors</h2>
@@ -14,7 +14,7 @@ export const uiModel: UIModel = {
     },{
       dataModel: 'author',
       pathName: 'authors',
-      listItemTemplate: `<h1>{{item.name}}</h1>`,
+      listItemTemplate: `<h1>{{item.name}}<small><a @click="edit(key)">edit</a></small></h1>`,
       detailsTemplate: `
       <h1>{{item.name}}</h1>
       <h2>Books</h2>

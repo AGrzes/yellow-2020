@@ -56,11 +56,11 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                         modal({
                           component: Edit,
                           host: this.$el,
-                          title: 'Confirm',
+                          title: 'Edit',
                           props: {content: await this.$store.dispatch(`${view.dataModel}/raw`,{key:this.$route.params.key})},
                           buttons: [
                             {
-                              name: 'Confirm',
+                              name: 'Save',
                               onclick:async (m) => {
                                 await this.$store.dispatch(`${view.dataModel}/raw`,{key: this.$route.params.key,value: m.component.current})
                                 m.close()
@@ -97,6 +97,32 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                 },
                 mounted() {
                     this.$store.dispatch(`${view.dataModel}/fetch`)
+                },
+                methods: {
+                    async edit(key: string) {
+                        modal({
+                          component: Edit,
+                          host: this.$el,
+                          title: 'Edit',
+                          props: {content: await this.$store.dispatch(`${view.dataModel}/raw`,{key})},
+                          buttons: [
+                            {
+                              name: 'Save',
+                              onclick:async (m) => {
+                                await this.$store.dispatch(`${view.dataModel}/raw`,{key,value: m.component.current})
+                                m.close()
+                              },
+                              class: 'btn-primary'
+                            }, {
+                              name: 'Cancel',
+                              onclick(m) {
+                                m.close()
+                              },
+                              class: 'btn-secondary'
+                            }
+                          ]
+                        })
+                    }
                 }
             })
         }]))
