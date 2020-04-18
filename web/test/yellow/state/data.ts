@@ -1,7 +1,10 @@
 import 'mocha'
 import dataState from '../../../src/yellow/state/data'
-import {expect}  from 'chai'
+import chai,{expect}  from 'chai'
 import { DataAccess } from '../../../src/yellow/data'
+import sinon from 'sinon'
+import sinonChai from 'sinon-chai'
+chai.use(sinonChai)
 
 describe('uiState', function() {
 
@@ -49,6 +52,20 @@ describe('uiState', function() {
             }
         }
         await (dataModule.actions.fetch as any).call(null,context,'a')
+    })
+
+    it('Should ty to fetch not existing entity',async function() {
+        const dataModule = dataState({
+            async get(key: string) {
+                expect(key).to.be.equals('a')
+                return null
+            }
+        } as unknown as DataAccess<any,string,string,any>)
+        const context = {
+            commit: sinon.spy()
+        }
+        await (dataModule.actions.fetch as any).call(null,context,'a')
+        expect(context.commit).not.to.be.called
     })
 
     it('Should update state',async function() {
