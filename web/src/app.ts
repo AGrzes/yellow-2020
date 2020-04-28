@@ -8,7 +8,7 @@ import store from './state'
     el: 'body #app',
     template: `<router-view></router-view>`,
     store: await store(),
-    router,
+    router: await router(),
     data: {
     }
   })

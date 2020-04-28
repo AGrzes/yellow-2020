@@ -8,25 +8,13 @@ import { uiModel } from '../uiModel'
 import { setupModel, simpleTypedDataAccess } from '../yellow/model'
 import { SimpleModelAccess } from '../yellow/metadata/simple'
 import { ModelStateAdapter } from '../yellow/state/model'
+import { config } from '../config'
+import { store as setupStore} from '../yellow/state'
 Vue.use(Vuex)
 
 async function store() {
-  const metadata = await SimpleModelAccess.loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://localhost:5984/model')))
-  const book = simpleTypedDataAccess(metadata.models.books.classes.book,new PouchDBDataAccess(new PouchDB('http://localhost:5984/books')))
-  const author = simpleTypedDataAccess(metadata.models.books.classes.author,new PouchDBDataAccess(new PouchDB('http://localhost:5984/authors')))
-  const ui = uiState(uiModel)
-  const model = await setupModel( metadata,[book,author])
-  const adapter = new ModelStateAdapter(model)
-  return new Vuex.Store({
-    modules: {
-      book:adapter.state(metadata.models.books.classes.book),
-      author:adapter.state(metadata.models.books.classes.author)
-    }
-  })
+  const {state} = await config()
+  return setupStore(state)
 }
-
-
-
-
 
 export default store
