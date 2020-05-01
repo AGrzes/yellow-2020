@@ -1,0 +1,22 @@
+{
+  "name": "@agrzes/yellow-2020-web-vue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "target",
+  "types": "types",
+  "scripts": {
+    "build": "true",
+    "test": "true"
+  },
+  "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bootstrap": "^4.3.2",
+    "@types/vue-router": "^2.0.0",
+    "@types/jquery": "^3.3.36",
+    "vue": "^2.6.11",
+    "vue-router": "^3.1.6",
+    "vuex": "^3.3.0"
+  },
+  "private": true
+}
