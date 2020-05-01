@@ -1,0 +1,69 @@
+{
+  "name": "@agrzes/yellow-2020-web-sample",
+  "version": "1.0.0",
+  "description": "Web interface of the yellow 2020.",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "nyc mocha test/**/*.{ts,tsx}",
+    "watch": "webpack -w -d"
+  },
+  "nyc": {
+    "all": true,
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "include": [
+      "src/**/*"
+    ],
+    "reporter": [
+      "html",
+      "text",
+      "lcov"
+    ],
+    "require": [
+      "ts-node/register",
+      "source-map-support/register"
+    ]
+  },
+  "author": "Grzegorz Abramczyk <grzegorz.abramczyk@tuatara.pl>",
+  "license": "MIT",
+  "dependencies": {
+    "@agrzes/yellow-vue-components": "^1.0.2",
+    "axios": "^0.19.2",
+    "bootstrap": "^4.1.3",
+    "jquery": "^3.5.0",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
+    "popper.js": "^1.14.6",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.3.0",
+    "@agrzes/yellow-2020-common-data": "^1.0.0",
+    "@agrzes/yellow-2020-common-config": "^1.0.0",
+    "@agrzes/yellow-2020-web-vue-state": "^1.0.0",
+    "@agrzes/yellow-2020-common-ui-model": "^1.0.0",
+    "@agrzes/yellow-2020-web-vue-router": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/bootstrap": "^4.3.2",
+    "@types/clipboard": "^2.0.1",
+    "@types/jquery": "^3.3.36",
+    "@types/lodash": "^4.14.150",
+    "@types/mocha": "^7.0.2",
+    "css-loader": "^3.5.3",
+    "file-loader": "^6.0.0",
+    "mocha": "^7.1.2",
+    "node-sass": "^4.14.0",
+    "nyc": "^15.0.1",
+    "sass-loader": "^8.0.2",
+    "style-loader": "^1.2.1",
+    "ts-loader": "^7.0.2",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.1.0"
+  }
+}
