@@ -1,5 +1,6 @@
 /// <reference types="pouchdb-core" />
 /// <reference types="pouchdb-adapter-http" />
+/// <reference types="pouchdb-adapter-memory" />
 /// <reference types="pouchdb-find" />
 /// <reference types="pouchdb-mapreduce" />
 import { DataAccess, ConflictMode, DataWrapper } from '@agrzes/yellow-2020-common-data';
