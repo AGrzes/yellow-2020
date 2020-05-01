@@ -62,5 +62,6 @@
     "ts-node": "^8.6.2",
     "tslint": "^6.0.0",
     "typescript": "^3.2.2"
-  }
+  },
+  "private": true
 }
