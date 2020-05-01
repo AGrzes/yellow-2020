@@ -1,0 +1,42 @@
+{
+  "name": "@agrzes/yellow-2020-web-vue-state",
+  "version": "1.0.0",
+  "description": "",
+  "main": "target",
+  "types": "types",
+  "scripts": {
+    "build": "rm -rf target types && tsc",
+    "test": "nyc mocha test/**/*.{ts,tsx}"
+  },
+  "nyc": {
+    "all": true,
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "include": [
+      "src/**/*"
+    ],
+    "reporter": [
+      "html",
+      "text",
+      "lcov"
+    ],
+    "require": [
+      "ts-node/register",
+      "source-map-support/register"
+    ]
+  },
+  "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@agrzes/yellow-2020-common-data": "^1.0.0",
+    "@agrzes/yellow-2020-common-data-pouchdb": "^1.0.0",
+    "@agrzes/yellow-2020-common-metadata": "^1.0.0",
+    "@agrzes/yellow-2020-common-model": "^1.0.0",
+    "@agrzes/yellow-2020-common-ui-model": "^1.0.0"
+  }
+}
