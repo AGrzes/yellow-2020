@@ -1,5 +1,5 @@
 {
-  "name": "@agrzes/yellow-2020root",
+  "name": "@agrzes/yellow-2020-root",
   "private": true,
   "devDependencies": {
     "lerna": "^3.20.2"
