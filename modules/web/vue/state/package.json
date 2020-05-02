@@ -1,6 +1,6 @@
 {
   "name": "@agrzes/yellow-2020-web-vue-state",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "",
   "main": "target",
   "types": "types",
@@ -33,11 +33,11 @@
   "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@agrzes/yellow-2020-common-data": "^1.1.1",
-    "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.1",
-    "@agrzes/yellow-2020-common-metadata": "^1.1.1",
-    "@agrzes/yellow-2020-common-model": "^1.1.1",
-    "@agrzes/yellow-2020-common-ui-model": "^1.1.1"
+    "@agrzes/yellow-2020-common-data": "^1.1.2",
+    "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.2",
+    "@agrzes/yellow-2020-common-metadata": "^1.1.2",
+    "@agrzes/yellow-2020-common-model": "^1.1.2",
+    "@agrzes/yellow-2020-common-ui-model": "^1.1.2"
   },
   "files": [
     "/package.json",
