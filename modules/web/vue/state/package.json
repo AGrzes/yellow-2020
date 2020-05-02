@@ -38,5 +38,12 @@
     "@agrzes/yellow-2020-common-metadata": "^1.1.0",
     "@agrzes/yellow-2020-common-model": "^1.1.0",
     "@agrzes/yellow-2020-common-ui-model": "^1.1.0"
-  }
+  },
+  "files": [
+    "/package.json",
+    "/package-lock.json",
+    "/LICENSE",
+    "/target",
+    "/types"
+  ]
 }

@@ -44,5 +44,12 @@
     "@types/pouchdb-core": "^7.0.5",
     "@types/pouchdb-mapreduce": "^6.1.4",
     "pouchdb-adapter-memory": "^7.2.1"
-  }
+  },
+  "files": [
+    "/package.json",
+    "/package-lock.json",
+    "/LICENSE",
+    "/target",
+    "/types"
+  ]
 }

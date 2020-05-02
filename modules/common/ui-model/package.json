@@ -31,5 +31,12 @@
     ]
   },
   "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "/package.json",
+    "/package-lock.json",
+    "/LICENSE",
+    "/target",
+    "/types"
+  ]
 }

@@ -34,5 +34,12 @@
   "license": "MIT",
   "dependencies": {
     "@agrzes/yellow-2020-common-data": "^1.1.0"
-  }
+  },
+  "files": [
+    "/package.json",
+    "/package-lock.json",
+    "/LICENSE",
+    "/target",
+    "/types"
+  ]
 }
