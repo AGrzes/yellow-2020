@@ -30,6 +30,13 @@
       "source-map-support/register"
     ]
   },
+  "files": [
+    "/package.json",
+    "/package-lock.json",
+    "/LICENSE",
+    "/target",
+    "/types"
+  ],
   "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
   "license": "MIT"
 }
