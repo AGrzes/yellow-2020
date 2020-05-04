@@ -107,7 +107,7 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
             if (isRelation(feature)) {
                 if (entry.raw[feature.name]) {
                     if (isCollection(feature)){
-                        entry.model[feature.name] = _.map(entry.raw[feature.name],(key)=>  get(feature.target, key))
+                        entry.model[feature.name] = _.filter(_.map(entry.raw[feature.name],(key)=>  get(feature.target, key)))
                         if (feature.reverse) {
                             if (isCollection(feature.reverse)) {
                                 _.forEach(entry.model[feature.name],(target)=> target[feature.reverse.name] = merge(target[feature.reverse.name],entry.model))
@@ -116,12 +116,15 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
                             }
                         }
                     } else {
-                        entry.model[feature.name] = get(feature.target, entry.raw[feature.name])
-                        if (feature.reverse) {
-                            if (isCollection(feature.reverse)) {
-                                entry.model[feature.name][feature.reverse.name] = merge(entry.model[feature.name][feature.reverse.name],entry.model)
-                            } else {
-                                entry.model[feature.name][feature.reverse.name] = entry.model
+                        const target = get(feature.target, entry.raw[feature.name])
+                        if (target) {
+                            entry.model[feature.name] = target
+                            if (feature.reverse) {
+                                if (isCollection(feature.reverse)) {
+                                    entry.model[feature.name][feature.reverse.name] = merge(entry.model[feature.name][feature.reverse.name],entry.model)
+                                } else {
+                                    entry.model[feature.name][feature.reverse.name] = entry.model
+                                }
                             }
                         }
                     }
