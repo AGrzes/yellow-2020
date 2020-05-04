@@ -2,6 +2,7 @@
   "name": "@agrzes/yellow-2020-modulse",
   "private": true,
   "devDependencies": {
+    "@types/lodash": "^4.14.150",
     "axios": "^0.19.2",
     "typescript": "^3.8.3"
   }
