@@ -35,10 +35,10 @@ async function loadConfluenceData(): Promise<string[][]> {
 async function load() {
     const confluenceData = await loadConfluenceData()
 
-    const metadata = await SimpleModelAccess.loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://localhost:5984/model')))
+    const metadata = await SimpleModelAccess.loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://couchdb:5984/model')))
     const model = await setupModel( metadata, _.map({
-        'http://localhost:5984/books': 'books.classes.book',
-        'http://localhost:5984/authors': 'books.classes.author'
+        'http://couchdb:5984/books': 'books.classes.book',
+        'http://couchdb:5984/authors': 'books.classes.author'
     },(path, url) => simpleTypedDataAccess(_.get(metadata.models,path) as unknown as Class,new PouchDBDataAccess(new PouchDB(url)))))
     const data = YAML.safeLoadAll(await readFile(process.argv[2],'utf-8'))
     const books = _(data).filter(({kind})=> kind === 'book')
