@@ -1,12 +1,40 @@
 import { PouchDBDataAccess , PouchDB} from '@agrzes/yellow-2020-common-data-pouchdb'
 import { setupModel, simpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
 import { SimpleModelAccess, Class } from '@agrzes/yellow-2020-common-metadata'
+import confluenceClient from 'confluence-client'
 import _ from 'lodash'
 import YAML from 'js-yaml'
 import fs from 'fs'
+import {JSDOM} from 'jsdom'
+
 const readFile = fs.promises.readFile
 
+async function loadConfluenceData(): Promise<string[][]> {
+    const confluence = confluenceClient({
+        username: process.env.CONFLUENCE_USER,
+        password: process.env.CONFLUENCE_PASSWORD,
+        endpoint: process.env.CONFLUENCE_URL
+    })
+    const dom = new JSDOM((await confluence.get(
+        process.env.CONFLUENCE_SPACE,
+        process.env.CONFLUENCE_TITLE,
+        ['body.storage']
+    )).body.storage.value)
+
+    const rows = dom.window.document.querySelectorAll('tr')
+    const result = []
+    rows.forEach(row => {
+        const rowArray = []
+        row.querySelectorAll('td').forEach((td)=>rowArray.push(td.textContent))
+        result.push(rowArray)
+    })
+
+    return result
+}
+
 async function load() {
+    const confluenceData = await loadConfluenceData()
+
     const metadata = await SimpleModelAccess.loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://localhost:5984/model')))
     const model = await setupModel( metadata, _.map({
         'http://localhost:5984/books': 'books.classes.book',
@@ -17,6 +45,14 @@ async function load() {
         .map(({title, author}: {title: string,author: string})=>({title,author:[author]}))
         .keyBy(({title})=>_.kebabCase(title))
         .value() 
+    _.forEach(confluenceData,([title,author])=> {
+        if (title) {
+            books[_.kebabCase(title)] = {
+                title,
+                author: author ?[author]:[]
+            }
+        }
+    })
     const authors = _(data).filter(({kind})=> kind === 'author')
         .map(({name, books}: {name: string,books: string[]})=>({name,books}))
         .keyBy(({name})=>_.kebabCase(name) )
@@ -51,4 +87,4 @@ async function load() {
     await Promise.all(_.map(authors,({books,...author},key) => model.raw(metadata.models.books.classes.author,key,{...author,books:_.map(books,_.kebabCase)})))
 }
 
-load()
+load().catch(console.error)
