@@ -1,5 +1,5 @@
 {
-  "name": "@agrzes/yellow-2020-modulse",
+  "name": "@agrzes/yellow-2020-module",
   "private": true,
   "devDependencies": {
     "@types/lodash": "^4.14.150",
