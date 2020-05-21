@@ -46,5 +46,9 @@
     "/src",
     "/target",
     "/types"
-  ]
+  ],
+  "devDependencies": {
+    "mocha": "^7.1.2",
+    "nyc": "^15.0.1"
+  }
 }
