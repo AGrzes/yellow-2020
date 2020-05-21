@@ -1,9 +1,10 @@
-import Vuex from 'vuex'
+import Vuex, { Store } from 'vuex'
 import { PouchDBDataAccess , PouchDB} from '@agrzes/yellow-2020-common-data-pouchdb'
-import { setupModel, simpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
-import { SimpleModelAccess, Class } from '@agrzes/yellow-2020-common-metadata'
+import { setupModel, simpleTypedDataAccess, TypedDataAccess, Model } from '@agrzes/yellow-2020-common-model'
+import { SimpleModelAccess, Class, ModelAccess } from '@agrzes/yellow-2020-common-metadata'
 import { ModelStateAdapter } from './model'
 import * as _ from 'lodash'
+import { DataAccess } from '@agrzes/yellow-2020-common-data/types'
 
 export interface StateConfig {
     metadata: string
@@ -15,13 +16,48 @@ export interface StateConfig {
     }
 }
 
+type SetupMetadata = (config: string) => Promise<ModelAccess>
+type SetupModleAccess<T> = (dataAccess: DataAccess<T,string, string, void>) => Promise<ModelAccess>
+type SetupDataAccess<T> = (url: string) => DataAccess<T,string, string, void>
+type SetupTypedDataAccess<T> = (type: Class, wrapped: DataAccess<T,string, string, void>) => TypedDataAccess<T, string, string, void>;
+type SetupModel = (metaModel: ModelAccess, dataAccess: TypedDataAccess<object, string, string, never>[]) => Promise<Model>
+type SetupModelStateAdapter = (model: Model) => ModelStateAdapter
 
-export async function store(config: StateConfig) {
-  const metadata = await SimpleModelAccess.loadFromAdapter(new PouchDBDataAccess(new PouchDB(config.metadata)))
-  const data = _.map(config.data,(path, url) => simpleTypedDataAccess(_.get(metadata.models,path) as unknown as Class,new PouchDBDataAccess(new PouchDB(url))))
-  const model = await setupModel( metadata,data)
-  const adapter = new ModelStateAdapter(model)
-  return new Vuex.Store({
-    modules: _.mapValues(config.stores,(path) => adapter.state(_.get(metadata.models,path) as unknown as Class))
-  })
+export function setupSetupModelStateAdapter(): SetupModelStateAdapter {
+  return (model: Model) => new ModelStateAdapter(model)
 }
+
+export function setupSetupDataAccess<T extends object>(
+  constructPouchDb: new (url: string) => PouchDB.Database<T>,
+  constructPouchDBDataAccess: new (database: PouchDB.Database<T>) => PouchDBDataAccess<T>): SetupDataAccess<T> {
+  return (url: string) => new constructPouchDBDataAccess(new constructPouchDb(url))
+}
+
+export function setupSetupMetadata(
+  setupDataAccess: SetupDataAccess<any>,
+  setupModleAccess: SetupModleAccess<any>): SetupMetadata {
+  return (url: string) => setupModleAccess(setupDataAccess(url))
+}
+
+export function setupStore(setupMetadata: SetupMetadata,
+    setupDataAccess: SetupDataAccess<any>,
+    setupTypedDataAccess: SetupTypedDataAccess<any>,
+    setupModel: SetupModel,
+    setupModelStateAdapter: SetupModelStateAdapter): (config:StateConfig) => Promise<Store<unknown>> {
+  return async (config) => {
+    const metadata = await setupMetadata(config.metadata)
+    const data = _.map(config.data,(path, url) => setupTypedDataAccess(_.get(metadata.models,path) as unknown as Class,setupDataAccess(url)))
+    const model = await setupModel( metadata,data)
+    const adapter = setupModelStateAdapter(model)
+    return new Vuex.Store({
+      modules: _.mapValues(config.stores,(path) => adapter.state(_.get(metadata.models,path) as unknown as Class))
+    })
+  }
+}
+
+export const store = setupStore(
+  setupSetupMetadata(setupSetupDataAccess(PouchDB, PouchDBDataAccess), SimpleModelAccess.loadFromAdapter),
+  setupSetupDataAccess(PouchDB, PouchDBDataAccess),
+  simpleTypedDataAccess,
+  setupModel,
+  setupSetupModelStateAdapter())
