@@ -81,6 +81,23 @@ describe('ModelStateAdapter', function() {
                     expect(state.commit).to.be.calledWith('delete', 'key')
                 })
             })
+            describe('fetch', function() {
+                it('Should not fail',async function() {
+                    const model = {
+                        map: sinon.spy(()=> {
+                            return {}
+                        }),
+                        delete: sinon.spy()
+                    } as unknown as Model
+                    const adapter = new ModelStateAdapter(model)
+                    const state = {
+                        commit: sinon.spy()
+                    }
+                    const type = {} as Class
+                    const modelModule = adapter.state(type)
+                    await (modelModule.actions.fetch as any).call(null,state)
+                })
+            })
         })
 
         describe('mutations', function() {
