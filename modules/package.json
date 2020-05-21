@@ -2,8 +2,10 @@
   "name": "@agrzes/yellow-2020-module",
   "private": true,
   "devDependencies": {
+    "@types/chai": "^4.2.11",
     "@types/lodash": "^4.14.150",
     "@types/mocha": "^7.0.2",
+    "@types/sinon-chai": "^3.2.4",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
