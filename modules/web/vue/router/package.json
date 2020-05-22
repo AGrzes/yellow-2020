@@ -36,7 +36,8 @@
     "@agrzes/yellow-2020-common-data": "^1.1.2",
     "@agrzes/yellow-2020-common-metadata": "^1.1.2",
     "@agrzes/yellow-2020-common-ui-model": "^1.1.2",
-    "@agrzes/yellow-vue-components": "^1.0.2"
+    "@agrzes/yellow-vue-components": "^1.0.2",
+    "@fortawesome/fontawesome-free": "^5.13.0"
   },
   "files": [
     "/package.json",
