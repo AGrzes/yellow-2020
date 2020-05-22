@@ -19,7 +19,7 @@ router.get('/config',(req,res) => {
             views: [{
               dataModel: 'book',
               pathName: 'books',
-              listItemTemplate: `<h1>{{item.title}}<small><a @click="edit(key)">edit</a></small></h1>`,
+              listItemTemplate: `{{item.title}}`,
               detailsTemplate: `
               <h1>{{item.title}}</h1>
               <h2>Authors</h2>
@@ -29,7 +29,7 @@ router.get('/config',(req,res) => {
             },{
               dataModel: 'author',
               pathName: 'authors',
-              listItemTemplate: `<h1>{{item.name}}<small><a @click="edit(key)">edit</a></small></h1>`,
+              listItemTemplate: `{{item.name}}`,
               detailsTemplate: `
               <h1>{{item.name}}</h1>
               <h2>Books</h2>
