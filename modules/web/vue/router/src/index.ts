@@ -37,7 +37,7 @@ const Create = Vue.extend({
     }
 })
 
-function listComponent(view: EntityView) {
+function itemComponent(view: EntityView) {
   return Vue.extend({
     template: `<div v-if="item">
 <list-item :item="item"></list-item>
@@ -113,7 +113,7 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
         children:  _.flatMap(model.views, (view) => ([{
             path: `${view.pathName}/:key`,
             name: `${view.pathName}-item`,
-            component: listComponent(view)
+            component: itemComponent(view)
         }, {
             path: `${view.pathName}`,
             name: `${view.pathName}-list`,
