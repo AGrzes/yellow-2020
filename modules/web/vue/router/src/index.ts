@@ -46,7 +46,6 @@ function itemDetailsTemplate(view: EntityView) {
 }
 
 function itemComponent(view: EntityView) {
-
   return Vue.extend({
     template: itemDetailsTemplate(view),
     computed: {
@@ -103,7 +102,102 @@ function itemComponent(view: EntityView) {
             })
         }
     }
-})
+  })
+}
+
+function listComponent(view: EntityView) {
+  return Vue.extend({
+    template: `<ul class="list-group">
+        <li v-for="(item,key) in list" class="list-group-item">
+          <span class="d-flex">
+            <span class="mr-auto">
+            ${view.listItemTemplate}
+            </span>
+            <span class="flex-grow-0 flex-shrink-0 align-self-center">
+              <button @click="edit(key)" class="btn btn-outline-primary" type="button" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <router-link :to="{name:'${view.pathName}-item', params:{key}}" class="btn btn-outline-info" role="button" title="Details">
+                <i class="fas fa-eye"></i>
+              </router-link>
+              <button @click="remove(key)" class="btn btn-outline-danger" type="button" title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </span>
+          </span>
+        </li>
+        <li class="list-group-item"><a @click="add()">add</a></li>
+    </ul>`,
+    computed: {
+        ...mapState(view.dataModel, {
+            list(state) {
+                return state
+            }
+        })
+    },
+    mounted() {
+        this.$store.dispatch(`${view.dataModel}/fetch`)
+    },
+    methods: {
+        async edit(key: string) {
+            modal({
+              component: Edit,
+              host: this.$el,
+              title: 'Edit',
+              props: {content: await this.$store.dispatch(`${view.dataModel}/raw`, {key})},
+              buttons: [
+                {
+                  name: 'Save',
+                  onclick: async (m) => {
+                    await this.$store.dispatch(`${view.dataModel}/raw`, {
+                      key,
+                      value: m.component.current
+                    })
+                    m.close()
+                  },
+                  class: 'btn-primary'
+                }, {
+                  name: 'Cancel',
+                  onclick(m) {
+                    m.close()
+                  },
+                  class: 'btn-secondary'
+                }
+              ]
+            })
+        },
+        async remove(key: string) {
+            await this.$store.dispatch(`${view.dataModel}/delete`, key)
+        },
+        async add() {
+            modal({
+              component: Create,
+              host: this.$el,
+              title: 'Create',
+              props: {content: {key: 'value'}},
+              buttons: [
+                {
+                  name: 'Save',
+                  onclick: async (m) => {
+                    await this.$store.dispatch(`${view.dataModel}/raw`, {
+                      key: m.component.key,
+                      value: m.component.current
+                    })
+                    m.close()
+                  },
+                  class: 'btn-primary'
+                }, {
+                  name: 'Cancel',
+                  onclick(m) {
+                    m.close()
+                  },
+                  class: 'btn-secondary'
+                }
+              ]
+            })
+        }
+    }
+  })
 }
 
 export function modelRoutes(model: UIModel): RouteConfig[] {
@@ -123,92 +217,7 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
         }, {
             path: `${view.pathName}`,
             name: `${view.pathName}-list`,
-            component: Vue.extend({
-                template: `<ul class="list-group">
-                    <li v-for="(item,key) in list" class="list-group-item">
-                      <span class="d-flex">
-                        <span class="mr-auto">
-                        ${view.listItemTemplate}
-                        </span>
-                        <span class="flex-grow-0 flex-shrink-0 align-self-center">
-                          <button @click="edit(key)" class="btn btn-outline-primary" type="button" title="Edit">
-                            <i class="fas fa-edit"></i>
-                          </button>
-                          <router-link :to="{name:'${view.pathName}-item', params:{key}}" class="btn btn-outline-info" role="button" title="Details">
-                            <i class="fas fa-eye"></i>
-                          </router-link>
-                          <button @click="remove(key)" class="btn btn-outline-danger" type="button" title="Delete">
-                            <i class="fas fa-trash"></i>
-                          </button>
-                        </span>
-                      </span>
-                    </li>
-                    <li class="list-group-item"><a @click="add()">add</a></li>
-                </ul>`,
-                computed: {
-                    ...mapState(view.dataModel, {
-                        list(state) {
-                            return state
-                        }
-                    })
-                },
-                mounted() {
-                    this.$store.dispatch(`${view.dataModel}/fetch`)
-                },
-                methods: {
-                    async edit(key: string) {
-                        modal({
-                          component: Edit,
-                          host: this.$el,
-                          title: 'Edit',
-                          props: {content: await this.$store.dispatch(`${view.dataModel}/raw`, {key})},
-                          buttons: [
-                            {
-                              name: 'Save',
-                              onclick: async (m) => {
-                                await this.$store.dispatch(`${view.dataModel}/raw`, {key, value: m.component.current})
-                                m.close()
-                              },
-                              class: 'btn-primary'
-                            }, {
-                              name: 'Cancel',
-                              onclick(m) {
-                                m.close()
-                              },
-                              class: 'btn-secondary'
-                            }
-                          ]
-                        })
-                    },
-                    async remove(key: string) {
-                        await this.$store.dispatch(`${view.dataModel}/delete`, key)
-                    },
-                    async add() {
-                        modal({
-                          component: Create,
-                          host: this.$el,
-                          title: 'Create',
-                          props: {content: {key: 'value'}},
-                          buttons: [
-                            {
-                              name: 'Save',
-                              onclick: async (m) => {
-                                await this.$store.dispatch(`${view.dataModel}/raw`, {key: m.component.key, value: m.component.current})
-                                m.close()
-                              },
-                              class: 'btn-primary'
-                            }, {
-                              name: 'Cancel',
-                              onclick(m) {
-                                m.close()
-                              },
-                              class: 'btn-secondary'
-                            }
-                          ]
-                        })
-                    }
-                }
-            })
+            component: listComponent(view)
         }]))
     }]
 }
