@@ -1,10 +1,10 @@
-import * as _ from 'lodash'
-import { RouteConfig } from 'vue-router'
 import { UIModel } from '@agrzes/yellow-2020-common-ui-model'
-import Vue from 'vue'
-import { mapState } from 'vuex'
 import { modal } from '@agrzes/yellow-vue-components'
 import '@fortawesome/fontawesome-free/css/all.css'
+import * as _ from 'lodash'
+import Vue from 'vue'
+import { RouteConfig } from 'vue-router'
+import { mapState } from 'vuex'
 
 const Edit = Vue.extend({
     props: ['content'],
@@ -46,29 +46,35 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                 </div>
             `
         },
-        children:  _.flatMap(model.views,(view) => ([{
+        children:  _.flatMap(model.views, (view) => ([{
             path: `${view.pathName}/:key`,
             name: `${view.pathName}-item`,
             component: Vue.extend({
                 template: `<div v-if="item">
-        ${view.detailsTemplate}
+        <list-item :item="item"></list-item>
         <router-link :to="{name:'${view.pathName}-list'}">Back</router-link>
     </div>`,
                 computed: {
-                    ...mapState(view.dataModel,{
-                        item (state) {
+                    ...mapState(view.dataModel, {
+                        item(state) {
                             return state[this.$route.params.key]
                         }
                     })
                 },
-                beforeRouteEnter (to, from, next) {
-                    next(vm => {
-                        vm.$store.dispatch(`${view.dataModel}/fetch`,to.params.key)
+                beforeRouteEnter(to, from, next) {
+                    next((vm) => {
+                        vm.$store.dispatch(`${view.dataModel}/fetch`, to.params.key)
                     })
                 },
-                beforeRouteUpdate (to, from, next) {
-                    this.$store.dispatch(`${view.dataModel}/fetch`,to.params.key)
+                beforeRouteUpdate(to, from, next) {
+                    this.$store.dispatch(`${view.dataModel}/fetch`, to.params.key)
                     next()
+                },
+                components: {
+                  'list-item': {
+                    props: ['item'],
+                    template: view.detailsTemplate
+                  }
                 },
                 methods: {
                     async edit() {
@@ -76,12 +82,12 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                           component: Edit,
                           host: this.$el,
                           title: 'Edit',
-                          props: {content: await this.$store.dispatch(`${view.dataModel}/raw`,{key:this.$route.params.key})},
+                          props: {content: await this.$store.dispatch(`${view.dataModel}/raw`, {key: this.$route.params.key})},
                           buttons: [
                             {
                               name: 'Save',
-                              onclick:async (m) => {
-                                await this.$store.dispatch(`${view.dataModel}/raw`,{key: this.$route.params.key,value: m.component.current})
+                              onclick: async (m) => {
+                                await this.$store.dispatch(`${view.dataModel}/raw`, {key: this.$route.params.key, value: m.component.current})
                                 m.close()
                               },
                               class: 'btn-primary'
@@ -97,7 +103,7 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                     }
                 }
             })
-        },{
+        }, {
             path: `${view.pathName}`,
             name: `${view.pathName}-list`,
             component: Vue.extend({
@@ -123,8 +129,8 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                     <li class="list-group-item"><a @click="add()">add</a></li>
                 </ul>`,
                 computed: {
-                    ...mapState(view.dataModel,{
-                        list (state) {
+                    ...mapState(view.dataModel, {
+                        list(state) {
                             return state
                         }
                     })
@@ -138,12 +144,12 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                           component: Edit,
                           host: this.$el,
                           title: 'Edit',
-                          props: {content: await this.$store.dispatch(`${view.dataModel}/raw`,{key})},
+                          props: {content: await this.$store.dispatch(`${view.dataModel}/raw`, {key})},
                           buttons: [
                             {
                               name: 'Save',
-                              onclick:async (m) => {
-                                await this.$store.dispatch(`${view.dataModel}/raw`,{key,value: m.component.current})
+                              onclick: async (m) => {
+                                await this.$store.dispatch(`${view.dataModel}/raw`, {key, value: m.component.current})
                                 m.close()
                               },
                               class: 'btn-primary'
@@ -169,8 +175,8 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
                           buttons: [
                             {
                               name: 'Save',
-                              onclick:async (m) => {
-                                await this.$store.dispatch(`${view.dataModel}/raw`,{key: m.component.key,value: m.component.current})
+                              onclick: async (m) => {
+                                await this.$store.dispatch(`${view.dataModel}/raw`, {key: m.component.key, value: m.component.current})
                                 m.close()
                               },
                               class: 'btn-primary'
@@ -189,6 +195,3 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
         }]))
     }]
 }
-
-
-
