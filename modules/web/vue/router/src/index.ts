@@ -37,12 +37,18 @@ const Create = Vue.extend({
     }
 })
 
+function itemDetailsTemplate(view: EntityView) {
+  return `
+  <div v-if="item">
+    ${view.detailsTemplate}
+    <router-link :to="{name:'${view.pathName}-list'}">Back</router-link>
+  </div>`
+}
+
 function itemComponent(view: EntityView) {
+
   return Vue.extend({
-    template: `<div v-if="item">
-<list-item :item="item"></list-item>
-<router-link :to="{name:'${view.pathName}-list'}">Back</router-link>
-</div>`,
+    template: itemDetailsTemplate(view),
     computed: {
         ...mapState(view.dataModel, {
             item(state) {
@@ -60,7 +66,7 @@ function itemComponent(view: EntityView) {
         next()
     },
     components: {
-      'list-item': {
+      'item-details': {
         props: ['item'],
         template: view.detailsTemplate
       }
