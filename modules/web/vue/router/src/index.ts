@@ -1,9 +1,10 @@
-import { UIModel } from '@agrzes/yellow-2020-common-ui-model'
+import { EntityView, UIModel } from '@agrzes/yellow-2020-common-ui-model'
 import { modal } from '@agrzes/yellow-vue-components'
 import '@fortawesome/fontawesome-free/css/all.css'
 import * as _ from 'lodash'
 import Vue from 'vue'
 import { RouteConfig } from 'vue-router'
+import { ThisTypedComponentOptionsWithArrayProps } from 'vue/types/options'
 import { mapState } from 'vuex'
 
 const Edit = Vue.extend({
@@ -36,6 +37,69 @@ const Create = Vue.extend({
     }
 })
 
+function listComponent(view: EntityView) {
+  return Vue.extend({
+    template: `<div v-if="item">
+<list-item :item="item"></list-item>
+<router-link :to="{name:'${view.pathName}-list'}">Back</router-link>
+</div>`,
+    computed: {
+        ...mapState(view.dataModel, {
+            item(state) {
+                return state[this.$route.params.key]
+            }
+        })
+    },
+    beforeRouteEnter(to, from, next) {
+        next((vm) => {
+            vm.$store.dispatch(`${view.dataModel}/fetch`, to.params.key)
+        })
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.$store.dispatch(`${view.dataModel}/fetch`, to.params.key)
+        next()
+    },
+    components: {
+      'list-item': {
+        props: ['item'],
+        template: view.detailsTemplate
+      }
+    },
+    methods: {
+        async edit() {
+            modal({
+              component: Edit,
+              host: this.$el,
+              title: 'Edit',
+              props: {content: await this.$store.dispatch(`${view.dataModel}/raw`, {
+                key: this.$route.params.key
+              })},
+              buttons: [
+                {
+                  name: 'Save',
+                  onclick: async (m) => {
+                    await this.$store.dispatch(`${view.dataModel}/raw`,
+                      {
+                        key: this.$route.params.key,
+                        value: m.component.current
+                      })
+                    m.close()
+                  },
+                  class: 'btn-primary'
+                }, {
+                  name: 'Cancel',
+                  onclick(m) {
+                    m.close()
+                  },
+                  class: 'btn-secondary'
+                }
+              ]
+            })
+        }
+    }
+})
+}
+
 export function modelRoutes(model: UIModel): RouteConfig[] {
     return [{
         path: '/',
@@ -49,60 +113,7 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
         children:  _.flatMap(model.views, (view) => ([{
             path: `${view.pathName}/:key`,
             name: `${view.pathName}-item`,
-            component: Vue.extend({
-                template: `<div v-if="item">
-        <list-item :item="item"></list-item>
-        <router-link :to="{name:'${view.pathName}-list'}">Back</router-link>
-    </div>`,
-                computed: {
-                    ...mapState(view.dataModel, {
-                        item(state) {
-                            return state[this.$route.params.key]
-                        }
-                    })
-                },
-                beforeRouteEnter(to, from, next) {
-                    next((vm) => {
-                        vm.$store.dispatch(`${view.dataModel}/fetch`, to.params.key)
-                    })
-                },
-                beforeRouteUpdate(to, from, next) {
-                    this.$store.dispatch(`${view.dataModel}/fetch`, to.params.key)
-                    next()
-                },
-                components: {
-                  'list-item': {
-                    props: ['item'],
-                    template: view.detailsTemplate
-                  }
-                },
-                methods: {
-                    async edit() {
-                        modal({
-                          component: Edit,
-                          host: this.$el,
-                          title: 'Edit',
-                          props: {content: await this.$store.dispatch(`${view.dataModel}/raw`, {key: this.$route.params.key})},
-                          buttons: [
-                            {
-                              name: 'Save',
-                              onclick: async (m) => {
-                                await this.$store.dispatch(`${view.dataModel}/raw`, {key: this.$route.params.key, value: m.component.current})
-                                m.close()
-                              },
-                              class: 'btn-primary'
-                            }, {
-                              name: 'Cancel',
-                              onclick(m) {
-                                m.close()
-                              },
-                              class: 'btn-secondary'
-                            }
-                          ]
-                        })
-                    }
-                }
-            })
+            component: listComponent(view)
         }, {
             path: `${view.pathName}`,
             name: `${view.pathName}-list`,
