@@ -1,4 +1,4 @@
-import { EntityView, isListUI, UIModel } from '@agrzes/yellow-2020-common-ui-model'
+import { EntityView, isListUI, UIModel, isTableUI } from '@agrzes/yellow-2020-common-ui-model'
 import { modal } from '@agrzes/yellow-vue-components'
 import '@fortawesome/fontawesome-free/css/all.css'
 import * as _ from 'lodash'
@@ -131,7 +131,37 @@ function listTemplate(view: EntityView) {
       <li class="list-group-item"><a @click="add()">add</a></li>
     </ul>`
   }
-
+  if (isTableUI(view.itemsUI)) {
+    const dynamicHeaders = _.map(view.itemsUI.columns, (definition) => `<th>${definition.headerTemplate}</th>`).join('')
+    const dynamicCells = _.map(view.itemsUI.columns, (definition) => `<td>${definition.itemTemplate}</td>`).join('')
+    return `
+    <table class="table-sm table-striped">
+      <thead>
+        <tr>
+          ${dynamicHeaders}
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item,key) in list" >
+          ${dynamicCells}
+          <td>
+            <button @click="edit(key)" class="btn btn-outline-primary btn-sm" type="button" title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <router-link :to="{name:'${view.pathName}-item', params:{key}}"
+              class="btn btn-outline-info btn-sm" role="button" title="Details">
+              <i class="fas fa-eye"></i>
+            </router-link>
+            <button @click="remove(key)" class="btn btn-outline-danger btn-sm" type="button" title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    `
+  }
 }
 
 function listComponent(view: EntityView) {
