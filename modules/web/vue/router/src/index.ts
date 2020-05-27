@@ -1,4 +1,4 @@
-import { EntityView, isListUI, UIModel, isTableUI } from '@agrzes/yellow-2020-common-ui-model'
+import { EntityView, isListUI, isTableUI, UIModel, isCardsUI } from '@agrzes/yellow-2020-common-ui-model'
 import { modal } from '@agrzes/yellow-vue-components'
 import '@fortawesome/fontawesome-free/css/all.css'
 import * as _ from 'lodash'
@@ -161,6 +161,30 @@ function listTemplate(view: EntityView) {
       </tbody>
     </table>
     `
+  }
+  if (isCardsUI(view.itemsUI)) {
+    return `
+    <div class="row">
+      <div v-for="(item,key) in list" class="col-3 mt-4">
+        <div class="card h-100" >
+          <div class="card-body">
+            ${view.itemsUI.cardTemplate}
+          </div>
+          <div class="card-footer text-right">
+            <button @click="edit(key)" class="btn btn-outline-primary btn-sm" type="button" title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <router-link :to="{name:'${view.pathName}-item', params:{key}}"
+              class="btn btn-outline-info btn-sm" role="button" title="Details">
+              <i class="fas fa-eye"></i>
+            </router-link>
+            <button @click="remove(key)" class="btn btn-outline-danger btn-sm" type="button" title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`
   }
 }
 
