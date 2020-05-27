@@ -1,4 +1,4 @@
-import { EntityView, UIModel } from '@agrzes/yellow-2020-common-ui-model'
+import { EntityView, isListUI, UIModel } from '@agrzes/yellow-2020-common-ui-model'
 import { modal } from '@agrzes/yellow-vue-components'
 import '@fortawesome/fontawesome-free/css/all.css'
 import * as _ from 'lodash'
@@ -106,29 +106,32 @@ function itemComponent(view: EntityView) {
 }
 
 function listTemplate(view: EntityView) {
-  return `
-<ul class="list-group">
-  <li v-for="(item,key) in list" class="list-group-item">
-    <span class="d-flex">
-      <span class="mr-auto">
-      ${view.listItemTemplate}
-      </span>
-      <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <button @click="edit(key)" class="btn btn-outline-primary" type="button" title="Edit">
-          <i class="fas fa-edit"></i>
-        </button>
-        <router-link :to="{name:'${view.pathName}-item', params:{key}}" 
-          class="btn btn-outline-info" role="button" title="Details">
-          <i class="fas fa-eye"></i>
-        </router-link>
-        <button @click="remove(key)" class="btn btn-outline-danger" type="button" title="Delete">
-          <i class="fas fa-trash"></i>
-        </button>
-      </span>
-    </span>
-  </li>
-  <li class="list-group-item"><a @click="add()">add</a></li>
-</ul>`
+  if (isListUI(view.itemsUI)) {
+    return `
+    <ul class="list-group">
+      <li v-for="(item,key) in list" class="list-group-item">
+        <span class="d-flex">
+          <span class="mr-auto">
+          ${view.itemsUI.itemTemplate}
+          </span>
+          <span class="flex-grow-0 flex-shrink-0 align-self-center">
+            <button @click="edit(key)" class="btn btn-outline-primary" type="button" title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            <router-link :to="{name:'${view.pathName}-item', params:{key}}"
+              class="btn btn-outline-info" role="button" title="Details">
+              <i class="fas fa-eye"></i>
+            </router-link>
+            <button @click="remove(key)" class="btn btn-outline-danger" type="button" title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+          </span>
+        </span>
+      </li>
+      <li class="list-group-item"><a @click="add()">add</a></li>
+    </ul>`
+  }
+
 }
 
 function listComponent(view: EntityView) {
