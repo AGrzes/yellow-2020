@@ -1,0 +1,38 @@
+classes:
+  book:
+    name: book
+    features:
+      title:
+        name: title
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      description:
+        name: description
+        multiplicity: "?"
+        type:
+          "$ref": "#dataTypes/string"
+      author:
+        name: author
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/author"
+  author:
+    name: author
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      books:
+        name: books
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/book/features/author"
+        target:
+          "$ref": "#classes/book"
+dataTypes:
+  string:
+    name: string
+    nativeType: string
