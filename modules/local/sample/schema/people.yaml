@@ -1,0 +1,64 @@
+classes:
+  person:
+    name: person
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      description:
+        name: description
+        multiplicity: "?"
+        type:
+          "$ref": "#dataTypes/string"
+      relation:
+        name: relation
+        multiplicity: "?"
+        type:
+          "$ref": "#dataTypes/string"          
+      anniversaries:
+        name: anniversaries
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/anniversary"
+      groups:
+        name: groups
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/group"
+  group:
+    name: group
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      people:
+        name: people
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/person/features/groups"
+        target:
+          "$ref": "#classes/person"          
+  anniversary:
+    name: anniversary
+    features:
+      kind:
+        name: kind
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      date:
+        name: date
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/date"
+dataTypes:
+  string:
+    name: string
+    nativeType: string
+  date:
+    name: date
+    nativeType: string
