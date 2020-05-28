@@ -1,0 +1,126 @@
+classes:
+  movie:
+    name: movie
+    features:
+      title:
+        name: title
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      description:
+        name: description
+        multiplicity: "?"
+        type:
+          "$ref": "#dataTypes/string"
+      roles:
+        name: roles
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/role"
+        reverse:
+          "$ref": "#classes/role/features/movie"
+      genres:
+        name: genres
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/genre"
+      collections:
+        name: collections
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/movieCollection"
+  role:
+    name: role
+    features:
+      title:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      kind:
+        name: kind
+        multiplicity: "?"
+        type:
+          "$ref": "#dataTypes/string"
+      artist:
+        name: artist
+        multiplicity: "1"
+        target:
+          "$ref": "#classes/artist"
+      movie:
+        name: movie
+        multiplicity: "1"
+        target:
+          "$ref": "#classes/movie"
+  artist:
+    name: artist
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      roles:
+        name: roles
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/role/features/artist"
+        target:
+          "$ref": "#classes/role"
+  genre:
+    name: genre
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      movies:
+        name: movies
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/movie/features/genre"
+        target:
+          "$ref": "#classes/movie"
+  collection:
+    name: collection
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      members:
+        name: members
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/movieCollection/features/collection"
+        target:
+          "$ref": "#classes/movieCollection"
+  movieCollection:
+    name: movieCollection
+    features:
+      name:
+        name: owned
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/boolean"
+      collection:
+        name: members
+        multiplicity: "1"
+        target:
+          "$ref": "#classes/collection"
+      movie:
+        name: movie
+        multiplicity: "1"
+        reverse:
+          "$ref": "#classes/movie/features/collections"
+        target:
+          "$ref": "#classes/movie"          
+dataTypes:
+  string:
+    name: string
+    nativeType: string
+  boolean:
+    name: boolean
+    nativeType: boolean
