@@ -1,4 +1,4 @@
-import { EntityView, isListUI, isTableUI, UIModel, isCardsUI } from '@agrzes/yellow-2020-common-ui-model'
+import { EntityView, isCardsUI, isListUI, isTableUI, UIModel } from '@agrzes/yellow-2020-common-ui-model'
 import { modal } from '@agrzes/yellow-vue-components'
 import '@fortawesome/fontawesome-free/css/all.css'
 import * as _ from 'lodash'
