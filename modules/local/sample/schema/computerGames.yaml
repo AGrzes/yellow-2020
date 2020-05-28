@@ -75,13 +75,13 @@ classes:
   gameCollection:
     name: gameCollection
     features:
-      name:
+      owned:
         name: owned
         multiplicity: '1'
         type:
           "$ref": "#dataTypes/boolean"
       collection:
-        name: members
+        name: collection
         multiplicity: "1"
         target:
           "$ref": "#classes/collection"
