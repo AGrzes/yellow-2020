@@ -29,6 +29,11 @@ classes:
         multiplicity: "*"
         target:
           "$ref": "#classes/movieCollection"
+      series:
+        name: genres
+        multiplicity: "?"
+        target:
+          "$ref": "#classes/series"
   role:
     name: role
     features:
@@ -116,7 +121,22 @@ classes:
         reverse:
           "$ref": "#classes/movie/features/collections"
         target:
-          "$ref": "#classes/movie"          
+          "$ref": "#classes/movie"     
+  series:
+    name: series
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      movies:
+        name: movies
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/movie/features/series"
+        target:
+          "$ref": "#classes/movie"     
 dataTypes:
   string:
     name: string
