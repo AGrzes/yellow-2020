@@ -1,0 +1,149 @@
+classes:
+  game:
+    name: game
+    features:
+      title:
+        name: title
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      description:
+        name: description
+        multiplicity: "?"
+        type:
+          "$ref": "#dataTypes/string"
+      releaseDate:
+        name: date
+        multiplicity: "?"
+        type:
+          "$ref": "#dataTypes/releaseDate"
+      genres:
+        name: genres
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/genre"
+      collections:
+        name: collections
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/gameCollection"
+      series:
+        name: genres
+        multiplicity: "?"
+        target:
+          "$ref": "#classes/series"
+      developer:
+        name: developer
+        multiplicity: "?"
+        target:
+          "$ref": "#classes/developers"
+      publisher:
+        name: publisher
+        multiplicity: "?"
+        target:
+          "$ref": "#classes/publishers"
+  genre:
+    name: genre
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      games:
+        name: games
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/game/features/genre"
+        target:
+          "$ref": "#classes/game"
+  collection:
+    name: collection
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      members:
+        name: members
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/gameCollection/features/collection"
+        target:
+          "$ref": "#classes/gameCollection"
+  gameCollection:
+    name: gameCollection
+    features:
+      name:
+        name: owned
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/boolean"
+      collection:
+        name: members
+        multiplicity: "1"
+        target:
+          "$ref": "#classes/collection"
+      game:
+        name: game
+        multiplicity: "1"
+        reverse:
+          "$ref": "#classes/game/features/collections"
+        target:
+          "$ref": "#classes/game"     
+  series:
+    name: series
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      games:
+        name: games
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/game/features/series"
+        target:
+          "$ref": "#classes/game"
+  developer:
+    name: developer
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      games:
+        name: games
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/game/features/developers"
+        target:
+          "$ref": "#classes/game"
+  publisher:
+    name: publisher
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      games:
+        name: games
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/game/features/publishers"
+        target:
+          "$ref": "#classes/game"  
+dataTypes:
+  string:
+    name: string
+    nativeType: string
+  boolean:
+    name: boolean
+    nativeType: boolean
+  date:
+    name: year
+    nativeType: string
