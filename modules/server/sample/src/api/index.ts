@@ -19,7 +19,44 @@ router.get('/config',(req,res) => {
             views: [{
               dataModel: 'book',
               pathName: 'books',
-              listItemTemplate: `{{item.title}}`,
+              itemsUI: {
+                kind: 'list',
+                itemTemplate: `{{item.title}}`
+              },
+              detailsTemplate: `
+              <h1>{{item.title}}</h1>
+              <h2>Authors</h2>
+              <ul><li v-for="author in item.author"><router-link :to="{name:'authors-item', params:{key: author._id}}">{{author.name}}</router-link></li></ul>
+              <a @click="edit()">edit</a>
+              `
+            },{
+              dataModel: 'book',
+              pathName: 'books-table',
+              itemsUI: {
+                kind: 'table',
+                columns: [{
+                  headerTemplate: 'Title',
+                  itemTemplate:`{{item.title}}`
+                },{
+                  headerTemplate: 'Authors',
+                  itemTemplate:`<ul>
+                    <li v-for="author in item.author">{{author.name}}</li>
+                  </ul>`
+                }]
+              },
+              detailsTemplate: `
+              <h1>{{item.title}}</h1>
+              <h2>Authors</h2>
+              <ul><li v-for="author in item.author"><router-link :to="{name:'authors-item', params:{key: author._id}}">{{author.name}}</router-link></li></ul>
+              <a @click="edit()">edit</a>
+              `
+            },{
+              dataModel: 'book',
+              pathName: 'books-cards',
+              itemsUI: {
+                kind: 'cards',
+                cardTemplate: `{{item.title}}`
+              },
               detailsTemplate: `
               <h1>{{item.title}}</h1>
               <h2>Authors</h2>
@@ -29,7 +66,10 @@ router.get('/config',(req,res) => {
             },{
               dataModel: 'author',
               pathName: 'authors',
-              listItemTemplate: `{{item.name}}`,
+              itemsUI: {
+                kind: 'list',
+                itemTemplate: `{{item.name}}`
+              },
               detailsTemplate: `
               <h1>{{item.name}}</h1>
               <h2>Books</h2>
