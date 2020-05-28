@@ -24,6 +24,11 @@ classes:
         multiplicity: "*"
         target:
           "$ref": "#classes/genre"
+      releaseDate:
+        name: date
+        multiplicity: "?"
+        type:
+          "$ref": "#dataTypes/releaseDate"
       collections:
         name: collections
         multiplicity: "*"
@@ -144,3 +149,6 @@ dataTypes:
   boolean:
     name: boolean
     nativeType: boolean
+  date:
+    name: year
+    nativeType: string
