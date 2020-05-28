@@ -1,11 +1,14 @@
-import { PouchDBDataAccess , PouchDB} from '@agrzes/yellow-2020-common-data-pouchdb'
+import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
+import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
 import { setupModel, simpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
-import { SimpleModelAccess, Class } from '@agrzes/yellow-2020-common-metadata'
 import confluenceClient from 'confluence-client'
-import _ from 'lodash'
-import YAML from 'js-yaml'
+import debug from 'debug'
 import fs from 'fs'
+import YAML from 'js-yaml'
 import {JSDOM} from 'jsdom'
+import _ from 'lodash'
+
+const log = debug('agrzes:yellow-2020-local-sample')
 
 const readFile = fs.promises.readFile
 
@@ -23,9 +26,9 @@ async function loadConfluenceData(): Promise<string[][]> {
 
     const rows = dom.window.document.querySelectorAll('tr')
     const result = []
-    rows.forEach(row => {
+    rows.forEach((row) => {
         const rowArray = []
-        row.querySelectorAll('td').forEach((td)=>rowArray.push(td.textContent))
+        row.querySelectorAll('td').forEach((td) => rowArray.push(td.textContent))
         result.push(rowArray)
     })
 
@@ -35,56 +38,60 @@ async function loadConfluenceData(): Promise<string[][]> {
 async function load() {
     const confluenceData = await loadConfluenceData()
 
-    const metadata = await SimpleModelAccess.loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://couchdb:5984/model')))
+    const metadata = await SimpleModelAccess
+      .loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://couchdb:5984/model')))
     const model = await setupModel( metadata, _.map({
         'http://couchdb:5984/books': 'books.classes.book',
         'http://couchdb:5984/authors': 'books.classes.author'
-    },(path, url) => simpleTypedDataAccess(_.get(metadata.models,path) as unknown as Class,new PouchDBDataAccess(new PouchDB(url)))))
-    const data = YAML.safeLoadAll(await readFile(process.argv[2],'utf-8'))
-    const books = _(data).filter(({kind})=> kind === 'book')
-        .map(({title, author}: {title: string,author: string})=>({title,author:[author]}))
-        .keyBy(({title})=>_.kebabCase(title))
-        .value() 
-    _.forEach(confluenceData,([title,author])=> {
+    }, (path, url) => simpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
+      new PouchDBDataAccess(new PouchDB(url)))))
+    const data = YAML.safeLoadAll(await readFile(process.argv[2], 'utf-8'))
+    const booksMap = _(data).filter(({kind}) => kind === 'book')
+        .map(({title, author}: {title: string, author: string}) => ({title, author: [author]}))
+        .keyBy(({title}) => _.kebabCase(title))
+        .value()
+    _.forEach(confluenceData, ([title, author]) => {
         if (title) {
-            books[_.kebabCase(title)] = {
-                title,
-                author: author ?[author]:[]
-            }
+          booksMap[_.kebabCase(title)] = {
+            title,
+            author: author ? [author] : []
+          }
         }
     })
-    const authors = _(data).filter(({kind})=> kind === 'author')
-        .map(({name, books}: {name: string,books: string[]})=>({name,books}))
-        .keyBy(({name})=>_.kebabCase(name) )
-        .value() 
-    _.forEach(books,(book) => _.forEach(book.author, a => {
+    const authors = _(data).filter(({kind}) => kind === 'author')
+        .map(({name, books}: {name: string, books: string[]}) => ({name, books}))
+        .keyBy(({name}) => _.kebabCase(name) )
+        .value()
+    _.forEach(booksMap, (book) => _.forEach(book.author, (a) => {
         const ka = _.kebabCase(a)
         if (!authors[ka]) {
             authors[ka] = {
                 name: a,
                 books: [book.title]
-            } 
+            }
         } else {
-            if (!_.includes(authors[ka].books,book.title)) {
+            if (!_.includes(authors[ka].books, book.title)) {
                 authors[ka].books.push(book.title)
             }
         }
     }))
-    _.forEach(authors,(author)=> _.forEach(author.books, b => {
+    _.forEach(authors, (author) => _.forEach(author.books, (b) => {
         const kb = _.kebabCase(b)
-        if (!books[kb]) {
-            books[kb] = {
-                title: b,
-                author: [author.name]
-            } 
+        if (!booksMap[kb]) {
+          booksMap[kb] = {
+            title: b,
+            author: [author.name]
+          }
         } else {
-            if (!_.includes(books[kb].author,author.name)) {
-                books[kb].author.push(author.name)
+            if (!_.includes(booksMap[kb].author, author.name)) {
+              booksMap[kb].author.push(author.name)
             }
         }
     }))
-    await Promise.all(_.map(books,({author,...book},key) => model.raw(metadata.models.books.classes.book,key,{...book,author:_.map(author,_.kebabCase)})))
-    await Promise.all(_.map(authors,({books,...author},key) => model.raw(metadata.models.books.classes.author,key,{...author,books:_.map(books,_.kebabCase)})))
+    await Promise.all(_.map(booksMap, ({author, ...book}, key) =>
+      model.raw(metadata.models.books.classes.book, key, {...book, author: _.map(author, _.kebabCase)})))
+    await Promise.all(_.map(authors, ({books, ...author}, key) =>
+      model.raw(metadata.models.books.classes.author, key, {...author, books: _.map(books, _.kebabCase)})))
 }
 
-load().catch(console.error)
+load().catch(log)
