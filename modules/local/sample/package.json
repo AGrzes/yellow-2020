@@ -6,6 +6,7 @@
   "types": "types",
   "scripts": {
     "build": "rm -rf target types && tsc",
+    "load-schema": "node target/loadSchema schema",
     "test": "true"
   },
   "nyc": {
