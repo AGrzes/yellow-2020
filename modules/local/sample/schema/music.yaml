@@ -1,0 +1,185 @@
+classes:
+  album:
+    name: album
+    features:
+      title:
+        name: title
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      description:
+        name: description
+        multiplicity: "?"
+        type:
+          "$ref": "#dataTypes/string"
+      tracks:
+        name: tracks
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/song"
+        reverse:
+          "$ref": "#classes/song/features/albums"
+      genres:
+        name: genres
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/genre"
+      releaseDate:
+        name: date
+        multiplicity: "?"
+        type:
+          "$ref": "#dataTypes/releaseDate"
+      collections:
+        name: collections
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/albumCollection"
+      artists:
+        name: artists
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/artist"
+  song:
+    name: song
+    features:
+      title:
+        name: title
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      artists:
+        name: artists
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/artist"
+      albums:
+        name: albums
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/album"
+      collections:
+        name: collections
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/songCollection"
+      genres:
+        name: genres
+        multiplicity: "*"
+        target:
+          "$ref": "#classes/genre"
+  artist:
+    name: artist
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      songs:
+        name: songs
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/song/features/artist"
+        target:
+          "$ref": "#classes/song"
+      albums:
+        name: albums
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/album/features/artist"
+        target:
+          "$ref": "#classes/album"
+  genre:
+    name: genre
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      albums:
+        name: albums
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/album/features/genre"
+        target:
+          "$ref": "#classes/album"
+      songs:
+        name: songs
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/song/features/genre"
+        target:
+          "$ref": "#classes/song"
+  collection:
+    name: collection
+    features:
+      name:
+        name: name
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/string"
+      albums:
+        name: albums
+        multiplicity: "*"
+        reverse:
+          "$ref": "#classes/albumCollection/features/collection"
+        target:
+          "$ref": "#classes/albumCollection"
+      songs:
+        name: songs
+        songs: "*"
+        reverse:
+          "$ref": "#classes/songCollection/features/collection"
+        target:
+          "$ref": "#classes/songCollection"
+  albumCollection:
+    name: albumCollection
+    features:
+      name:
+        name: owned
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/boolean"
+      collection:
+        name: collection
+        multiplicity: "1"
+        target:
+          "$ref": "#classes/collection"
+      album:
+        name: album
+        multiplicity: "1"
+        reverse:
+          "$ref": "#classes/album/features/collections"
+        target:
+          "$ref": "#classes/album"
+  songCollection:
+    name: songCollection
+    features:
+      name:
+        name: owned
+        multiplicity: '1'
+        type:
+          "$ref": "#dataTypes/boolean"
+      collection:
+        name: collection
+        multiplicity: "1"
+        target:
+          "$ref": "#classes/collection"
+      song:
+        name: song
+        multiplicity: "1"
+        reverse:
+          "$ref": "#classes/song/features/collections"
+        target:
+          "$ref": "#classes/song"    
+dataTypes:
+  string:
+    name: string
+    nativeType: string
+  boolean:
+    name: boolean
+    nativeType: boolean
+  date:
+    name: year
+    nativeType: string
