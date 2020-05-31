@@ -1,0 +1,25 @@
+{
+  "name": "@agrzes/yellow-2020-common-confluence",
+  "version": "1.1.2",
+  "description": "",
+  "main": "target",
+  "types": "types",
+  "scripts": {
+    "build": "rm -rf target types && tsc",
+    "test": "true"
+  },
+  "files": [
+    "/package.json",
+    "/package-lock.json",
+    "/LICENSE",
+    "/src",
+    "/target",
+    "/types"
+  ],
+  "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "lodash": "^4.17.15"
+  }
+}
