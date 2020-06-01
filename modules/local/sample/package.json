@@ -40,12 +40,13 @@
     "/types"
   ],
   "dependencies": {
-    "@agrzes/yellow-2020-common-confluence": "1.1.2",
+    "@agrzes/yellow-2020-common-confluence": "1.1.5",
     "@agrzes/yellow-2020-common-data": "^1.1.2",
     "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.5",
     "@agrzes/yellow-2020-common-metadata": "^1.1.5",
     "@agrzes/yellow-2020-common-model": "^1.1.5",
     "confluence-client": "^1.1.0",
+    "exceljs": "^3.9.0",
     "js-yaml": "^3.13.1",
     "jsdom": "^16.2.2"
   },
