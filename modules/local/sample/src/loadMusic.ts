@@ -3,14 +3,10 @@ import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
 import { setupModel, simpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
 import confluenceClient from 'confluence-client'
 import debug from 'debug'
-import fs from 'fs'
-import YAML from 'js-yaml'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
 
 const log = debug('agrzes:yellow-2020-local-sample')
-
-const readFile = fs.promises.readFile
 
 async function loadConfluenceData(): Promise<any> {
     const confluence = confluenceClient({
