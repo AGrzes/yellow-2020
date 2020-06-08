@@ -38,7 +38,6 @@
     "@agrzes/yellow-2020-common-ui-model": "^1.1.5",
     "@agrzes/yellow-2020-web-vue-router": "^1.1.5",
     "@agrzes/yellow-2020-web-vue-state": "^1.1.5",
-    "@agrzes/yellow-vue-components": "^1.0.2",
     "axios": "^0.19.2",
     "bootstrap": "^4.1.3",
     "jquery": "^3.5.0",
