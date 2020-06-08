@@ -1,10 +1,9 @@
 import { EntityView, isCardsUI, isListUI, isTableUI, UIModel } from '@agrzes/yellow-2020-common-ui-model'
-import { modal } from '@agrzes/yellow-vue-components'
+import { modal } from '@agrzes/yellow-2020-web-vue-components'
 import '@fortawesome/fontawesome-free/css/all.css'
 import * as _ from 'lodash'
 import Vue from 'vue'
 import { RouteConfig } from 'vue-router'
-import { ThisTypedComponentOptionsWithArrayProps } from 'vue/types/options'
 import { mapState } from 'vuex'
 
 const Edit = Vue.extend({
