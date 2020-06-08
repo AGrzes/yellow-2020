@@ -1,1 +1,0 @@
-import '@agrzes/yellow-vue-components'
