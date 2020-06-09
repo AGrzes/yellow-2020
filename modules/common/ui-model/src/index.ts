@@ -42,6 +42,13 @@ export interface EntityView {
     detailsTemplate: string
 }
 
+export interface MenuItem {
+  label: string
+  route: string | Record<string,unknown>
+  children?: MenuItem[]
+}
+
 export interface UIModel {
     views: EntityView[]
+    navigation: MenuItem[]
 }

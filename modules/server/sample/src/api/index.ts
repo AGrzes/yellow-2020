@@ -16,6 +16,20 @@ router.get('/config',(req,res) => {
             }
         },
         ui:{
+            navigation: [{
+              label: 'Books',
+              route: { name: 'books-list'},
+              children: [{
+                label: 'Table',
+                route: { name: 'books-table-list'}
+              },{
+                label: 'Cards',
+                route: { name: 'books-cards-list'}
+              }]
+            },{
+              label: 'Authors',
+              route: { name: 'authors-list'}
+            }],
             views: [{
               dataModel: 'book',
               pathName: 'books',
