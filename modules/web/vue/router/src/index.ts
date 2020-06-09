@@ -262,7 +262,8 @@ function listComponent(view: EntityView) {
   })
 }
 
-export function modelRoutes(model: UIModel): RouteConfig[] {
+export function modelRoutes(model: UIModel, root?: boolean): RouteConfig[] {
+  if (root) {
     return [{
         path: '/',
         component: {
@@ -282,4 +283,15 @@ export function modelRoutes(model: UIModel): RouteConfig[] {
             component: listComponent(view)
         }]))
     }]
+  } else {
+    return _.flatMap(model.views, (view) => ([{
+        path: `${view.pathName}/:key`,
+        name: `${view.pathName}-item`,
+        component: itemComponent(view)
+    }, {
+        path: `${view.pathName}`,
+        name: `${view.pathName}-list`,
+        component: listComponent(view)
+    }]))
+  }
 }

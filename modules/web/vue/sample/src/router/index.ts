@@ -12,6 +12,7 @@ async function router() {
         path: '/references',
         component: {
           template: `
+        <div class="container-fluid">
             <div class="row mt-4">
               <div class="col-2">
                 <navigation-menu :navigation="navigation"></navigation-menu>
@@ -19,7 +20,9 @@ async function router() {
               <div class="col-10">
                 <router-view></router-view>
               </div>
-           </div>`,
+           </div>
+        </div>
+           `,
            data() {
                return {
                    navigation: model.navigation
