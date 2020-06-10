@@ -35,11 +35,24 @@ export function isTableUI(itemsUI: ItemsUI): itemsUI is TableUI {
   return itemsUI.kind === 'table'
 }
 
+export interface ItemUI {
+  kind: string
+}
+
+export interface CardUI extends ItemUI {
+  kind: 'card'
+  cardTemplate: string
+}
+
+export function isCardUI(itemUI: ItemUI): itemUI is CardUI {
+  return itemUI.kind === 'card'
+}
+
 export interface EntityView {
     pathName: string
     dataModel: string
     itemsUI: ItemsUI
-    detailsTemplate: string
+    itemUI: ItemUI
 }
 
 export interface MenuItem {
