@@ -1,4 +1,4 @@
-import { EntityView, isCardsUI, isListUI, isTableUI, UIModel } from '@agrzes/yellow-2020-common-ui-model'
+import { EntityView, isCardsUI, isCardUI, isListUI, isTableUI, UIModel } from '@agrzes/yellow-2020-common-ui-model'
 import { modal } from '@agrzes/yellow-2020-web-vue-components'
 import '@fortawesome/fontawesome-free/css/all.css'
 import * as _ from 'lodash'
@@ -37,11 +37,27 @@ const Create = Vue.extend({
 })
 
 function itemTemplate(view: EntityView) {
-  return `
-  <div v-if="item">
-    ${view.detailsTemplate}
-    <router-link :to="{name:'${view.pathName}-list'}">Back</router-link>
-  </div>`
+  if (isCardUI(view.itemUI)) {
+    return `
+    <div class="card h-100" v-if="item">
+      <div class="card-body">
+        ${view.itemUI.cardTemplate}
+      </div>
+      <div class="card-footer text-right">
+        <button @click="edit()" class="btn btn-outline-primary btn-sm" type="button" title="Edit">
+          Edit
+        </button>
+        <router-link :to="{name:'${view.pathName}-list'}" active-class=""
+          class="btn btn-outline-info btn-sm" role="button" title="Back">
+          Back
+        </router-link>
+        <button @click="remove()" class="btn btn-outline-danger btn-sm" type="button" title="Delete">
+          Delete
+        </button>
+
+      </div>
+    </div>`
+  }
 }
 
 function itemComponent(view: EntityView) {
@@ -62,12 +78,6 @@ function itemComponent(view: EntityView) {
     beforeRouteUpdate(to, from, next) {
         this.$store.dispatch(`${view.dataModel}/fetch`, to.params.key)
         next()
-    },
-    components: {
-      'item-details': {
-        props: ['item'],
-        template: view.detailsTemplate
-      }
     },
     methods: {
         async edit() {
@@ -99,6 +109,10 @@ function itemComponent(view: EntityView) {
                 }
               ]
             })
+        },
+        async remove() {
+          //await this.$store.dispatch(`${view.dataModel}/delete`, this.$route.params.key)
+          this.$router.push({name:`${view.pathName}-list`})
         }
     }
   })

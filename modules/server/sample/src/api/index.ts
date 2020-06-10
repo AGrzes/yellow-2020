@@ -37,12 +37,14 @@ router.get('/config',(req,res) => {
                 kind: 'list',
                 itemTemplate: `{{item.title}}`
               },
-              detailsTemplate: `
-              <h1>{{item.title}}</h1>
-              <h2>Authors</h2>
-              <ul><li v-for="author in item.author"><router-link :to="{name:'authors-item', params:{key: author._id}}">{{author.name}}</router-link></li></ul>
-              <a @click="edit()">edit</a>
-              `
+              itemUI: {
+                kind: 'card',
+                cardTemplate: `
+                <h1>{{item.title}}</h1>
+                <h2>Authors</h2>
+                <ul><li v-for="author in item.author"><router-link :to="{name:'authors-item', params:{key: author._id}}">{{author.name}}</router-link></li></ul>
+                `
+              }
             },{
               dataModel: 'book',
               pathName: 'books-table',
@@ -58,12 +60,14 @@ router.get('/config',(req,res) => {
                   </ul>`
                 }]
               },
-              detailsTemplate: `
-              <h1>{{item.title}}</h1>
-              <h2>Authors</h2>
-              <ul><li v-for="author in item.author"><router-link :to="{name:'authors-item', params:{key: author._id}}">{{author.name}}</router-link></li></ul>
-              <a @click="edit()">edit</a>
-              `
+              itemUI: {
+                kind: 'card',
+                cardTemplate: `
+                <h1>{{item.title}}</h1>
+                <h2>Authors</h2>
+                <ul><li v-for="author in item.author"><router-link :to="{name:'authors-item', params:{key: author._id}}">{{author.name}}</router-link></li></ul>
+                `
+              }
             },{
               dataModel: 'book',
               pathName: 'books-cards',
@@ -71,12 +75,14 @@ router.get('/config',(req,res) => {
                 kind: 'cards',
                 cardTemplate: `{{item.title}}`
               },
-              detailsTemplate: `
-              <h1>{{item.title}}</h1>
-              <h2>Authors</h2>
-              <ul><li v-for="author in item.author"><router-link :to="{name:'authors-item', params:{key: author._id}}">{{author.name}}</router-link></li></ul>
-              <a @click="edit()">edit</a>
-              `
+              itemUI: {
+                kind: 'card',
+                cardTemplate: `
+                <h1>{{item.title}}</h1>
+                <h2>Authors</h2>
+                <ul><li v-for="author in item.author"><router-link :to="{name:'authors-item', params:{key: author._id}}">{{author.name}}</router-link></li></ul>
+                `
+              }
             },{
               dataModel: 'author',
               pathName: 'authors',
@@ -84,12 +90,14 @@ router.get('/config',(req,res) => {
                 kind: 'list',
                 itemTemplate: `{{item.name}}`
               },
-              detailsTemplate: `
-              <h1>{{item.name}}</h1>
-              <h2>Books</h2>
-              <ul><li v-for="book in item.books"><router-link :to="{name:'books-item', params:{key: book._id}}"> {{book.title}}</router-link></li></ul>
-              <a @click="edit()">edit</a>
-              `
+              itemUI: {
+                kind: 'card',
+                cardTemplate: `
+                <h1>{{item.name}}</h1>
+                <h2>Books</h2>
+                <ul><li v-for="book in item.books"><router-link :to="{name:'books-item', params:{key: book._id}}"> {{book.title}}</router-link></li></ul>
+                `
+              }
             }]
           }
     })
