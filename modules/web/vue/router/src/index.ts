@@ -44,10 +44,17 @@ function itemTemplate(view: EntityView) {
         ${view.itemUI.cardTemplate}
       </div>
       <div class="card-footer text-right">
-        <router-link :to="{name:'${view.pathName}-list'}"
+        <button @click="edit()" class="btn btn-outline-primary btn-sm" type="button" title="Edit">
+          Edit
+        </button>
+        <router-link :to="{name:'${view.pathName}-list'}" active-class=""
           class="btn btn-outline-info btn-sm" role="button" title="Back">
           Back
         </router-link>
+        <button @click="remove()" class="btn btn-outline-danger btn-sm" type="button" title="Delete">
+          Delete
+        </button>
+
       </div>
     </div>`
   }
@@ -102,6 +109,10 @@ function itemComponent(view: EntityView) {
                 }
               ]
             })
+        },
+        async remove() {
+          //await this.$store.dispatch(`${view.dataModel}/delete`, this.$route.params.key)
+          this.$router.push({name:`${view.pathName}-list`})
         }
     }
   })
