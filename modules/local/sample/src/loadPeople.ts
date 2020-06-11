@@ -1,6 +1,6 @@
 import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
 import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
-import { setupModel, SimpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
+import { setupModel, SimpleTypedDataAccess, TypeMapTypeDataWrapper } from '@agrzes/yellow-2020-common-model'
 import ExcelJS from 'exceljs'
 import debug from 'debug'
 import _ from 'lodash'
@@ -48,12 +48,12 @@ async function load(file: string) {
   const people = await loadFromExcel(file)
 
   const metadata = await SimpleModelAccess
-    .loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://couchdb:5984/model')))
-  const model = await setupModel( metadata, _.map({
-      'http://admin:admin@couchdb:5984/people-people': 'people.classes.person',
-      'http://admin:admin@couchdb:5984/people-groups': 'people.classes.group'
-  }, (path, url) => new SimpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
-    new PouchDBDataAccess(new PouchDB(url)))))
+    .loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://localhost:5984/model')))
+    const dataAccess = new TypeMapTypeDataWrapper({
+      person: metadata.models.people.classes.person,
+      group: metadata.models.people.classes.group
+    },new PouchDBDataAccess(new PouchDB('http://localhost:5984/people')))
+  const model = await setupModel( metadata,[dataAccess])
   const groups = _(people).flatMap('groups').sort().uniq().map((name)=> ({name})).value()
   await Promise.all(_.map(people, (person) =>
     model.raw(metadata.models.people.classes.person, personKey(person), person)))

@@ -22,7 +22,7 @@ async function loadModels(dir: string): Promise<ModelAccess> {
 }
 
 async function saveModels({models}: ModelAccess) {
-  const modelDb = new PouchDBDataAccess(new PouchDB('http://couchdb:5984/model'))
+  const modelDb = new PouchDBDataAccess(new PouchDB('http://localhost:5984/model'))
   await Promise.all(_.map(models, (model, name) => modelDb.update(name, model, ConflictMode.override)))
 }
 
