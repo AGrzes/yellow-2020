@@ -1,6 +1,6 @@
 import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
 import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
-import { setupModel, simpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
+import { setupModel, SimpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
 import confluenceClient from 'confluence-client'
 import debug from 'debug'
 import fs from 'fs'
@@ -43,7 +43,7 @@ async function load() {
     const model = await setupModel( metadata, _.map({
         'http://couchdb:5984/books': 'books.classes.book',
         'http://couchdb:5984/authors': 'books.classes.author'
-    }, (path, url) => simpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
+    }, (path, url) => new SimpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
       new PouchDBDataAccess(new PouchDB(url)))))
     const data = YAML.safeLoadAll(await readFile(process.argv[2], 'utf-8'))
     const booksMap = _(data).filter(({kind}) => kind === 'book')

@@ -1,6 +1,6 @@
 import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
 import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
-import { setupModel, simpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
+import { setupModel, SimpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
 import confluenceClient from 'confluence-client'
 import debug from 'debug'
 import {JSDOM} from 'jsdom'
@@ -83,7 +83,7 @@ async function load() {
       'http://admin:admin@couchdb:5984/music-artists': 'music.classes.artist',
       'http://admin:admin@couchdb:5984/music-albums': 'music.classes.album'
 
-  }, (path, url) => simpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
+  }, (path, url) => new SimpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
     new PouchDBDataAccess(new PouchDB(url)))))
   const songs = []
   const artists = []

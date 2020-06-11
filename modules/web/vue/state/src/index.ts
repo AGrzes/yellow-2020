@@ -1,6 +1,6 @@
 import Vuex, { Store } from 'vuex'
 import { PouchDBDataAccess , PouchDB} from '@agrzes/yellow-2020-common-data-pouchdb'
-import { setupModel, simpleTypedDataAccess, TypedDataAccess, Model } from '@agrzes/yellow-2020-common-model'
+import { setupModel, SimpleTypedDataAccess, TypedDataAccess, Model } from '@agrzes/yellow-2020-common-model'
 import { SimpleModelAccess, Class, ModelAccess } from '@agrzes/yellow-2020-common-metadata'
 import { ModelStateAdapter } from './model'
 import * as _ from 'lodash'
@@ -58,6 +58,6 @@ export function setupStore(setupMetadata: SetupMetadata,
 export const store = setupStore(
   setupSetupMetadata(setupSetupDataAccess(PouchDB, PouchDBDataAccess), SimpleModelAccess.loadFromAdapter),
   setupSetupDataAccess(PouchDB, PouchDBDataAccess),
-  simpleTypedDataAccess,
+  <T>(type: Class, wrapped: DataAccess<T,string, string, void>) => new SimpleTypedDataAccess(type,wrapped),
   setupModel,
   setupSetupModelStateAdapter())

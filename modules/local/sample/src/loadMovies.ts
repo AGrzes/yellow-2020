@@ -1,6 +1,6 @@
 import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
 import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
-import { setupModel, simpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
+import { setupModel, SimpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
 import confluenceClient from '@agrzes/yellow-2020-common-confluence'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
@@ -41,7 +41,7 @@ async function load() {
     .loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://couchdb:5984/model')))
   const model = await setupModel( metadata, _.map({
       'http://couchdb:5984/movies': 'movies.classes.movie',
-  }, (path, url) => simpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
+  }, (path, url) => new SimpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
     new PouchDBDataAccess(new PouchDB(url)))))
   await Promise.all(_.map(confluenceData, (movie) =>
     model.raw(metadata.models.movies.classes.movie, _.kebabCase(movie.title), movie)))
