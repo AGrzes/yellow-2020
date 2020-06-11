@@ -1,6 +1,6 @@
 import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
 import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
-import { setupModel, simpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
+import { setupModel, TypeMapTypeDataWrapper } from '@agrzes/yellow-2020-common-model'
 import confluenceClient from 'confluence-client'
 import debug from 'debug'
 import {JSDOM} from 'jsdom'
@@ -78,13 +78,12 @@ async function load() {
 
   const metadata = await SimpleModelAccess
     .loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://couchdb:5984/model')))
-  const model = await setupModel( metadata, _.map({
-      'http://admin:admin@couchdb:5984/music-songs': 'music.classes.song',
-      'http://admin:admin@couchdb:5984/music-artists': 'music.classes.artist',
-      'http://admin:admin@couchdb:5984/music-albums': 'music.classes.album'
-
-  }, (path, url) => simpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
-    new PouchDBDataAccess(new PouchDB(url)))))
+  const dataAccess = new TypeMapTypeDataWrapper({
+    song: metadata.models.music.classes.song,
+    artist: metadata.models.music.classes.artist,
+    album: metadata.models.music.classes.album
+  },new PouchDBDataAccess(new PouchDB('http://admin:admin@couchdb:5984/music')))
+  const model = await setupModel( metadata, [dataAccess])
   const songs = []
   const artists = []
   const albums = []

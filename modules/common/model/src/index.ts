@@ -1,6 +1,6 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { Class, StructuralFeature, ModelAccess, Relation, isRelation} from '@agrzes/yellow-2020-common-metadata'
-import { DataWrapper, DataAccess } from '@agrzes/yellow-2020-common-data'
+import { DataWrapper, DataAccess, ConflictMode } from '@agrzes/yellow-2020-common-data'
 
 export interface Model {
     metaModel: ModelAccess
@@ -21,9 +21,13 @@ export interface TypedDataWrapper<DataType,KeyType,OptCounterType>  extends Data
     type: Class
 }
 
-export interface TypedDataAccess<DataType,KeyType,OptCounterType, QueryType> extends DataAccess<DataType,KeyType,OptCounterType, QueryType> {
-    get(key: KeyType, optCounter?: OptCounterType): Promise<TypedDataWrapper<DataType,KeyType,OptCounterType>>
-    list(query?: QueryType): Promise<TypedDataWrapper<DataType,KeyType,OptCounterType>[]>
+export interface TypedDataAccess<DataType,KeyType,OptCounterType, QueryType> {
+    get(type: Class,key: KeyType, optCounter?: OptCounterType): Promise<TypedDataWrapper<DataType,KeyType,OptCounterType>>
+    list(type: Class, query?: QueryType): Promise<TypedDataWrapper<DataType,KeyType,OptCounterType>[]>
+    set(type: Class, key: KeyType, value: DataType, optCounter?: OptCounterType): Promise<OptCounterType>;
+    update(type: Class,key: KeyType, value: DataType, conflict?: ConflictMode): any;
+    merge(type: Class,key: KeyType, value: DataType, merge: (a: DataType, b: DataType) => DataType): any;
+    delete(type: Class,key: KeyType, optCounter?: OptCounterType): any;
     types: Class[]
 }
 
@@ -44,26 +48,94 @@ function merge<T>(array:T[], item: T ): T[]{
     }
 }
 
-export function simpleTypedDataAccess<DataType,KeyType,OptCounterType, QueryType>(type: Class, wrapped: DataAccess<DataType,KeyType,OptCounterType, QueryType>): TypedDataAccess<DataType,KeyType,OptCounterType, QueryType> {
-    const result = {
-        async get(key: KeyType, optCounter?: OptCounterType) {
-            return {
-                ...await wrapped.get(key,optCounter),
-                type
-            }
-        },
-        async list(query?: QueryType) {
-            return _.map(await wrapped.list(query),(x) => ({...x,type}))
-        },
-        types: [type]
-    } as TypedDataAccess<DataType,KeyType,OptCounterType, QueryType>
-    Object.setPrototypeOf(result, wrapped)
-    return result
+export class CombinedTypeDataWrapper<DataType,OptCounterType, QueryType> 
+    implements TypedDataAccess<DataType,string,OptCounterType, QueryType>  {
+    constructor(public types: Class[],
+        private typeResolver: (type: string) => Class,
+        private typeSerializer: (type: Class) => string ,
+        private wrapped: DataAccess<DataType & {$type: string},string,OptCounterType, QueryType>) {}
+    async get(type: Class,key: KeyType, optCounter?: OptCounterType): Promise<TypedDataWrapper<DataType, string, OptCounterType>> {
+        const result = await this.wrapped.get(this.wrapKey(key,type),optCounter) 
+        return {
+            ...result,
+            key: this.unwrapKey(result.key, type),
+            type: this.typeResolver(result.data.$type)
+        }
+    }
+    async list(type: Class, query?: QueryType): Promise<TypedDataWrapper<DataType, string, OptCounterType>[]> {
+        return _.map(await this.wrapped.list(query),(x) => ({
+            ...x,
+            key: this.unwrapKey(x.key, type),
+            type: this.typeResolver(x.data.$type)
+        }))
+    }
+    async set(type: Class,key: KeyType, value: DataType, optCounter?: OptCounterType): Promise<OptCounterType> {
+        return await this.wrapped.set(this.wrapKey(key,type),{...value, $type: this.typeSerializer(type)}, optCounter)
+    }
+    async update(type: Class,key: KeyType, value: DataType, conflict?: ConflictMode) {
+        return await this.wrapped.update(this.wrapKey(key,type),{...value, $type: this.typeSerializer(type)}, conflict)
+    }
+    async merge(type: Class,key: KeyType, value: DataType, merge: (a: DataType & {$type: string}, b: DataType & {$type: string}) => DataType & {$type: string}) {
+        return await this.wrapped.merge(this.wrapKey(key,type),{...value, $type: this.typeSerializer(type)}, merge)
+    }
+    async delete(type: Class,key: KeyType, optCounter?: OptCounterType) {
+        await this.wrapped.delete(this.wrapKey(key,type),optCounter) 
+    }
+
+    private wrapKey(key: string, type: Class): string {
+        return `${this.typeSerializer(type)}:${key}`
+    }
+
+    private unwrapKey(key: string, type: Class): string {
+        return key.replace(`${this.typeSerializer(type)}:`,'')
+    }
+    
+}
+
+export class TypeMapTypeDataWrapper<DataType,OptCounterType, QueryType> 
+extends CombinedTypeDataWrapper<DataType,OptCounterType, QueryType> {
+    constructor(map: Record<string,Class>, 
+        wrapped: DataAccess<DataType & {$type: string},string,OptCounterType, QueryType>) {
+        super(_(map).values().uniq().value(), (type)=> map[type],(type) => inverseMap.get(type), wrapped)
+        const inverseMap: Map<Class,string> = new Map(_.entries(map).map(([name,type])=>([type,name])))
+    }
+}
+export class SimpleTypedDataAccess<DataType,KeyType,OptCounterType, QueryType> 
+    implements TypedDataAccess<DataType,KeyType,OptCounterType, QueryType>  {
+    public types: Class[]
+    constructor(private type: Class,
+        private wrapped: DataAccess<DataType,KeyType,OptCounterType, QueryType>) {
+        this.types = [type]
+    }
+    async get(type: Class,key: KeyType, optCounter?: OptCounterType): Promise<TypedDataWrapper<DataType, KeyType, OptCounterType>> {
+        const result = await this.wrapped.get(key,optCounter) 
+        return {
+            ...result,
+            type: this.type
+        }
+    }
+    async list(type: Class, query?: QueryType): Promise<TypedDataWrapper<DataType, KeyType, OptCounterType>[]> {
+        return _.map(await this.wrapped.list(query),(x) => ({...x,type: this.type}))
+    }
+    async set(type: Class,key: KeyType, value: DataType, optCounter?: OptCounterType): Promise<OptCounterType> {
+        return await this.wrapped.set(key, value, optCounter)
+    }
+    async update(type: Class,key: KeyType, value: DataType, conflict?: ConflictMode) {
+        return await this.wrapped.update(key,value, conflict)
+    }
+    async merge(type: Class,key: KeyType, value: DataType, merge: (a: DataType, b: DataType) => DataType) {
+        return await this.wrapped.merge(key,value, merge)
+    }
+    async delete(type: Class,key: KeyType, optCounter?: OptCounterType) {
+        await this.wrapped.delete(key,optCounter) 
+    }
+    
 }
 
 
 export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAccess<object,string,string,never>[]): Promise<Model> {
-    const entries: ModelEntry[] =_.map(_.flatten(await Promise.all(_.map(dataAccess,(da) => da.list()))),({type,data,key,optCounter})=>({
+    const entries: ModelEntry[] =_.map(_.flatten(await Promise.all(
+        _.flatMap(dataAccess,(da) => _.map(da.types, (type) => da.list(type)) ))),({type,data,key,optCounter})=>({
         type,raw: data, model: _.cloneDeep(data),key,optCounter
     }))
     const accessMap = new Map<Class, TypedDataAccess<object,string,string,never>[]>()
@@ -149,7 +221,7 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
         }
         const da = dataAcceddForClass(type)
         if (da) {
-            entry.optCounter = await da.set(entry.key,entry.raw,entry.optCounter)
+            entry.optCounter = await da.set(type, entry.key,entry.raw,entry.optCounter)
         }
         rebuildModel()
     }
@@ -167,7 +239,7 @@ export async function setupModel(metaModel: ModelAccess, dataAccess: TypedDataAc
             _.remove(entries,(e) => e=== entry)
             const da = dataAcceddForClass(type)
             if (da) {
-                entry.optCounter = await da.delete(entry.key,entry.optCounter)
+                entry.optCounter = await da.delete(type, entry.key,entry.optCounter)
             }
             rebuildModel()
         }
