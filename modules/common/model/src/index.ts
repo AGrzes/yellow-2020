@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { Class, StructuralFeature, ModelAccess, Relation, isRelation} from '@agrzes/yellow-2020-common-metadata'
 import { DataWrapper, DataAccess, ConflictMode } from '@agrzes/yellow-2020-common-data'
 
@@ -79,12 +79,11 @@ export class CombinedTypeDataWrapper<DataType,KeyType,OptCounterType, QueryType>
     
 }
 
-export class TypeMaTypeDataWrapper<DataType,KeyType,OptCounterType, QueryType> 
+export class TypeMapTypeDataWrapper<DataType,KeyType,OptCounterType, QueryType> 
 extends CombinedTypeDataWrapper<DataType,KeyType,OptCounterType, QueryType> {
-    constructor(types: Class[],
-        map: Record<string,Class>, 
+    constructor(map: Record<string,Class>, 
         wrapped: DataAccess<DataType & {$type: string},KeyType,OptCounterType, QueryType>) {
-        super(types, (type)=> map[type],(type) => inverseMap.get(type), wrapped)
+        super(_(map).values().uniq().value(), (type)=> map[type],(type) => inverseMap.get(type), wrapped)
         const inverseMap: Map<Class,string> = new Map(_.entries(map).map(([name,type])=>([type,name])))
     }
 }
