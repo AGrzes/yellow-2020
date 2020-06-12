@@ -1,0 +1,20 @@
+yellow:
+  metadata: 
+    kind: pouchDb
+    database:
+      kind: url
+      url: http://localhost:5984/model
+  model:
+    people:
+      dataAccess:
+        - kind: map
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/people
+          map:
+            - tag: person
+              classPath: people.classes.person
+            - tag: group
+              classPath: people.classes.group
