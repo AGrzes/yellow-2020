@@ -4,6 +4,7 @@ import { setupModel, SimpleTypedDataAccess, TypeMapTypeDataWrapper } from '@agrz
 import ExcelJS from 'exceljs'
 import debug from 'debug'
 import _ from 'lodash'
+import { loadMetadata } from './modelLoader'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -47,8 +48,7 @@ async function loadFromExcel(file: string) {
 async function load(file: string) {
   const people = await loadFromExcel(file)
 
-  const metadata = await SimpleModelAccess
-    .loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://localhost:5984/model')))
+  const metadata = await loadMetadata()
     const dataAccess = new TypeMapTypeDataWrapper({
       person: metadata.models.people.classes.person,
       group: metadata.models.people.classes.group

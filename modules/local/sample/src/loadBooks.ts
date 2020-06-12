@@ -7,6 +7,7 @@ import fs from 'fs'
 import YAML from 'js-yaml'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
+import { loadMetadata } from './modelLoader'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -38,8 +39,7 @@ async function loadConfluenceData(): Promise<string[][]> {
 async function load() {
     const confluenceData = await loadConfluenceData()
 
-    const metadata = await SimpleModelAccess
-      .loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://couchdb:5984/model')))
+    const metadata = await loadMetadata()
     const model = await setupModel( metadata, _.map({
         'http://couchdb:5984/books': 'books.classes.book',
         'http://couchdb:5984/authors': 'books.classes.author'
