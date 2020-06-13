@@ -43,3 +43,12 @@ yellow:
               kind: url
               url: http://localhost:5984/games
           classPath: computerGames.classes.game
+    movies:
+      dataAccess:
+        - kind: simple
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/movies
+          classPath: movies.classes.movie

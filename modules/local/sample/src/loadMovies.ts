@@ -5,7 +5,7 @@ import confluenceClient from '@agrzes/yellow-2020-common-confluence'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
 import debug from 'debug'
-import { loadMetadata } from './modelLoader'
+import { loadMetadata, loadModel } from './modelLoader'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -38,11 +38,8 @@ async function loadConfluenceData(): Promise<any> {
 }
 async function load() {
   const confluenceData = await loadConfluenceData()
-  const metadata = await loadMetadata()
-  const model = await setupModel( metadata, _.map({
-      'http://couchdb:5984/movies': 'movies.classes.movie',
-  }, (path, url) => new SimpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
-    new PouchDBDataAccess(new PouchDB(url)))))
+  const metadata = await loadMetadata() 
+  const model = await loadModel(metadata, 'movies')
   await Promise.all(_.map(confluenceData, (movie) =>
     model.raw(metadata.models.movies.classes.movie, _.kebabCase(movie.title), movie)))
 }
