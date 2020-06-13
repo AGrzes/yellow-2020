@@ -18,3 +18,19 @@ yellow:
               classPath: people.classes.person
             - tag: group
               classPath: people.classes.group
+    books:
+      dataAccess:
+        - kind: simple
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/books
+          classPath: books.classes.book
+        - kind: simple
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/authors
+          classPath: books.classes.author

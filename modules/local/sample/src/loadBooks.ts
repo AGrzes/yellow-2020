@@ -7,7 +7,7 @@ import fs from 'fs'
 import YAML from 'js-yaml'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
-import { loadMetadata } from './modelLoader'
+import { loadMetadata, loadModel } from './modelLoader'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -40,11 +40,7 @@ async function load() {
     const confluenceData = await loadConfluenceData()
 
     const metadata = await loadMetadata()
-    const model = await setupModel( metadata, _.map({
-        'http://couchdb:5984/books': 'books.classes.book',
-        'http://couchdb:5984/authors': 'books.classes.author'
-    }, (path, url) => new SimpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
-      new PouchDBDataAccess(new PouchDB(url)))))
+    const model = await loadModel(metadata, 'books')
     const data = YAML.safeLoadAll(await readFile(process.argv[2], 'utf-8'))
     const booksMap = _(data).filter(({kind}) => kind === 'book')
         .map(({title, author}: {title: string, author: string}) => ({title, author: [author]}))
