@@ -5,7 +5,7 @@ import confluenceClient from 'confluence-client'
 import debug from 'debug'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
-import { loadMetadata } from './modelLoader'
+import { loadMetadata, loadModel } from './modelLoader'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -42,12 +42,7 @@ async function load() {
   const games = await loadConfluenceData()
 
   const metadata = await loadMetadata()
-  const model = await setupModel( metadata, _.map({
-      'http://admin:admin@couchdb:5984/games': 'computerGames.classes.game'
-
-  }, (path, url) => new SimpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
-    new PouchDBDataAccess(new PouchDB(url)))))
-
+  const model = await loadModel(metadata, 'games')
   await Promise.all(_.map(games, (game) =>
     model.raw(metadata.models.computerGames.classes.game, _.kebabCase(game.name), game)))
 }

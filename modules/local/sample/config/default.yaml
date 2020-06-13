@@ -34,3 +34,12 @@ yellow:
               kind: url
               url: http://couchdb:5984/authors
           classPath: books.classes.author
+    games:
+      dataAccess:
+        - kind: simple
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://couchdb:5984/games
+          classPath: computerGames.classes.game
