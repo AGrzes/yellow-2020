@@ -1,10 +1,8 @@
-import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
-import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
-import { setupModel, SimpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
 import confluenceClient from 'confluence-client'
 import debug from 'debug'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
+import { loadMetadata, loadModel } from './modelLoader'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -40,14 +38,8 @@ async function loadConfluenceData(): Promise<any> {
 async function load() {
   const games = await loadConfluenceData()
 
-  const metadata = await SimpleModelAccess
-    .loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://couchdb:5984/model')))
-  const model = await setupModel( metadata, _.map({
-      'http://admin:admin@couchdb:5984/games': 'computerGames.classes.game'
-
-  }, (path, url) => new SimpleTypedDataAccess(_.get(metadata.models, path) as unknown as Class,
-    new PouchDBDataAccess(new PouchDB(url)))))
-
+  const metadata = await loadMetadata()
+  const model = await loadModel(metadata, 'games')
   await Promise.all(_.map(games, (game) =>
     model.raw(metadata.models.computerGames.classes.game, _.kebabCase(game.name), game)))
 }

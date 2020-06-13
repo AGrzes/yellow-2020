@@ -1,0 +1,70 @@
+yellow:
+  metadata: 
+    kind: pouchDb
+    database:
+      kind: url
+      url: http://localhost:5984/model
+  model:
+    people:
+      dataAccess:
+        - kind: map
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/people
+          map:
+            - tag: person
+              classPath: people.classes.person
+            - tag: group
+              classPath: people.classes.group
+    books:
+      dataAccess:
+        - kind: simple
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/books
+          classPath: books.classes.book
+        - kind: simple
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/authors
+          classPath: books.classes.author
+    games:
+      dataAccess:
+        - kind: simple
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/games
+          classPath: computerGames.classes.game
+    movies:
+      dataAccess:
+        - kind: simple
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/movies
+          classPath: movies.classes.movie
+          classPath: movies.classes.movie
+    music:
+      dataAccess:
+        - kind: map
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/music
+          map:
+            - tag: song
+              classPath: music.classes.song
+            - tag: artist
+              classPath: music.classes.artist
+            - tag: album
+              classPath: music.classes.album

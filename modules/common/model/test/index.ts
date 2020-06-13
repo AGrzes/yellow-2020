@@ -74,30 +74,34 @@ function createMetamodel() : ModelAccess {
 
 function createDataAccess(meatmodel: ModelAccess): TypedDataAccess<any,string,string,never> {
     return {
-        async list() {
-            return [{
-                key: 'a',
-                type: meatmodel.models.model.classes.A,
-                data: {
-                    b: 'b',
-                    ba: ['b'],
-                    bb: 'b',
-                    bba: ['b']
-                }
-            }, {
-                key: 'b',
-                type: meatmodel.models.model.classes.B,
-                data: {
-                    x: 'X'
-                }
-            },{
-                key: 'c',
-                type: meatmodel.models.model.classes.A,
-                data: {
-                    bb: 'b',
-                    bba: ['b']
-                }
-            }]
+        types: [meatmodel.models.model.classes.A, meatmodel.models.model.classes.B],
+        async list(type: Class) {
+            switch (type) {
+                case meatmodel.models.model.classes.A: return [{
+                    key: 'a',
+                    type: meatmodel.models.model.classes.A,
+                    data: {
+                        b: 'b',
+                        ba: ['b'],
+                        bb: 'b',
+                        bba: ['b']
+                    }
+                },{
+                    key: 'c',
+                    type: meatmodel.models.model.classes.A,
+                    data: {
+                        bb: 'b',
+                        bba: ['b']
+                    }
+                }]
+                case meatmodel.models.model.classes.B: return [ {
+                    key: 'b',
+                    type: meatmodel.models.model.classes.B,
+                    data: {
+                        x: 'X'
+                    }
+                }]
+            }
         }
     } as TypedDataAccess<any,string,string,never>
 }

@@ -1,9 +1,7 @@
-import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
-import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
-import { setupModel, SimpleTypedDataAccess, TypeMapTypeDataWrapper } from '@agrzes/yellow-2020-common-model'
 import ExcelJS from 'exceljs'
 import debug from 'debug'
 import _ from 'lodash'
+import { loadMetadata, loadModel } from './modelLoader'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -47,13 +45,8 @@ async function loadFromExcel(file: string) {
 async function load(file: string) {
   const people = await loadFromExcel(file)
 
-  const metadata = await SimpleModelAccess
-    .loadFromAdapter(new PouchDBDataAccess(new PouchDB('http://localhost:5984/model')))
-    const dataAccess = new TypeMapTypeDataWrapper({
-      person: metadata.models.people.classes.person,
-      group: metadata.models.people.classes.group
-    },new PouchDBDataAccess(new PouchDB('http://localhost:5984/people')))
-  const model = await setupModel( metadata,[dataAccess])
+  const metadata = await loadMetadata()
+  const model = await loadModel(metadata, 'people')
   const groups = _(people).flatMap('groups').sort().uniq().map((name)=> ({name})).value()
   await Promise.all(_.map(people, (person) =>
     model.raw(metadata.models.people.classes.person, personKey(person), person)))

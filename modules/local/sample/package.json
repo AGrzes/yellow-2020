@@ -45,6 +45,7 @@
     "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.5",
     "@agrzes/yellow-2020-common-metadata": "^1.1.5",
     "@agrzes/yellow-2020-common-model": "^1.1.5",
+    "config": "^3.3.1",
     "confluence-client": "^1.1.0",
     "exceljs": "^3.9.0",
     "js-yaml": "^3.13.1",
@@ -53,6 +54,7 @@
   "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/config": "0.0.36",
     "@types/js-yaml": "^3.12.3",
     "@types/jsdom": "^16.2.1"
   },
