@@ -1,6 +1,3 @@
-import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
-import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
-import { setupModel, SimpleTypedDataAccess } from '@agrzes/yellow-2020-common-model'
 import confluenceClient from 'confluence-client'
 import debug from 'debug'
 import {JSDOM} from 'jsdom'

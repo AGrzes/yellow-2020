@@ -1,6 +1,5 @@
 import { ConflictMode} from '@agrzes/yellow-2020-common-data'
-import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
-import {ModelAccess, ModelDescriptor} from '@agrzes/yellow-2020-common-metadata'
+import { ModelDescriptor} from '@agrzes/yellow-2020-common-metadata'
 import debug from 'debug'
 import fs from 'fs'
 import YAML from 'js-yaml'

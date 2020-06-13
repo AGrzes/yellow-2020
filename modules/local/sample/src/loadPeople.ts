@@ -1,6 +1,3 @@
-import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
-import { Class, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
-import { setupModel, SimpleTypedDataAccess, TypeMapTypeDataWrapper } from '@agrzes/yellow-2020-common-model'
 import ExcelJS from 'exceljs'
 import debug from 'debug'
 import _ from 'lodash'
