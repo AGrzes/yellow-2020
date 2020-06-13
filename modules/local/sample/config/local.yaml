@@ -52,3 +52,19 @@ yellow:
               kind: url
               url: http://localhost:5984/movies
           classPath: movies.classes.movie
+          classPath: movies.classes.movie
+    music:
+      dataAccess:
+        - kind: map
+          dataAccess: 
+            kind: pouchDb
+            database:
+              kind: url
+              url: http://localhost:5984/music
+          map:
+            - tag: song
+              classPath: music.classes.song
+            - tag: artist
+              classPath: music.classes.artist
+            - tag: album
+              classPath: music.classes.album

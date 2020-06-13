@@ -5,7 +5,7 @@ import confluenceClient from 'confluence-client'
 import debug from 'debug'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
-import { loadMetadata } from './modelLoader'
+import { loadMetadata, loadModel } from './modelLoader'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -78,12 +78,7 @@ async function load() {
   const confluenceData = await loadConfluenceData()
 
   const metadata = await loadMetadata()
-  const dataAccess = new TypeMapTypeDataWrapper({
-    song: metadata.models.music.classes.song,
-    artist: metadata.models.music.classes.artist,
-    album: metadata.models.music.classes.album
-  },new PouchDBDataAccess(new PouchDB('http://admin:admin@couchdb:5984/music')))
-  const model = await setupModel( metadata, [dataAccess])
+  const model = await loadModel(metadata, 'music')
   const songs = []
   const artists = []
   const albums = []
