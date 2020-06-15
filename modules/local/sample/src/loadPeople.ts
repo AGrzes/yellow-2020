@@ -1,7 +1,7 @@
 import ExcelJS from 'exceljs'
 import debug from 'debug'
 import _ from 'lodash'
-import { loadMetadata, loadModel } from './modelLoader'
+import { executeLoader } from '.'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -42,16 +42,22 @@ async function loadFromExcel(file: string) {
   return result;
 }
 
-async function load(file: string) {
-  const people = await loadFromExcel(file)
-
-  const metadata = await loadMetadata()
-  const model = await loadModel(metadata, 'people')
-  const groups = _(people).flatMap('groups').sort().uniq().map((name)=> ({name})).value()
-  await Promise.all(_.map(people, (person) =>
-    model.raw(metadata.models.people.classes.person, personKey(person), person)))
-  await Promise.all(_.map(groups, (group) =>
-    model.raw(metadata.models.people.classes.group, _.kebabCase(group.name), group)))
-}
-
-load('data/Kontakty.xlsx').catch(log)
+executeLoader({
+  model: 'people',
+  async extract(): Promise<any[]> { 
+    return await loadFromExcel('data/Kontakty.xlsx')
+  },
+  transform(metadata,people: any[]) {
+    const groups = _(people).flatMap('groups').sort().uniq().map((name)=> ({name})).value()
+    return [..._.map(people, (person) => ({
+      type: metadata.models.people.classes.person, 
+      key: personKey(person), 
+      value: person
+    })),
+    ..._.map(groups, (group) => ({
+      type: metadata.models.people.classes.group, 
+      key: _.kebabCase(group.name), 
+      value: group
+    }))]
+  }
+})
