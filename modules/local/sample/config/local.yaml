@@ -52,7 +52,6 @@ yellow:
               kind: url
               url: http://localhost:5984/movies
           classPath: movies.classes.movie
-          classPath: movies.classes.movie
     music:
       dataAccess:
         - kind: map
