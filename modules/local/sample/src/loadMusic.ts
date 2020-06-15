@@ -2,7 +2,7 @@ import confluenceClient from 'confluence-client'
 import debug from 'debug'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
-import { loadMetadata, loadModel } from './modelLoader'
+import { executeLoader } from '.'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -71,42 +71,50 @@ async function loadConfluenceData(): Promise<any> {
     return result
 }
 
-async function load() {
-  const confluenceData = await loadConfluenceData()
-
-  const metadata = await loadMetadata()
-  const model = await loadModel(metadata, 'music')
-  const songs = []
-  const artists = []
-  const albums = []
-  _.forEach(confluenceData, (artist) => {
-    artists.push({
-      name: artist.name,
-      albums: _(artist.albums).map('name').map(_.kebabCase).value(),
-      songs: _(artist.albums).flatMap('songs').map('name').map(_.kebabCase).value(),
-    })
-    _.forEach(artist.albums, (album) => {
-      albums.push({
-        title: album.name,
-        artists: [_.kebabCase(artist.name)],
-        tracks: _(album.songs).map('name').map(_.kebabCase).value(),
+executeLoader({
+  model: 'music',
+  async extract(): Promise<any> { 
+    return await  loadConfluenceData()
+  },
+  transform(metadata,confluenceData: any) {
+    const songs = []
+    const artists = []
+    const albums = []
+    _.forEach(confluenceData, (artist) => {
+      artists.push({
+        name: artist.name,
+        albums: _(artist.albums).map('name').map(_.kebabCase).value(),
+        songs: _(artist.albums).flatMap('songs').map('name').map(_.kebabCase).value(),
       })
-      _.forEach(album.songs, (song) => {
-        songs.push({
-          title: song.name,
+      _.forEach(artist.albums, (album) => {
+        albums.push({
+          title: album.name,
           artists: [_.kebabCase(artist.name)],
-          albums: [_.kebabCase(album.name)]
+          tracks: _(album.songs).map('name').map(_.kebabCase).value(),
+        })
+        _.forEach(album.songs, (song) => {
+          songs.push({
+            title: song.name,
+            artists: [_.kebabCase(artist.name)],
+            albums: [_.kebabCase(album.name)]
+          })
         })
       })
     })
-  })
-
-  await Promise.all(_.map(songs, (song) =>
-    model.raw(metadata.models.music.classes.song, _.kebabCase(song.title), song)))
-  await Promise.all(_.map(artists, (artist) =>
-    model.raw(metadata.models.music.classes.artist, _.kebabCase(artist.name), artist)))
-  await Promise.all(_.map(albums, (album) =>
-    model.raw(metadata.models.music.classes.album, _.kebabCase(album.title), album)))
-}
-
-load().catch(log)
+    return [..._.map(songs, (song) => ({
+      type: metadata.models.music.classes.song, 
+      key: _.kebabCase(song.name), 
+      value: song
+    })),
+    ..._.map(artists, (artist) => ({
+      type: metadata.models.music.classes.artist, 
+      key: _.kebabCase(artist.name), 
+      value: artist
+    })),
+    ..._.map(albums, (album) => ({
+      type: metadata.models.music.classes.album, 
+      key: _.kebabCase(album.name), 
+      value: album
+    }))]
+  }
+})
