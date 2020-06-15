@@ -2,7 +2,7 @@ import confluenceClient from 'confluence-client'
 import debug from 'debug'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
-import { loadMetadata, loadModel } from './modelLoader'
+import { executeLoader } from '.'
 
 const log = debug('agrzes:yellow-2020-local-sample')
 
@@ -35,13 +35,16 @@ async function loadConfluenceData(): Promise<any> {
     return result
 }
 
-async function load() {
-  const games = await loadConfluenceData()
-
-  const metadata = await loadMetadata()
-  const model = await loadModel(metadata, 'games')
-  await Promise.all(_.map(games, (game) =>
-    model.raw(metadata.models.computerGames.classes.game, _.kebabCase(game.name), game)))
-}
-
-load().catch(log)
+executeLoader({
+  model: 'games',
+  async extract(): Promise<any> { 
+    return await loadConfluenceData()
+  },
+  transform(metadata,games: any) {
+    return _.map(games, (game) => ({
+      type: metadata.models.computerGames.classes.game, 
+      key: _.kebabCase(game.name), 
+      value: game
+    }))
+  }
+})
