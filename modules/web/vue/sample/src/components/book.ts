@@ -136,6 +136,9 @@ export const EditButton = Vue.extend({
 })
 
 export const BooksList = Vue.extend({
+  props: {
+    list: Array
+  },
   template: `
 <ul class="list-group">
   <li v-for="(item,key) in list" class="list-group-item">
@@ -158,6 +161,9 @@ export const BooksList = Vue.extend({
 })
 
 export const BookDetails = Vue.extend({
+  props: {
+    item: Object
+  },
   template: `
 <div class="card h-100" v-if="item">
   <div class="card-body">
