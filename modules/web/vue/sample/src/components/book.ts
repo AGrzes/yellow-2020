@@ -160,6 +160,58 @@ export const BooksList = Vue.extend({
   }
 })
 
+export const BooksTable = Vue.extend({
+  props: {
+    list: Array
+  },
+  template: `
+<table class="table-sm table-striped">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="(item,key) in list" >
+      <td>{{item.title}}</td>
+      <td>
+        <edit-button type="book" :key="item.key"></edit-button>
+        <details-button type="book" :key="item.key"></details-button>
+        <delete-button type="book" :key="item.key"></delete-button>
+      </td>
+    </tr>
+  </tbody>
+</table>`, 
+  components: {
+    DeleteButton, EditButton, DetailsButton
+  }
+})
+
+export const BooksCards = Vue.extend({
+  props: {
+    list: Array
+  },
+  template: `
+<div class="row">
+  <div v-for="(item,key) in list" class="col-3 mt-4">
+    <div class="card h-100" >
+      <div class="card-body">
+        {{item.title}}
+      </div>
+      <div class="card-footer text-right">
+        <edit-button type="book" :key="item.key"></edit-button>
+        <details-button type="book" :key="item.key"></details-button>
+        <delete-button type="book" :key="item.key"></delete-button>
+      </div>
+    </div>
+  </div>
+</div>`, 
+  components: {
+    DeleteButton, EditButton, DetailsButton
+  }
+})
+
 export const BookDetails = Vue.extend({
   props: {
     item: Object
