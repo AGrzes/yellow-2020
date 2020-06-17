@@ -144,7 +144,7 @@ export const BooksList = Vue.extend({
   <li v-for="(item,key) in list" class="list-group-item">
     <span class="d-flex">
       <span class="mr-auto">
-      {{item.title}}
+        {{item.title}}
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button type="book" :key="item.key"></edit-button>
@@ -219,8 +219,8 @@ export const BookDetails = Vue.extend({
   template: `
 <div class="card h-100" v-if="item">
   <div class="card-body">
-  <h1>{{item.title}}</h1>
-  <h2>Authors</h2>
+    <h1>{{item.title}}</h1>
+    <h2>Authors</h2>
     <ul>
       <li v-for="author in item.author">
         <details-link type="author" :key="author.key" :item="author"></details-link>
@@ -239,6 +239,63 @@ export const BookDetails = Vue.extend({
   methods: {
     deleted() {
       this.$router.push(resolveListRoute('book'))
+    }
+  }
+})
+
+
+export const AuthorList = Vue.extend({
+  props: {
+    list: Array
+  },
+  template: `
+<ul class="list-group">
+  <li v-for="(item,key) in list" class="list-group-item">
+    <span class="d-flex">
+      <span class="mr-auto">
+        {{item.name}}
+      </span>
+      <span class="flex-grow-0 flex-shrink-0 align-self-center">
+        <edit-button type="author" :key="item.key"></edit-button>
+        <details-button type="author" :key="item.key"></details-button>
+        <delete-button type="author" :key="item.key"></delete-button>
+      </span>
+    </span>
+  </li>
+  <li class="list-group-item"><a @click="add()">add</a></li>
+</ul>`, 
+  components: {
+    DeleteButton, EditButton, DetailsButton
+  }
+})
+
+export const AuthorDetails = Vue.extend({
+  props: {
+    item: Object
+  },
+  template: `
+<div class="card h-100" v-if="item">
+  <div class="card-body">
+    <h1>{{item.name}}</h1>
+    <h2>Books</h2>
+    <ul>
+      <li v-for="book in item.books">
+        <details-link type="book" :key="book.key" :item="book"></details-link>
+      </li>
+    </ul>
+  </div>
+  <div class="card-footer text-right">
+    <edit-button type="author" :key="item.key"></edit-button>
+    <details-button type="author" :key="item.key"></details-button>
+    <delete-button type="author" :key="item.key"></delete-button>
+  </div>
+</div>`, 
+  components: {
+    DeleteButton, EditButton, DetailsButton, DetailsLink
+  }, 
+  methods: {
+    deleted() {
+      this.$router.push(resolveListRoute('author'))
     }
   }
 })
