@@ -116,7 +116,7 @@ export const EditButton = Vue.extend({
     async edit() {
       modal({
         component: Edit,
-        host: this.$el,
+        host: this.$root.$el,
         title: 'Edit',
         props: {content: await this.$store.dispatch(`${this.type}/raw`, {key: this.id})},
         buttons: [
