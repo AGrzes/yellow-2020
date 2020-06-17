@@ -64,6 +64,25 @@ export const DetailsButton = Vue.extend({
   }
 })
 
+export const ListButton = Vue.extend({
+  props: {
+    type: String,
+    selector: String
+  },
+  template: `
+<router-link :to="route" class="btn btn-outline-info" role="button" title="List" active-class="">
+  <slot>
+    <i class="fas fa-list"></i>
+  </slot>
+</router-link>
+  `,
+  computed: {
+    route() {
+      return resolveListRoute(this.type, this.selector)
+    }
+  }
+})
+
 export const DetailsLink = Vue.extend({
   props: {
     type: String,
@@ -237,12 +256,12 @@ export const BookDetails = Vue.extend({
   </div>
   <div class="card-footer text-right">
     <edit-button type="book" :id="item._id">Edit</edit-button>
-    <details-button type="book" :id="item._id">Details</details-button>
+    <list-button type="book">Back</list-button>
     <delete-button type="book" :id="item._id">Delete</delete-button>
   </div>
 </div>`, 
   components: {
-    DeleteButton, EditButton, DetailsButton, DetailsLink
+    DeleteButton, EditButton, DetailsLink, ListButton
   }, 
   methods: {
     deleted() {
@@ -294,12 +313,12 @@ export const AuthorDetails = Vue.extend({
   </div>
   <div class="card-footer text-right">
     <edit-button type="author" :id="item._id">Edit</edit-button>
-    <details-button type="author" :id="item._id">Details</details-button>
+    <list-button type="author">Back</list-button>
     <delete-button type="author" :id="item._id">Delete</delete-button>
   </div>
 </div>`, 
   components: {
-    DeleteButton, EditButton, DetailsButton, DetailsLink
+    DeleteButton, EditButton, DetailsLink, ListButton
   }, 
   methods: {
     deleted() {
