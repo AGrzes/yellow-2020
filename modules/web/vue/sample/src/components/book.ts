@@ -10,7 +10,9 @@ export const DeleteButton = Vue.extend({
   },
   template: `
 <button @click="remove()" class="btn btn-outline-danger" type="button" title="Delete">
-  <i class="fas fa-trash"></i>
+  <slot>
+    <i class="fas fa-trash"></i>
+  </slot>
 </button>
   `, 
   methods: {
@@ -50,7 +52,9 @@ export const DetailsButton = Vue.extend({
   },
   template: `
 <router-link :to="route" class="btn btn-outline-info" role="button" title="Details">
-  <i class="fas fa-eye"></i>
+  <slot>
+    <i class="fas fa-eye"></i>
+  </slot>
 </router-link>
   `,
   computed: {
@@ -69,7 +73,9 @@ export const DetailsLink = Vue.extend({
   },
   template: `
 <router-link :to="route">
-  {{label}}
+  <slot>
+    {{label}}
+  </slot>
 </router-link>
   `,
   computed: {
@@ -101,7 +107,9 @@ export const EditButton = Vue.extend({
   },
   template: `
 <button @click="edit()" class="btn btn-outline-primary" type="button" title="Edit">
-  <i class="fas fa-edit"></i>
+  <slot>
+    <i class="fas fa-edit"></i>
+  </slot>
 </button>
   `, 
   methods: {
@@ -228,9 +236,9 @@ export const BookDetails = Vue.extend({
     </ul>
   </div>
   <div class="card-footer text-right">
-    <edit-button type="book" :id="item._id"></edit-button>
-    <details-button type="book" :id="item._id"></details-button>
-    <delete-button type="book" :id="item._id"></delete-button>
+    <edit-button type="book" :id="item._id">Edit</edit-button>
+    <details-button type="book" :id="item._id">Details</details-button>
+    <delete-button type="book" :id="item._id">Delete</delete-button>
   </div>
 </div>`, 
   components: {
@@ -285,9 +293,9 @@ export const AuthorDetails = Vue.extend({
     </ul>
   </div>
   <div class="card-footer text-right">
-    <edit-button type="author" :id="item._id"></edit-button>
-    <details-button type="author" :id="item._id"></details-button>
-    <delete-button type="author" :keidy="item._id"></delete-button>
+    <edit-button type="author" :id="item._id">Edit</edit-button>
+    <details-button type="author" :id="item._id">Details</details-button>
+    <delete-button type="author" :id="item._id">Delete</delete-button>
   </div>
 </div>`, 
   components: {
