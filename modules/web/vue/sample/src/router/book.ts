@@ -2,7 +2,7 @@ import { RouteConfig } from 'vue-router'
 import Vue from 'vue'
 import { mapState } from 'vuex'
 import { VueConstructor } from 'vue'
-import { BookDetails, AuthorDetails, AuthorList, BooksList, BooksCards, BooksTable } from '../components/book'
+import { BookDetails, AuthorDetails, AuthorList, BooksList, BooksCards, BooksTable } from '@agrzes/yellow-2020-web-vue-books'
 
 function itemComponent(type: string, theComponent: VueConstructor) {
   return Vue.extend({

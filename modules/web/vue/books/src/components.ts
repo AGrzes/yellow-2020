@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import { Location } from 'vue-router'
 import { DeleteButton, EditButton, DetailsButton, DetailsLink, ListButton, resolveListRoute } from '@agrzes/yellow-2020-web-vue-components'
 import _ from 'lodash'
 
