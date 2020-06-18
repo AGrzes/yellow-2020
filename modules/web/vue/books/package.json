@@ -6,7 +6,7 @@
   "types": "types",
   "scripts": {
     "build": "rm -rf target types && tsc",
-    "watch": "rm -rf target types && tsc -w",
+    "watch": "tsc -w",
     "test": "nyc mocha test/**/*.{ts,tsx}"
   },
   "nyc": {
@@ -34,11 +34,7 @@
   "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@agrzes/yellow-2020-common-data": "^1.1.2",
-    "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.5",
-    "@agrzes/yellow-2020-common-metadata": "^1.1.5",
-    "@agrzes/yellow-2020-common-model": "^1.1.5",
-    "@agrzes/yellow-2020-common-ui-model": "^1.1.5"
+    "@agrzes/yellow-2020-web-vue-components": "^1.1.5"
   },
   "files": [
     "/package.json",
