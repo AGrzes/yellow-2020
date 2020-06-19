@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import 'vuex'
 import './components'
 import router from './router'
 import store from './state'

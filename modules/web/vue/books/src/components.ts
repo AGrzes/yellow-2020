@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import { DeleteButton, EditButton, DetailsButton, DetailsLink, ListButton, resolveListRoute } from '@agrzes/yellow-2020-web-vue-components'
+import { DeleteButton, EditButton, DetailsButton, DetailsLink, ListButton } from '@agrzes/yellow-2020-web-vue-components'
+import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 
 export const BooksList = Vue.extend({

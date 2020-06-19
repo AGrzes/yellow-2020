@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
     mode: 'development',
@@ -34,11 +35,15 @@ module.exports = {
             ]
         }, {
             test: /\.tsx?$/,
-            use: 'ts-loader',
+            loader: 'ts-loader',
             exclude: /node_modules/,
             resolve: {
                 extensions: ['.ts', '.tsx', '.wasm', '.mjs', '.js', '.json']
             },
+            options: {
+                // disable type checker - we will use it in fork plugin
+                transpileOnly: true
+              }
         }]
     },
     watchOptions: {
@@ -50,12 +55,17 @@ module.exports = {
             jQuery: 'jquery',
             'window.jQuery': 'jquery',
             Popper: ['popper.js', 'default']
-        })
+        }),
+        new ForkTsCheckerWebpackPlugin()
     ],
     resolve: {
         symlinks: false,
         alias: {
-            'vue$': path.resolve('node_modules/vue/dist/vue.esm.js')
+            'vue$': path.resolve('node_modules/vue/dist/vue.esm.js'),
+            'vuex': path.resolve('node_modules/vuex/dist/vuex.esm.js'),
+            'vue-router': path.resolve('node_modules/vue-router/dist/vue-router.esm.js'),
+            'jquery': path.resolve('node_modules/jquery/dist/jquery.min.js'),
+            'bootstrap': path.resolve('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js')
         }
     }
 }

@@ -37,7 +37,9 @@
     "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.5",
     "@agrzes/yellow-2020-common-metadata": "^1.1.5",
     "@agrzes/yellow-2020-common-model": "^1.1.5",
-    "@agrzes/yellow-2020-common-ui-model": "^1.1.5"
+    "@agrzes/yellow-2020-common-ui-model": "^1.1.5",
+    "vue": "^2.6.11",
+    "vuex": "^3.4.0"
   },
   "files": [
     "/package.json",

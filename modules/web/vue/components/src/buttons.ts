@@ -1,7 +1,9 @@
 import Vue from 'vue'
-import { Location } from 'vue-router'
 import { modal } from './modal'
+import {resolveItemRoute, resolveListRoute} from '@agrzes/yellow-2020-web-vue-router'
+import { Location} from 'vue-router'
 import _ from 'lodash'
+import '@fortawesome/fontawesome-free/css/all.css'
 
 export const DeleteButton = Vue.extend({
   props: {
@@ -23,25 +25,12 @@ export const DeleteButton = Vue.extend({
   }
 })
 
-export function resolveItemRoute(type: string,id: string, selector?: string): Location {
-  return {
-    name: ({book: 'bookDetails', author: 'authorDetails'})[type], 
-    params: {key:id}
-  }
-}
-
-export function resolveItemLabel(type: string,id: string, item?: any, selector?: string): String {
+export function resolveItemLabel(type: string,id: string, item?: any, selector?: string): string {
   return item?({
     book: item.title, 
     author: item.name
   })[type] : _.startCase(id)
     
-}
-
-export function resolveListRoute(type: string, selector?: string): Location {
-  return {
-    name: ({book: 'bookList', author: 'authorList'})[type]
-  }
 }
 
 export const DetailsButton = Vue.extend({
@@ -58,7 +47,7 @@ export const DetailsButton = Vue.extend({
 </router-link>
   `,
   computed: {
-    route() {
+    route(): Location {
       return resolveItemRoute(this.type, this.id,this.selector)
     }
   }
@@ -77,7 +66,7 @@ export const ListButton = Vue.extend({
 </router-link>
   `,
   computed: {
-    route() {
+    route(): Location {
       return resolveListRoute(this.type, this.selector)
     }
   }
@@ -98,10 +87,10 @@ export const DetailsLink = Vue.extend({
 </router-link>
   `,
   computed: {
-    route() {
+    route(): Location {
       return resolveItemRoute(this.type, this.id,this.selector)
     },
-    label() {
+    label(): string {
       return resolveItemLabel(this.type, this.id, this.item, this.selector)
     }
   }
