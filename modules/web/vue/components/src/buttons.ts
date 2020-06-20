@@ -4,6 +4,7 @@ import {resolveItemRoute, resolveListRoute} from '@agrzes/yellow-2020-web-vue-ro
 import { Location} from 'vue-router'
 import _ from 'lodash'
 import '@fortawesome/fontawesome-free/css/all.css'
+import { Edit, Create } from './edit'
 
 export const DeleteButton = Vue.extend({
   props: {
@@ -88,18 +89,6 @@ export const DetailsLink = Vue.extend({
   }
 })
 
-const Edit = Vue.extend({
-  props: ['content'],
-  template: `
-<edit-yaml v-model="current"></edit-yaml>
-  `,
-  data() {
-    return {
-      current: this.content
-    }
-  }
-})
-
 export const EditButton = Vue.extend({
   props: {
     type: String,
@@ -139,6 +128,48 @@ export const EditButton = Vue.extend({
           }
         ]
       })
+    }
   }
+})
+
+export const CreateButton = Vue.extend({
+  props: {
+    type: String
+  },
+  template: `
+<button @click="add()" class="btn btn-outline-primary" type="button" title="Create">
+  <slot>
+    <i class="fas fa-plus"></i>
+  </slot>
+</button>
+  `, 
+  methods: {
+    async add() {
+      modal({
+        component: Create,
+        host: this.$root.$el,
+        title: 'Create',
+        props: {content: {}},
+        buttons: [
+          {
+            name: 'Save',
+            onclick: async (m) => {
+              await this.$store.dispatch(`${this.type}/raw`, {
+                key: m.component.key,
+                value: m.component.current
+              })
+              m.close()
+            },
+            class: 'btn-primary'
+          }, {
+            name: 'Cancel',
+            onclick(m) {
+              m.close()
+            },
+            class: 'btn-secondary'
+          }
+        ]
+      })
+    }
   }
 })

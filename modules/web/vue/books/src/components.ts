@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { DeleteButton, EditButton, DetailsButton, DetailsLink, ListButton } from '@agrzes/yellow-2020-web-vue-components'
+import { DeleteButton, EditButton, DetailsButton, DetailsLink, ListButton, CreateButton } from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 
@@ -22,10 +22,10 @@ export const BooksList = Vue.extend({
       </span>
     </span>
   </li>
-  <li class="list-group-item"><a @click="add()">add</a></li>
+  <li class="list-group-item"><create-button type="book">Add</create-button></li>
 </ul>`, 
   components: {
-    DeleteButton, EditButton, DetailsButton
+    DeleteButton, EditButton, DetailsButton, CreateButton
   }
 })
 
@@ -132,10 +132,10 @@ export const AuthorList = Vue.extend({
       </span>
     </span>
   </li>
-  <li class="list-group-item"><a @click="add()">add</a></li>
+  <li class="list-group-item"><create-button type="author">Add</create-button></li>
 </ul>`, 
   components: {
-    DeleteButton, EditButton, DetailsButton
+    DeleteButton, EditButton, DetailsButton, CreateButton
   }
 })
 
