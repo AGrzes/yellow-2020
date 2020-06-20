@@ -47,6 +47,7 @@
     "/types"
   ],
   "peerDependencies": {
+    "lodash": "^4.17.11",
     "vue": "^2.6.11",
     "vue-router": "^3.3.4",
     "vuex": "^3.4.0"

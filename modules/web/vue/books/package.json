@@ -47,7 +47,8 @@
   ],
   "devDependencies": {
     "mocha": "^7.1.2",
-    "nyc": "^15.0.1"
+    "nyc": "^15.0.1",
+    "file-loader": "^6.0.0"
   },
   "peerDependencies": {
     "vue": "^2.6.11",

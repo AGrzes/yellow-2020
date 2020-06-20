@@ -2,6 +2,7 @@ import { RouteConfig } from 'vue-router'
 import Vue, { VueConstructor } from 'vue'
 import { mapState } from 'vuex'
 import { BookDetails, AuthorDetails, AuthorList, BooksList, BooksCards, BooksTable } from './components'
+import { registerItemRoute, registerListRoute } from '@agrzes/yellow-2020-web-vue-router'
 
 function itemComponent(type: string, theComponent: VueConstructor) {
   return Vue.extend({
@@ -82,3 +83,8 @@ export const bookRoutes: RouteConfig[] = [{
   name: `authorList`,
   component: listComponent('author', AuthorList)
 }]
+
+registerItemRoute('book','bookDetails')
+registerItemRoute('author','authorDetails')
+registerListRoute('book','bookList')
+registerListRoute('author','authorList')
