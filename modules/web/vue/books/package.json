@@ -35,8 +35,7 @@
   "license": "MIT",
   "dependencies": {
     "@agrzes/yellow-2020-web-vue-components": "^1.1.5",
-    "@agrzes/yellow-2020-web-vue-router": "^1.1.5",
-    "vue": "^2.6.11"
+    "@agrzes/yellow-2020-web-vue-router": "^1.1.5"
   },
   "files": [
     "/package.json",
@@ -49,5 +48,10 @@
   "devDependencies": {
     "mocha": "^7.1.2",
     "nyc": "^15.0.1"
+  },
+  "peerDependencies": {
+    "vue": "^2.6.11",
+    "vue-router": "^3.3.4",
+    "vuex": "^3.4.0"
   }
 }

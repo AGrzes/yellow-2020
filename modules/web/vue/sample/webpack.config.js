@@ -44,7 +44,11 @@ module.exports = {
                 // disable type checker - we will use it in fork plugin
                 transpileOnly: true
               }
-        }]
+        },{
+            test: /\.js$/,
+            enforce: 'pre',
+            use: ['source-map-loader'],
+        },]
     },
     watchOptions: {
         poll: true
@@ -61,9 +65,9 @@ module.exports = {
     resolve: {
         symlinks: false,
         alias: {
-            'vue$': path.resolve('node_modules/vue/dist/vue.esm.js'),
-            'vuex': path.resolve('node_modules/vuex/dist/vuex.esm.js'),
-            'vue-router': path.resolve('node_modules/vue-router/dist/vue-router.esm.js'),
+            'vue$': path.resolve('../node_modules/vue/dist/vue.esm.js'),
+            'vuex': path.resolve('../node_modules/vuex/dist/vuex.esm.js'),
+            'vue-router': path.resolve('../node_modules/vue-router/dist/vue-router.esm.js'),
             'jquery': path.resolve('node_modules/jquery/dist/jquery.min.js'),
             'bootstrap': path.resolve('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js')
         }

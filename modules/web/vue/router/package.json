@@ -36,10 +36,7 @@
   "dependencies": {
     "@agrzes/yellow-2020-common-data": "^1.1.2",
     "@agrzes/yellow-2020-common-metadata": "^1.1.5",
-    "@agrzes/yellow-2020-common-ui-model": "^1.1.5",
-    "vue": "^2.6.11",
-    "vue-router": "^3.3.4",
-    "vuex": "^3.4.0"
+    "@agrzes/yellow-2020-common-ui-model": "^1.1.5"
   },
   "files": [
     "/package.json",
@@ -48,5 +45,10 @@
     "/src",
     "/target",
     "/types"
-  ]
+  ],
+  "peerDependencies": {
+    "vue": "^2.6.11",
+    "vue-router": "^3.3.4",
+    "vuex": "^3.4.0"
+  }
 }
