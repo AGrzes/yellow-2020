@@ -1,22 +1,14 @@
 {
-  "name": "@agrzes/yellow-2020-web-vue",
+  "name": "@agrzes/yellow-2020-web-vue-root",
   "version": "1.1.5",
   "description": "",
-  "main": "target",
-  "types": "types",
-  "scripts": {
-    "build": "true",
-    "test": "true"
-  },
   "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
   "license": "MIT",
-  "devDependencies": {
-    "@types/bootstrap": "^4.3.2",
-    "@types/jquery": "^3.3.36",
-    "@types/vue-router": "^2.0.0",
+  "dependencies": {
     "vue": "^2.6.11",
-    "vue-router": "^3.1.6",
-    "vuex": "^3.3.0"
+    "vue-router": "^3.3.4",
+    "vuex": "^3.4.0",
+    "lodash": "^4.17.11"
   },
   "private": true
 }

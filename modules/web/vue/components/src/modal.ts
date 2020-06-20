@@ -1,5 +1,7 @@
 import * as _ from 'lodash'
 import Vue from 'vue'
+import 'jquery'
+import 'bootstrap'
 
 const Modal = Vue.extend({
   props: ['component', 'title', 'componentProps', 'buttons'],

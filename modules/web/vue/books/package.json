@@ -1,11 +1,12 @@
 {
-  "name": "@agrzes/yellow-2020-web-vue-state",
+  "name": "@agrzes/yellow-2020-web-vue-books",
   "version": "1.1.5",
   "description": "",
   "main": "target",
   "types": "types",
   "scripts": {
     "build": "rm -rf target types && tsc",
+    "watch": "tsc -w",
     "test": "nyc mocha test/**/*.{ts,tsx}"
   },
   "nyc": {
@@ -33,13 +34,8 @@
   "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@agrzes/yellow-2020-common-data": "^1.1.2",
-    "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.5",
-    "@agrzes/yellow-2020-common-metadata": "^1.1.5",
-    "@agrzes/yellow-2020-common-model": "^1.1.5",
-    "@agrzes/yellow-2020-common-ui-model": "^1.1.5",
-    "vue": "^2.6.11",
-    "vuex": "^3.4.0"
+    "@agrzes/yellow-2020-web-vue-components": "^1.1.5",
+    "@agrzes/yellow-2020-web-vue-router": "^1.1.5"
   },
   "files": [
     "/package.json",
@@ -51,6 +47,12 @@
   ],
   "devDependencies": {
     "mocha": "^7.1.2",
-    "nyc": "^15.0.1"
+    "nyc": "^15.0.1",
+    "file-loader": "^6.0.0"
+  },
+  "peerDependencies": {
+    "vue": "^2.6.11",
+    "vue-router": "^3.3.4",
+    "vuex": "^3.4.0"
   }
 }

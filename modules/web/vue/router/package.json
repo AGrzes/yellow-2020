@@ -6,6 +6,7 @@
   "types": "types",
   "scripts": {
     "build": "rm -rf target types && tsc",
+    "watch": "tsc -w",
     "test": "nyc mocha test/**/*.{ts,tsx}"
   },
   "nyc": {
@@ -35,11 +36,7 @@
   "dependencies": {
     "@agrzes/yellow-2020-common-data": "^1.1.2",
     "@agrzes/yellow-2020-common-metadata": "^1.1.5",
-    "@agrzes/yellow-2020-common-ui-model": "^1.1.5",
-    "@agrzes/yellow-2020-web-vue-components": "^1.1.5",
-    "@fortawesome/fontawesome-free": "^5.13.0",
-    "vue-router": "^3.3.2",
-    "vuex": "^3.4.0"
+    "@agrzes/yellow-2020-common-ui-model": "^1.1.5"
   },
   "files": [
     "/package.json",
@@ -48,5 +45,11 @@
     "/src",
     "/target",
     "/types"
-  ]
+  ],
+  "peerDependencies": {
+    "lodash": "^4.17.11",
+    "vue": "^2.6.11",
+    "vue-router": "^3.3.4",
+    "vuex": "^3.4.0"
+  }
 }

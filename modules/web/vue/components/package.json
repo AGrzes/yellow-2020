@@ -6,6 +6,7 @@
   "types": "types",
   "scripts": {
     "build": "rm -rf target types && tsc",
+    "watch": "tsc -w",
     "test": "nyc mocha test/**/*.{ts,tsx}"
   },
   "nyc": {
@@ -34,9 +35,14 @@
   "license": "MIT",
   "dependencies": {
     "@agrzes/yellow-2020-common-ui-model": "^1.1.5",
+    "@agrzes/yellow-2020-web-vue-router": "^1.1.5",
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "ace-builds": "^1.4.9",
+    "bootstrap": "^4.5.0",
+    "jquery": "^3.5.1",
     "js-yaml": "^3.13.1",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "popper.js": "^1.16.1"
   },
   "files": [
     "/package.json",
@@ -45,5 +51,13 @@
     "/src",
     "/target",
     "/types"
-  ]
+  ],
+  "devDependencies": {
+    "@types/bootstrap": "^4.5.0",
+    "@types/jquery": "^3.3.38"
+  },
+  "peerDependencies": {
+    "vue": "^2.6.11",
+    "vue-router": "^3.3.4"
+  }
 }

@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import { uiModel } from '../uiModel'
-import { modelRoutes } from '@agrzes/yellow-2020-web-vue-router'
 import { navigationMenu } from '@agrzes/yellow-2020-web-vue-components'
+import { bookRoutes} from '@agrzes/yellow-2020-web-vue-books'
 Vue.use(VueRouter)
 
 async function router() {
@@ -32,7 +32,7 @@ async function router() {
                navigationMenu
            }
         },
-        children: modelRoutes(await uiModel())
+        children: [,...bookRoutes]
       }]
     return new VueRouter({
         mode: 'history',
