@@ -123,6 +123,7 @@ export const AuthorList = Vue.extend({
     <span class="d-flex">
       <span class="mr-auto">
         {{item.name}}
+        <span class="badge badge-pill badge-primary" v-if="item.books">{{item.books.length}}</span>
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button type="author" :id="key"></edit-button>
