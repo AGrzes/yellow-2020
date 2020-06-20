@@ -25,14 +25,6 @@ export const DeleteButton = Vue.extend({
   }
 })
 
-export function resolveItemLabel(type: string,id: string, item?: any, selector?: string): string {
-  return item?({
-    book: item.title, 
-    author: item.name
-  })[type] : _.startCase(id)
-    
-}
-
 export const DetailsButton = Vue.extend({
   props: {
     type: String,
@@ -91,7 +83,7 @@ export const DetailsLink = Vue.extend({
       return resolveItemRoute(this.type, this.id,this.selector)
     },
     label(): string {
-      return resolveItemLabel(this.type, this.id, this.item, this.selector)
+      return _.startCase(this.id)
     }
   }
 })

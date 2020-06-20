@@ -91,7 +91,7 @@ export const BookDetails = Vue.extend({
     <h2>Authors</h2>
     <ul>
       <li v-for="author in item.author">
-        <details-link type="author" :id="author._id" :item="author"></details-link>
+        <details-link type="author" :id="author._id" :item="author">{{author.name}}</details-link>
       </li>
     </ul>
   </div>
@@ -148,7 +148,7 @@ export const AuthorDetails = Vue.extend({
     <h2>Books</h2>
     <ul>
       <li v-for="book in item.books">
-        <details-link type="book" :id="book._id" :item="book"></details-link>
+        <details-link type="book" :id="book._id" :item="book">{{book.title}}</details-link>
       </li>
     </ul>
   </div>
