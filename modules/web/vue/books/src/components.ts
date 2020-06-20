@@ -13,6 +13,7 @@ export const BooksList = Vue.extend({
     <span class="d-flex">
       <span class="mr-auto">
         {{item.title}}
+        <small v-for="author in item.author" class="ml-1">{{author.name}}</small>
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button type="book" :id="key"></edit-button>
