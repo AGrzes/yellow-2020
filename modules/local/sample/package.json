@@ -6,7 +6,7 @@
   "types": "types",
   "scripts": {
     "build": "rm -rf target types && tsc",
-    "watch": "tsc --watch",
+    "watch": "tsc --watch --preserveWatchOutput",
     "load-schema": "node target/loadSchema schema",
     "test": "true"
   },

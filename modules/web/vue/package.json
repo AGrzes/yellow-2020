@@ -10,5 +10,8 @@
     "vuex": "^3.4.0",
     "lodash": "^4.17.11"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "file-loader": "^6.0.0"
+  }
 }
