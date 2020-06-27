@@ -1,4 +1,4 @@
-import confluenceClient from 'confluence-client'
+import confluenceClient from '@agrzes/yellow-2020-common-confluence'
 import debug from 'debug'
 import {JSDOM} from 'jsdom'
 import _ from 'lodash'
