@@ -47,7 +47,7 @@ export class BooksCRUD implements CRUD {
     for (let i = 0; i < 3; i++) {
       try {
         const response = await this.database.put({_id: id, _rev: this.revMap.get(id), ...existing, ...instance})
-        return materialize(clazz, {...existing, instance})
+        return materialize(clazz, {...existing, ...instance})
       } catch (e) {
         if (e.name === 'conflict') {
           existing = await this.database.get<T>(id)
@@ -68,7 +68,7 @@ export class BooksCRUD implements CRUD {
       } catch (e) {
         if (e.name === 'conflict') {
           const doc = await this.database.get<T>(id)
-          this.revMap.set(doc._id, doc._rev)
+          this.revMap.set(id, doc._rev)
         } else {
           throw e
         }
