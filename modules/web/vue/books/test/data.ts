@@ -108,5 +108,57 @@ describe('data', function() {
         expect(database.put).to.be.calledWith({_id: 'test:key', _rev: undefined, field: 'value1'})
       })
     })
+    describe('delete', function() {
+      it('should delete data from database', async function() {
+        const database = {
+          remove: sinon.mock()
+        } as unknown as PouchDB.Database
+        const booksCRUD = new BooksCRUD(database, [])
+        const result = await booksCRUD.delete(TestClass, 'key')
+        expect(database.remove).to.be.calledOnceWith('test:key', undefined)
+        expect(result).to.be.true
+      })
+      it('should retrieve rev in case of conflict', async function() {
+        const database = {
+          remove: sinon.stub().onFirstCall().throws({name: 'conflict'}),
+          get: sinon.stub().returns({_rev: 'rev'})
+        } as unknown as PouchDB.Database
+        const booksCRUD = new BooksCRUD(database, [])
+        const result = await booksCRUD.delete(TestClass, 'key')
+        expect(database.get).to.be.calledOnceWith('test:key')
+        expect(database.remove).to.be.calledWith('test:key', undefined)
+        expect(database.remove).to.be.calledWith('test:key', 'rev')
+        expect(result).to.be.true
+      })
+      it('should fail on other errors', async function() {
+        const error = new Error()
+        const database = {
+          remove: sinon.stub().throws(error)
+        } as unknown as PouchDB.Database
+        const booksCRUD = new BooksCRUD(database, [])
+        try {
+          await booksCRUD.delete(TestClass, 'key')
+          expect.fail('Exception expected')
+        } catch (e) {
+          expect(e).to.be.equals(error)
+        }
+        expect(database.remove).to.be.calledWith('test:key', undefined)
+      })
+      it('should fail after limited number of retries', async function() {
+        const database = {
+          remove: sinon.stub().throws({name: 'conflict'}),
+          get: sinon.stub().returns({ _rev: 'rev'})
+        } as unknown as PouchDB.Database
+        const booksCRUD = new BooksCRUD(database, [])
+        try {
+          await booksCRUD.delete(TestClass, 'key')
+          expect.fail('Exception expected')
+        } catch (e) {
+          expect(e).to.have.property('message', 'Delete failed')
+        }
+        expect(database.remove).to.be.calledWith('test:key', undefined)
+        expect(database.remove).to.be.calledWith('test:key', 'rev')
+      })
+    })
   })
 })
