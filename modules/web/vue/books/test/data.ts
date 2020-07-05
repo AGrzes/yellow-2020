@@ -164,42 +164,43 @@ describe('data', function() {
   })
   describe('BookModel', function() {
     describe('init', function() {
+      function list(type: Entity<any>){
+        if (type === Book) {
+          return [{
+            title: 'book A',
+            author: ['author-a'],
+            genre: ['genre-a'],
+            libraries: [{
+              library: 'library-a'
+            }]
+          }, {
+            title: 'book B'
+          }]
+        }
+        if (type === Author) {
+          return [{
+            name: 'author A',
+            books: ['book-b']
+          }]
+        }
+        if (type === Genre) {
+          return [{
+            name: 'genre A',
+            books: ['book-b']
+          }]
+        }
+        if (type === Library) {
+          return [{
+            name: 'library A',
+            entries: [{
+              book: 'book-b'
+            }]
+          }]
+        }
+      }
       it('should resolve forward reference', async function() {
         const crud = {
-          list: sinon.spy((type: Entity<any>) => {
-            if (type === Book) {
-              return [{
-                title: 'book A',
-                author: ['author-a'],
-                genre: ['genre-a'],
-                libraries: [{
-                  library: 'library-a'
-                }]
-              }, {
-                title: 'book B'
-              }]
-            }
-            if (type === Author) {
-              return [{
-                name: 'author A',
-                books: ['book-b']
-              }]
-            }
-            if (type === Genre) {
-              return [{
-                name: 'genre A',
-                books: ['book-b']
-              }]
-            }
-            if (type === Library) {
-              return [{
-                name: 'library A',
-                entries: [{
-                  book: 'book-b'
-                }]
-              }]
-            }
-          })
+          list: sinon.spy(list)
         } as unknown as BooksCRUD
 
         const model = new BookModel(crud)
@@ -210,6 +211,21 @@ describe('data', function() {
         expect(model).to.have.nested.property('authors.author-a.books[0].title', 'book B')
         expect(model).to.have.nested.property('genres.genre-a.books[0].title', 'book B')
         expect(model).to.have.nested.property('libraries.library-a.entries[0].book.title', 'book B')
+
+      })
+      it('should resolve reverse reference', async function() {
+        const crud = {
+          list: sinon.spy(list)
+        } as unknown as BooksCRUD
+
+        const model = new BookModel(crud)
+        await model.init()
+        expect(model).to.have.nested.property('books.book-b.author[0].name', 'author A')
+        expect(model).to.have.nested.property('books.book-b.genre[0].name', 'genre A')
+        expect(model).to.have.nested.property('books.book-b.libraries[0].library.name', 'library A')
+        expect(model).to.have.nested.property('authors.author-a.books[1].title', 'book A')
+        expect(model).to.have.nested.property('genres.genre-a.books[1].title', 'book A')
+        expect(model).to.have.nested.property('libraries.library-a.entries[1].book.title', 'book A')
 
       })
       /*it('should resolve cross references', async function() {

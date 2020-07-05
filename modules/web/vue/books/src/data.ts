@@ -88,18 +88,20 @@ interface Relation {
   sourcePath: string
   targetPath: string
   target: Entity<any>
-  targetKey: string
+  targetKey: string,
+  relationData?: any
 }
 
 function rel(source: Entity<any>, sourceKey: string, sourcePath: string,
-             target: Entity<any>, targetKey: string, targetPath: string): Relation {
+             target: Entity<any>, targetKey: string, targetPath: string, relationData?: any): Relation {
   return {
     source,
     sourceKey,
     sourcePath,
     target,
     targetKey,
-    targetPath
+    targetPath,
+    relationData
   }
 }
 
@@ -123,7 +125,7 @@ export class BookModel {
       _.forEach(book.author, (author: string) => this.index(rel(Book, key, 'author', Author, author, 'books')))
       _.forEach(book.genre, (genre: string) => this.index(rel(Book, key, 'genre', Genre, genre, 'books')))
       _.forEach(book.libraries, (entry: LibraryEntry<string>) =>
-        this.index(rel(Book, key, 'libraries.library', Library, entry.library as string, 'entries.book')))
+        this.index(rel(Book, key, 'libraries.library', Library, entry.library as string, 'entries.book', entry)))
     })
     _.forEach(this.authors, (author) => {
       const key = Author.key(author)
@@ -136,40 +138,48 @@ export class BookModel {
     _.forEach(this.libraries, (library) => {
       const key = Library.key(library)
       _.forEach(library.entries, (entry: LibraryEntry<string>) =>
-        this.index(rel(Library, key, 'entries.book', Book, entry.book as string, 'libraries.library')))
+        this.index(rel(Library, key, 'entries.book', Book, entry.book as string, 'libraries.library', entry)))
     })
     // Resolve
     _.forEach(this.books, (book) => {
       const key = Book.key(book)
-      book.author = _.map([...(book.author || []), ...this.resolve(Book, key, 'author')], (author: string) =>
-        this.authors[author] || author)
-      book.genre = _.map([...book.genre || [], ...this.resolve(Book, key, 'genre')], (genre: string) =>
-        this.genres[genre] || genre)
-      _.forEach(book.libraries, (library) =>
-        library.library = this.libraries[library.library as string] || library.library)
+      book.author = _.map([...(book.author || []), ..._.map(this.resolve(Book, key, 'author'), 'sourceKey')],
+        (author: string) => this.authors[author] || author)
+      book.genre = _.map([...book.genre || [], ..._.map(this.resolve(Book, key, 'genre'), 'sourceKey')],
+        (genre: string) => this.genres[genre] || genre)
+      _.forEach(book.libraries, (library) => {
+        library.library = this.libraries[library.library as string] || library.library
+        library.book = book
+      })
+      book.libraries = [...(book.libraries || []),
+                        ..._.map(this.resolve(Book, key, 'libraries.library'), 'relationData')]
     })
     _.forEach(this.authors, (author) => {
       const key = Author.key(author)
-      author.books = _.map([...(author.books || []), ...this.resolve(Author, key, 'books')], (book: string) =>
-        this.books[book] || book)
+      author.books = _.map([...(author.books || []), ..._.map(this.resolve(Author, key, 'books'), 'sourceKey')],
+        (book: string) => this.books[book] || book)
     })
     _.forEach(this.genres, (genre) => {
       const key = Genre.key(genre)
-      genre.books = _.map([...genre.books || [], ...this.resolve(Genre, key, 'books')], (book: string) =>
-        this.books[book] || book)
+      genre.books = _.map([...genre.books || [], ..._.map(this.resolve(Genre, key, 'books'), 'sourceKey')],
+        (book: string) => this.books[book] || book)
     })
     _.forEach(this.libraries, (library) => {
       const key = Library.key(library)
 
-      _.forEach(library.entries, (entry) =>
-        entry.book = this.books[entry.book as string] || entry.book)
+      _.forEach(library.entries, (entry) => {
+        entry.book = this.books[entry.book as string] || entry.book
+        entry.library = library
+      })
+      library.entries = [...(library.entries || []),
+                        ..._.map(this.resolve(Library, key, 'entries.book'), 'relationData')]
     })
   }
 
-  private resolve<T>(target: Entity<T>, targetKey: string, targetPath: string): string[] {
+  private resolve<T>(target: Entity<T>, targetKey: string, targetPath: string): Relation[] {
     if (this.reverseRelations.has(target)) {
       const rr = this.reverseRelations.get(target)
-      return _.map((rr[targetKey] || {})[targetPath] || [], 'sourceKey')
+      return (rr[targetKey] || {})[targetPath] || []
     } else {
       return []
     }
