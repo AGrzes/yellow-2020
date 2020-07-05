@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised'
 import 'mocha'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import {BookModel, BooksCRUD, Entity} from '../src/data'
+import {BookModel, BooksCRUD, Entity, Index} from '../src/data'
 import { Author, Book, Genre, Library } from '../src/model'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
 
@@ -14,6 +14,9 @@ class TestClass {
   public static typeTag = 'test'
   public static key(instance: TestClass) {
     return 'key'
+  }
+  public static index<T>(index: Index, genre: TestClass) {
+    //
   }
 }
 

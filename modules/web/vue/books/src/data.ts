@@ -6,6 +6,7 @@ export interface Entity<T> {
   new (...args: any): T
   readonly typeTag: string
   key(instance: T): string
+  index(index: Index, instance: T): void
 }
 
 interface CRUD<Key = string> {
@@ -92,8 +93,8 @@ interface Relation {
   relationData?: any
 }
 
-function rel(source: Entity<any>, sourceKey: string, sourcePath: string,
-             target: Entity<any>, targetKey: string, targetPath: string, relationData?: any): Relation {
+export function rel(source: Entity<any>, sourceKey: string, sourcePath: string,
+                    target: Entity<any>, targetKey: string, targetPath: string, relationData?: any): Relation {
   return {
     source,
     sourceKey,
@@ -149,26 +150,10 @@ export class BookModel {
     this.genres = _.keyBy<Genre<string>>(await this.crud.list<Genre>(Genre), Genre.key)
     this.libraries = _.keyBy<Library<string>>(await this.crud.list<Library>(Library), Library.key)
     // Index
-    _.forEach(this.books, (book) => {
-      const key = Book.key(book)
-      _.forEach(book.author, (author: string) => this.index.index(rel(Book, key, 'author', Author, author, 'books')))
-      _.forEach(book.genre, (genre: string) => this.index.index(rel(Book, key, 'genre', Genre, genre, 'books')))
-      _.forEach(book.libraries, (entry: LibraryEntry<string>) =>
-        this.index.index(rel(Book, key, 'libraries.library', Library, entry.library as string, 'entries.book', entry)))
-    })
-    _.forEach(this.authors, (author) => {
-      const key = Author.key(author)
-      _.forEach(author.books, (book: string) => this.index.index(rel(Author, key, 'books', Book, book, 'author')))
-    })
-    _.forEach(this.genres, (genre) => {
-      const key = Genre.key(genre)
-      _.forEach(genre.books, (book: string) => this.index.index(rel(Genre, key, 'books', Book, book, 'genre')))
-    })
-    _.forEach(this.libraries, (library) => {
-      const key = Library.key(library)
-      _.forEach(library.entries, (entry: LibraryEntry<string>) =>
-        this.index.index(rel(Library, key, 'entries.book', Book, entry.book as string, 'libraries.library', entry)))
-    })
+    _.forEach(this.books, _.partial(Book.index, this.index))
+    _.forEach(this.authors, _.partial(Author.index, this.index))
+    _.forEach(this.genres, _.partial(Genre.index, this.index))
+    _.forEach(this.libraries, _.partial(Library.index, this.index))
     // Resolve
     _.forEach(this.books, (book) => {
       const key = Book.key(book)
