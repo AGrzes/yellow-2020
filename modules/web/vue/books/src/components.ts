@@ -1,7 +1,8 @@
-import Vue from 'vue'
-import { DeleteButton, EditButton, DetailsButton, DetailsLink, ListButton, CreateButton } from '@agrzes/yellow-2020-web-vue-components'
+import { CreateButton, DeleteButton, DetailsButton,
+  DetailsLink, EditButton, ListButton } from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
+import Vue from 'vue'
 
 export const BooksList = Vue.extend({
   props: {
@@ -23,7 +24,7 @@ export const BooksList = Vue.extend({
     </span>
   </li>
   <li class="list-group-item"><create-button type="book">Add</create-button></li>
-</ul>`, 
+</ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton
   }
@@ -51,7 +52,7 @@ export const BooksTable = Vue.extend({
       </td>
     </tr>
   </tbody>
-</table>`, 
+</table>`,
   components: {
     DeleteButton, EditButton, DetailsButton
   }
@@ -75,7 +76,7 @@ export const BooksCards = Vue.extend({
       </div>
     </div>
   </div>
-</div>`, 
+</div>`,
   components: {
     DeleteButton, EditButton, DetailsButton
   }
@@ -101,17 +102,16 @@ export const BookDetails = Vue.extend({
     <list-button type="book">Back</list-button>
     <delete-button type="book" :id="item._id">Delete</delete-button>
   </div>
-</div>`, 
+</div>`,
   components: {
     DeleteButton, EditButton, DetailsLink, ListButton
-  }, 
+  },
   methods: {
     deleted() {
       this.$router.push(resolveListRoute('book'))
     }
   }
 })
-
 
 export const AuthorList = Vue.extend({
   props: {
@@ -133,7 +133,7 @@ export const AuthorList = Vue.extend({
     </span>
   </li>
   <li class="list-group-item"><create-button type="author">Add</create-button></li>
-</ul>`, 
+</ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton
   }
@@ -159,10 +159,10 @@ export const AuthorDetails = Vue.extend({
     <list-button type="author">Back</list-button>
     <delete-button type="author" :id="item._id">Delete</delete-button>
   </div>
-</div>`, 
+</div>`,
   components: {
     DeleteButton, EditButton, DetailsLink, ListButton
-  }, 
+  },
   methods: {
     deleted() {
       this.$router.push(resolveListRoute('author'))

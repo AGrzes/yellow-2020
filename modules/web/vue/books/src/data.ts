@@ -161,21 +161,17 @@ export class BookModel {
   public genres: Record<string, Genre<string>>
   public libraries: Record<string, Library<string>>
   private index: Index = new Index()
-  constructor(private crud: BooksCRUD) {}
+  constructor(private crud: BooksCRUD, private entities: Record<string, Entity<any>>) {}
 
   public async init() {
-    this.books = _.keyBy<Book<string>>(await this.crud.list<Book<string>>(Book), Book.key)
-    this.authors = _.keyBy<Author<string>>(await this.crud.list<Author>(Author), Author.key)
-    this.genres = _.keyBy<Genre<string>>(await this.crud.list<Genre>(Genre), Genre.key)
-    this.libraries = _.keyBy<Library<string>>(await this.crud.list<Library>(Library), Library.key)
-    _.forEach(this.books, _.bind(this.index.index, this.index, Book))
-    _.forEach(this.authors, _.bind(this.index.index, this.index, Author))
-    _.forEach(this.genres, _.bind(this.index.index, this.index, Genre))
-    _.forEach(this.libraries, _.bind(this.index.index, this.index, Library))
-    // Resolve
-    _.forEach(this.books, _.partial(Book.resolve, this.index))
-    _.forEach(this.authors, _.partial(Author.resolve, this.index))
-    _.forEach(this.genres, _.partial(Genre.resolve, this.index))
-    _.forEach(this.libraries, _.partial(Library.resolve, this.index))
+    await Promise.all(_.map(this.entities, async (type, name) => {
+      this[name] =  _.keyBy(await this.crud.list(type), type.key)
+    }))
+    _.forEach(this.entities, (type, name) => {
+      _.forEach(this[name], _.bind(this.index.index, this.index, type))
+    })
+    _.forEach(this.entities, (type, name) => {
+      _.forEach(this[name], _.partial(type.resolve, this.index))
+    })
   }
 }
