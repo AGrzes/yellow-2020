@@ -170,7 +170,7 @@ describe('data', function() {
   })
   describe('BookModel', function() {
     describe('init', function() {
-      function list(type: Entity<any>){
+      function list(type: Entity<any>) {
         if (type === Book) {
           return [{
             title: 'book A',
@@ -209,7 +209,7 @@ describe('data', function() {
           list: sinon.spy(list)
         } as unknown as BooksCRUD
 
-        const model = new BookModel(crud)
+        const model = new BookModel(crud, {books: Book, authors: Author, genres: Genre, libraries: Library})
         await model.init()
         expect(model).to.have.nested.property('books.book-a.author[0].name', 'author A')
         expect(model).to.have.nested.property('books.book-a.genre[0].name', 'genre A')
@@ -224,7 +224,7 @@ describe('data', function() {
           list: sinon.spy(list)
         } as unknown as BooksCRUD
 
-        const model = new BookModel(crud)
+        const model = new BookModel(crud, {books: Book, authors: Author, genres: Genre, libraries: Library})
         await model.init()
         expect(model).to.have.nested.property('books.book-b.author[0].name', 'author A')
         expect(model).to.have.nested.property('books.book-b.genre[0].name', 'genre A')
