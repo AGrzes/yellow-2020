@@ -126,6 +126,7 @@ export class Index {
     } else {
       this.entities.set(type, {[type.key(instance)] : instance})
     }
+    type.index(this, instance)
   }
 
   public resolve<T>(type: Entity<T>, key: string): T| string {
@@ -171,11 +172,6 @@ export class BookModel {
     _.forEach(this.authors, _.bind(this.index.index, this.index, Author))
     _.forEach(this.genres, _.bind(this.index.index, this.index, Genre))
     _.forEach(this.libraries, _.bind(this.index.index, this.index, Library))
-    // Index
-    _.forEach(this.books, _.partial(Book.index, this.index))
-    _.forEach(this.authors, _.partial(Author.index, this.index))
-    _.forEach(this.genres, _.partial(Genre.index, this.index))
-    _.forEach(this.libraries, _.partial(Library.index, this.index))
     // Resolve
     _.forEach(this.books, _.partial(Book.resolve, this.index))
     _.forEach(this.authors, _.partial(Author.resolve, this.index))
