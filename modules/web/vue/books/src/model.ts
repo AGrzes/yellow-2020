@@ -8,8 +8,8 @@ export class Book<Ref = never> {
   public genre: Array<Ref | Genre<Ref>>
   public libraries: Array<LibraryEntry<Ref>>
   public static typeTag = 'book'
-  public static key(book: Book) {
-    return _.snakeCase(book.title)
+  public static key<T>(book: Book<T>) {
+    return _.kebabCase(book.title)
   }
 }
 
@@ -17,8 +17,8 @@ export class Author<Ref = never> {
   public name: string
   public books: Array<Ref | Book<Ref>>
   public static typeTag = 'author'
-  public static key(author: Author) {
-    return _.snakeCase(author.name)
+  public static key<T>(author: Author<T>) {
+    return _.kebabCase(author.name)
   }
 }
 
@@ -26,8 +26,8 @@ export class Genre<Ref = never> {
   public name: string
   public books: Array<Ref | Book<Ref>>
   public static typeTag = 'genre'
-  public static key(genre: Genre) {
-    return _.snakeCase(genre.name)
+  public static key<T>(genre: Genre<T>) {
+    return _.kebabCase(genre.name)
   }
 }
 
@@ -35,10 +35,10 @@ export class Library<Ref = never> {
   public name: string
   public description?: string
   public kind: 'physical' | 'digital'
-  public entries: Array<Ref | LibraryEntry<Ref>>
+  public entries: Array<LibraryEntry<Ref>>
   public static typeTag = 'library'
-  public static key(library: Library) {
-    return _.snakeCase(library.name)
+  public static key<T>(library: Library<T>) {
+    return _.kebabCase(library.name)
   }
 }
 

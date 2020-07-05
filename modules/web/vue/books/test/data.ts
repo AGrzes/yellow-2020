@@ -1,10 +1,11 @@
 import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
-import chai from 'chai'
+import chai, { assert } from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import 'mocha'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import {BooksCRUD} from '../src/data'
+import {BookModel, BooksCRUD, Entity} from '../src/data'
+import { Author, Book, Genre, Library } from '../src/model'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
 
 class TestClass {
@@ -159,6 +160,106 @@ describe('data', function() {
         expect(database.remove).to.be.calledWith('test:key', undefined)
         expect(database.remove).to.be.calledWith('test:key', 'rev')
       })
+    })
+  })
+  describe('BookModel', function() {
+    describe('init', function() {
+      it('should resolve forward reference', async function() {
+        const crud = {
+          list: sinon.spy((type: Entity<any>) => {
+            if (type === Book) {
+              return [{
+                title: 'book A',
+                author: ['author-a'],
+                genre: ['genre-a'],
+                libraries: [{
+                  library: 'library-a'
+                }]
+              }, {
+                title: 'book B'
+              }]
+            }
+            if (type === Author) {
+              return [{
+                name: 'author A',
+                books: ['book-b']
+              }]
+            }
+            if (type === Genre) {
+              return [{
+                name: 'genre A',
+                books: ['book-b']
+              }]
+            }
+            if (type === Library) {
+              return [{
+                name: 'library A',
+                entries: [{
+                  book: 'book-b'
+                }]
+              }]
+            }
+          })
+        } as unknown as BooksCRUD
+
+        const model = new BookModel(crud)
+        await model.init()
+        expect(model).to.have.nested.property('books.book-a.author[0].name', 'author A')
+        expect(model).to.have.nested.property('books.book-a.genre[0].name', 'genre A')
+        expect(model).to.have.nested.property('books.book-a.libraries[0].library.name', 'library A')
+        expect(model).to.have.nested.property('authors.author-a.books[0].title', 'book B')
+        expect(model).to.have.nested.property('genres.genre-a.books[0].title', 'book B')
+        expect(model).to.have.nested.property('libraries.library-a.entries[0].book.title', 'book B')
+
+      })
+      /*it('should resolve cross references', async function() {
+        const crud = {
+          list: sinon.spy((type: Entity<any>) => {
+            if (type === Book) {
+              return [{
+                title: 'book A',
+                author: ['author-a'],
+                genre: ['genre-a'],
+                libraries: [{
+                  library: 'library-a'
+                }]
+              }, {
+                title: 'book B'
+              }]
+            }
+            if (type === Author) {
+              return [{
+                name: 'author A',
+                books: ['book-b']
+              }]
+            }
+            if (type === Genre) {
+              return [{
+                name: 'genre A',
+                books: ['book-b']
+              }]
+            }
+            if (type === Library) {
+              return [{
+                name: 'library A',
+                entries: [{
+                  book: 'book-b'
+                }]
+              }]
+            }
+          })
+        } as unknown as BooksCRUD
+
+        const model = new BookModel(crud)
+        await model.init()
+        expect(model).to.have.nested.property('books.book-a.author[0].name', 'author A')
+        expect(model).to.have.nested.property('books.book-a.genre[0].name', 'genre A')
+        expect(model).to.have.nested.property('books.book-a.libraries[0].library.name', 'library A')
+        expect(model).to.have.nested.property('books.book-b.author[0].name', 'author A')
+        expect(model).to.have.nested.property('books.book-b.genre[0].name', 'genre A')
+        expect(model).to.have.nested.property('books.book-b.libraries[0].library.name', 'library A')
+
+      })*/
     })
   })
 })
