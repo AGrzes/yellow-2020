@@ -18,6 +18,9 @@ class TestClass {
   public static index<T>(index: Index, genre: TestClass) {
     //
   }
+  public static resolve<T>(index: Index, genre: TestClass) {
+    //
+  }
 }
 
 describe('data', function() {

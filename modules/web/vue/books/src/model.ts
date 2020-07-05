@@ -14,10 +14,23 @@ export class Book<Ref = never> {
   }
   public static index(index: Index, book: Book<string>) {
     const key = Book.key(book)
-    _.forEach(book.author, (author: string) => index.index(rel(Book, key, 'author', Author, author, 'books')))
-    _.forEach(book.genre, (genre: string) => index.index(rel(Book, key, 'genre', Genre, genre, 'books')))
+    _.forEach(book.author, (author: string) => index.relation(rel(Book, key, 'author', Author, author, 'books')))
+    _.forEach(book.genre, (genre: string) => index.relation(rel(Book, key, 'genre', Genre, genre, 'books')))
     _.forEach(book.libraries, (entry: LibraryEntry<string>) =>
-      index.index(rel(Book, key, 'libraries.library', Library, entry.library as string, 'entries.book', entry)))
+      index.relation(rel(Book, key, 'libraries.library', Library, entry.library as string, 'entries.book', entry)))
+  }
+  public static resolve(index: Index, book: Book<string>) {
+    const key = Book.key(book)
+    book.author = _.map([...(book.author || []), ..._.map(index.resolveRelation(Book, key, 'author'), 'sourceKey')],
+      (author: string) => index.resolve<Author<string>>(Author, author))
+    book.genre = _.map([...book.genre || [], ..._.map(index.resolveRelation(Book, key, 'genre'), 'sourceKey')],
+      (genre: string) => index.resolve<Genre<string>>(Genre, genre))
+    _.forEach(book.libraries, (library) => {
+      library.library = index.resolve<Library<string>>(Library, library.library as string)
+      library.book = book
+    })
+    book.libraries = [...(book.libraries || []),
+                      ..._.map(index.resolveRelation(Book, key, 'libraries.library'), 'relationData')]
   }
 }
 
@@ -30,7 +43,12 @@ export class Author<Ref = never> {
   }
   public static index<T>(index: Index, author: Author<string>) {
     const key = Author.key(author)
-    _.forEach(author.books, (book: string) => index.index(rel(Author, key, 'books', Book, book, 'author')))
+    _.forEach(author.books, (book: string) => index.relation(rel(Author, key, 'books', Book, book, 'author')))
+  }
+  public static resolve<T>(index: Index, author: Author<string>) {
+    const key = Author.key(author)
+    author.books = _.map([...(author.books || []), ..._.map(index.resolveRelation(Author, key, 'books'), 'sourceKey')],
+      (book: string) => index.resolve<Book<string>>(Book, book))
   }
 }
 
@@ -43,7 +61,12 @@ export class Genre<Ref = never> {
   }
   public static index<T>(index: Index, genre: Genre<string>) {
     const key = Genre.key(genre)
-    _.forEach(genre.books, (book: string) => index.index(rel(Genre, key, 'books', Book, book, 'genre')))
+    _.forEach(genre.books, (book: string) => index.relation(rel(Genre, key, 'books', Book, book, 'genre')))
+  }
+  public static resolve<T>(index: Index, genre: Genre<string>) {
+    const key = Genre.key(genre)
+    genre.books = _.map([...genre.books || [], ..._.map(index.resolveRelation(Genre, key, 'books'), 'sourceKey')],
+      (book: string) => index.resolve<Book<string>>(Book, book))
   }
 }
 
@@ -59,7 +82,17 @@ export class Library<Ref = never> {
   public static index<T>(index: Index, library: Library<string>) {
     const key = Library.key(library)
     _.forEach(library.entries, (entry: LibraryEntry<string>) =>
-      index.index(rel(Library, key, 'entries.book', Book, entry.book as string, 'libraries.library', entry)))
+      index.relation(rel(Library, key, 'entries.book', Book, entry.book as string, 'libraries.library', entry)))
+  }
+  public static resolve<T>(index: Index, library: Library<string>) {
+    const key = Library.key(library)
+
+    _.forEach(library.entries, (entry) => {
+      entry.book = index.resolve<Book<string>>(Book, entry.book as string)
+      entry.library = library
+    })
+    library.entries = [...(library.entries || []),
+                      ..._.map(index.resolveRelation(Library, key, 'entries.book'), 'relationData')]
   }
 }
 
