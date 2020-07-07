@@ -81,9 +81,6 @@ export class BooksCRUD implements CRUD {
 
 }
 
-export const booksCRUD = new BooksCRUD(
-  new PouchDB('http://couchdb.home.agrzes.pl:5984/books'), [Author, Book, Genre, Library])
-
 interface Relation {
   source: Entity<any>
   sourceKey: string
@@ -153,6 +150,15 @@ export class Index {
       this.reverseRelations.set(relation.target, {[relation.targetKey]: {[relation.targetPath]: [relation]}})
     }
   }
+
+  public indexRelation<T extends Entity<any>, R extends Entity<any>>(type: T, entity: InstanceType<T>,
+                                                                     property: keyof InstanceType<T> & string,
+                                                                     targetType: R,
+                                                                     reverseProperty: keyof InstanceType<R> & string ) {
+    const key = type.key(entity)
+    _.forEach(entity[property],
+      (target: string) => this.relation(rel(type, key, property, targetType, target, reverseProperty)))
+  }
 }
 
 export class BookModel {
@@ -175,3 +181,8 @@ export class BookModel {
     })
   }
 }
+
+export const booksCRUD = new BooksCRUD(
+  new PouchDB('http://couchdb.home.agrzes.pl:5984/books'), [Author, Book, Genre, Library])
+
+export const booksModel = new BookModel(booksCRUD, {books: Book, authors: Author, genres: Genre, libraries: Library})

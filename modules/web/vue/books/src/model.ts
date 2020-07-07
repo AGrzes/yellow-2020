@@ -1,6 +1,6 @@
 
 import _ from 'lodash'
-import { Index, rel } from './data'
+import { Entity, Index, rel } from './data'
 
 export class Book<Ref = never> {
   public title: string
@@ -14,8 +14,8 @@ export class Book<Ref = never> {
   }
   public static index(index: Index, book: Book<string>) {
     const key = Book.key(book)
-    _.forEach(book.author, (author: string) => index.relation(rel(Book, key, 'author', Author, author, 'books')))
-    _.forEach(book.genre, (genre: string) => index.relation(rel(Book, key, 'genre', Genre, genre, 'books')))
+    index.indexRelation(Book, book, 'author', Author, 'books')
+    index.indexRelation(Book, book, 'genre', Genre, 'books')
     _.forEach(book.libraries, (entry: LibraryEntry<string>) =>
       index.relation(rel(Book, key, 'libraries.library', Library, entry.library as string, 'entries.book', entry)))
   }
@@ -42,8 +42,7 @@ export class Author<Ref = never> {
     return _.kebabCase(author.name)
   }
   public static index<T>(index: Index, author: Author<string>) {
-    const key = Author.key(author)
-    _.forEach(author.books, (book: string) => index.relation(rel(Author, key, 'books', Book, book, 'author')))
+    index.indexRelation(Author, author, 'books', Book, 'author')
   }
   public static resolve<T>(index: Index, author: Author<string>) {
     const key = Author.key(author)
@@ -60,8 +59,7 @@ export class Genre<Ref = never> {
     return _.kebabCase(genre.name)
   }
   public static index<T>(index: Index, genre: Genre<string>) {
-    const key = Genre.key(genre)
-    _.forEach(genre.books, (book: string) => index.relation(rel(Genre, key, 'books', Book, book, 'genre')))
+    index.indexRelation(Genre, genre, 'books', Book, 'genre')
   }
   public static resolve<T>(index: Index, genre: Genre<string>) {
     const key = Genre.key(genre)
