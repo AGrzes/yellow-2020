@@ -184,6 +184,28 @@ export class Index {
       ..._.map(this.resolveRelation(type, key, property), 'sourceKey')],
       (target: string) => this.resolve<InstanceType<R>>(targetType, target))
   }
+  public resolveRelationEntities<T extends Entity<any>,
+  P extends keyof InstanceType<T> & string,
+  E extends InstanceType<T>[P][0],
+  NP extends keyof E, RNP extends keyof E, R extends Entity<any>>(
+  type: T, entity: InstanceType<T>,
+  property: P,
+  nestedProperty: NP,
+  targetType: R,
+  reverseNestedProperty: keyof E & string): E[] {
+    const key = type.key(entity)
+    return [..._.map(entity[property], (entry: E) => {
+      const clone = _.cloneDeep(entry)
+      clone[reverseNestedProperty] = entity
+      clone[nestedProperty] = this.resolve(targetType, entry[nestedProperty] as string)
+      return clone
+    }), ..._.map(this.resolveRelation(type, key, `${property}.${nestedProperty}`), ({sourceKey, relationData}) => {
+      const clone = _.cloneDeep(relationData)
+      clone[reverseNestedProperty] = entity
+      clone[nestedProperty] = this.resolve(targetType, sourceKey)
+      return clone
+    })]
+  }
 }
 
 export class BookModel {

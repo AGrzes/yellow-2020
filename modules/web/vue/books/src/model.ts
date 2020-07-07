@@ -22,12 +22,7 @@ export class Book<Ref = string> {
     const key = Book.key(book)
     book.author = index.resolveRelations(Book, book, 'author', Author) as Array<string | Author<string>>
     book.genre = index.resolveRelations(Book, book, 'genre', Genre) as Array<string | Genre<string>>
-    _.forEach(book.libraries, (library) => {
-      library.library = index.resolve<Library<string>>(Library, library.library as string)
-      library.book = book
-    })
-    book.libraries = [...(book.libraries || []),
-                      ..._.map(index.resolveRelation(Book, key, 'libraries.library'), 'relationData')]
+    book.libraries = index.resolveRelationEntities(Book, book, 'libraries', 'library', Library, 'book')
   }
 }
 
@@ -74,14 +69,7 @@ export class Library<Ref = never> {
     index.indexRelationEntity(Library, library, 'entries', 'book', Book, 'libraries', 'library')
   }
   public static resolve<T>(index: Index, library: Library<string>) {
-    const key = Library.key(library)
-
-    _.forEach(library.entries, (entry) => {
-      entry.book = index.resolve<Book<string>>(Book, entry.book as string)
-      entry.library = library
-    })
-    library.entries = [...(library.entries || []),
-                      ..._.map(index.resolveRelation(Library, key, 'entries.book'), 'relationData')]
+    library.entries = index.resolveRelationEntities(Library, library, 'entries', 'book', Book, 'library')
   }
 }
 
