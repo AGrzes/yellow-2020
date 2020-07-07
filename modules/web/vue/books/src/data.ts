@@ -7,7 +7,7 @@ export interface Entity<T> {
   readonly typeTag: string
   key(instance: T): string
   index(index: Index, instance: T): void
-  resolve(index: Index, instance: T): void
+  // resolve(index: Index, instance: T): void
 }
 
 interface CRUD<Key = string> {
@@ -213,7 +213,7 @@ export class BookModel {
   public authors: Record<string, Author<string>>
   public genres: Record<string, Genre<string>>
   public libraries: Record<string, Library<string>>
-  private index: Index = new Index()
+  public index: Index = new Index()
   constructor(private crud: BooksCRUD, private entities: Record<string, Entity<any>>) {}
 
   public async init() {
@@ -223,9 +223,9 @@ export class BookModel {
     _.forEach(this.entities, (type, name) => {
       _.forEach(this[name], _.bind(this.index.index, this.index, type))
     })
-    _.forEach(this.entities, (type, name) => {
+    /*(_.forEach(this.entities, (type, name) => {
       _.forEach(this[name], _.partial(type.resolve, this.index))
-    })
+    })*/
   }
 }
 

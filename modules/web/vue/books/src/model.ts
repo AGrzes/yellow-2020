@@ -18,11 +18,14 @@ export class Book<Ref = string> {
     index.indexRelation(Book, book, 'genre', Genre, 'books')
     index.indexRelationEntity(Book, book, 'libraries', 'library', Library, 'entries', 'book')
   }
-  public static resolve(index: Index, book: Book<string>) {
-    const key = Book.key(book)
-    book.author = index.resolveRelations(Book, book, 'author', Author) as Array<string | Author<string>>
-    book.genre = index.resolveRelations(Book, book, 'genre', Genre) as Array<string | Genre<string>>
-    book.libraries = index.resolveRelationEntities(Book, book, 'libraries', 'library', Library, 'book')
+  public static resolveAuthor(index: Index, book: Book<string>) {
+    return index.resolveRelations(Book, book, 'author', Author) as Array<string | Author<string>>
+  }
+  public static resolveGenre(index: Index, book: Book<string>) {
+    return index.resolveRelations(Book, book, 'genre', Genre) as Array<string | Genre<string>>
+  }
+  public static resolveLibraries(index: Index, book: Book<string>) {
+    return index.resolveRelationEntities(Book, book, 'libraries', 'library', Library, 'book')
   }
 }
 
@@ -36,8 +39,8 @@ export class Author<Ref = never> {
   public static index<T>(index: Index, author: Author<string>) {
     index.indexRelation(Author, author, 'books', Book, 'author')
   }
-  public static resolve<T>(index: Index, author: Author<string>) {
-    author.books = index.resolveRelations(Author, author, 'books', Book) as Array<string | Book<string>>
+  public static resolveBooks(index: Index, author: Author<string>) {
+    return index.resolveRelations(Author, author, 'books', Book) as Array<string | Book<string>>
   }
 }
 
@@ -51,8 +54,8 @@ export class Genre<Ref = never> {
   public static index<T>(index: Index, genre: Genre<string>) {
     index.indexRelation(Genre, genre, 'books', Book, 'genre')
   }
-  public static resolve<T>(index: Index, genre: Genre<string>) {
-    genre.books = index.resolveRelations(Genre, genre, 'books', Book) as Array<string | Book<string>>
+  public static resolveBooks(index: Index, genre: Genre<string>) {
+    return index.resolveRelations(Genre, genre, 'books', Book) as Array<string | Book<string>>
   }
 }
 
@@ -68,8 +71,8 @@ export class Library<Ref = never> {
   public static index<T>(index: Index, library: Library<string>) {
     index.indexRelationEntity(Library, library, 'entries', 'book', Book, 'libraries', 'library')
   }
-  public static resolve<T>(index: Index, library: Library<string>) {
-    library.entries = index.resolveRelationEntities(Library, library, 'entries', 'book', Book, 'library')
+  public static resolveEntries(index: Index, library: Library<string>) {
+    return index.resolveRelationEntities(Library, library, 'entries', 'book', Book, 'library')
   }
 }
 
