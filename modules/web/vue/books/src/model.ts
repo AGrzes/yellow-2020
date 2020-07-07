@@ -2,7 +2,7 @@
 import _ from 'lodash'
 import { Entity, Index, rel } from './data'
 
-export class Book<Ref = never> {
+export class Book<Ref = string> {
   public title: string
   public description?: string
   public author: Array<Ref | Author<Ref>>
@@ -20,10 +20,8 @@ export class Book<Ref = never> {
   }
   public static resolve(index: Index, book: Book<string>) {
     const key = Book.key(book)
-    book.author = _.map([...(book.author || []), ..._.map(index.resolveRelation(Book, key, 'author'), 'sourceKey')],
-      (author: string) => index.resolve<Author<string>>(Author, author))
-    book.genre = _.map([...book.genre || [], ..._.map(index.resolveRelation(Book, key, 'genre'), 'sourceKey')],
-      (genre: string) => index.resolve<Genre<string>>(Genre, genre))
+    book.author = index.resolveRelations(Book, book, 'author', Author) as Array<string | Author<string>>
+    book.genre = index.resolveRelations(Book, book, 'genre', Genre) as Array<string | Genre<string>>
     _.forEach(book.libraries, (library) => {
       library.library = index.resolve<Library<string>>(Library, library.library as string)
       library.book = book
@@ -44,9 +42,7 @@ export class Author<Ref = never> {
     index.indexRelation(Author, author, 'books', Book, 'author')
   }
   public static resolve<T>(index: Index, author: Author<string>) {
-    const key = Author.key(author)
-    author.books = _.map([...(author.books || []), ..._.map(index.resolveRelation(Author, key, 'books'), 'sourceKey')],
-      (book: string) => index.resolve<Book<string>>(Book, book))
+    author.books = index.resolveRelations(Author, author, 'books', Book) as Array<string | Book<string>>
   }
 }
 
@@ -61,9 +57,7 @@ export class Genre<Ref = never> {
     index.indexRelation(Genre, genre, 'books', Book, 'genre')
   }
   public static resolve<T>(index: Index, genre: Genre<string>) {
-    const key = Genre.key(genre)
-    genre.books = _.map([...genre.books || [], ..._.map(index.resolveRelation(Genre, key, 'books'), 'sourceKey')],
-      (book: string) => index.resolve<Book<string>>(Book, book))
+    genre.books = index.resolveRelations(Genre, genre, 'books', Book) as Array<string | Book<string>>
   }
 }
 

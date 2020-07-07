@@ -174,6 +174,16 @@ export class Index {
       this.relation(rel(type, key, `${property}.${nestedProperty}`,
       targetType, entry[nestedProperty] as string, `${reverseProperty}.${reverseNestedProperty}`, entry)))
   }
+
+  public resolveRelations<T extends Entity<any>, R extends Entity<any>>(
+    type: T, entity: InstanceType<T>,
+    property: keyof InstanceType<T> & string,
+    targetType: R): Array<InstanceType<R> | string> {
+    const key = type.key(entity)
+    return  _.map([...(entity[property] as string[] || []),
+      ..._.map(this.resolveRelation(type, key, property), 'sourceKey')],
+      (target: string) => this.resolve<InstanceType<R>>(targetType, target))
+  }
 }
 
 export class BookModel {
