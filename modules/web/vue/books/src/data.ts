@@ -159,6 +159,21 @@ export class Index {
     _.forEach(entity[property],
       (target: string) => this.relation(rel(type, key, property, targetType, target, reverseProperty)))
   }
+  public indexRelationEntity<T extends Entity<any>,
+    P extends keyof InstanceType<T> & string,
+    E extends InstanceType<T>[P][0],
+    NP extends keyof E, RNP extends keyof E, R extends Entity<any>>(
+    type: T, entity: InstanceType<T>,
+    property: P,
+    nestedProperty: NP,
+    targetType: R,
+    reverseProperty: keyof InstanceType<R> & string,
+    reverseNestedProperty: keyof E & string) {
+    const key = type.key(entity)
+    _.forEach(entity[property], (entry: E) =>
+      this.relation(rel(type, key, `${property}.${nestedProperty}`,
+      targetType, entry[nestedProperty] as string, `${reverseProperty}.${reverseNestedProperty}`, entry)))
+  }
 }
 
 export class BookModel {

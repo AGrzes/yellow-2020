@@ -16,8 +16,7 @@ export class Book<Ref = never> {
     const key = Book.key(book)
     index.indexRelation(Book, book, 'author', Author, 'books')
     index.indexRelation(Book, book, 'genre', Genre, 'books')
-    _.forEach(book.libraries, (entry: LibraryEntry<string>) =>
-      index.relation(rel(Book, key, 'libraries.library', Library, entry.library as string, 'entries.book', entry)))
+    index.indexRelationEntity(Book, book, 'libraries', 'library', Library, 'entries', 'book')
   }
   public static resolve(index: Index, book: Book<string>) {
     const key = Book.key(book)
@@ -78,9 +77,7 @@ export class Library<Ref = never> {
     return _.kebabCase(library.name)
   }
   public static index<T>(index: Index, library: Library<string>) {
-    const key = Library.key(library)
-    _.forEach(library.entries, (entry: LibraryEntry<string>) =>
-      index.relation(rel(Library, key, 'entries.book', Book, entry.book as string, 'libraries.library', entry)))
+    index.indexRelationEntity(Library, library, 'entries', 'book', Book, 'libraries', 'library')
   }
   public static resolve<T>(index: Index, library: Library<string>) {
     const key = Library.key(library)
