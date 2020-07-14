@@ -73,6 +73,7 @@ module.exports = {
             'bootstrap': path.resolve('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'),
             'lodash': path.resolve('node_modules/lodash'),
             '@agrzes/yellow-2020-web-vue-books': path.resolve('../books'),
+            '@agrzes/yellow-2020-common-books': path.resolve('../../../common/books'),
             '@agrzes/yellow-2020-web-vue-components': path.resolve('../components'),
             '@agrzes/yellow-2020-web-vue-router': path.resolve('../router'),
             '@agrzes/yellow-2020-web-vue-state': path.resolve('../state'),
