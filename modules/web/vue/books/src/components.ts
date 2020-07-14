@@ -1,3 +1,4 @@
+import { Author, Book, booksModel } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton } from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
@@ -92,8 +93,8 @@ export const BookDetails = Vue.extend({
     <h1>{{item.title}}</h1>
     <h2>Authors</h2>
     <ul>
-      <li v-for="author in item.author">
-        <details-link type="author" :id="author._id" :item="author">{{author.name}}</details-link>
+      <li v-for="author in authors">
+        <details-link type="author" :id="authorKey(author)" :item="author">{{author.name}}</details-link>
       </li>
     </ul>
   </div>
@@ -109,6 +110,14 @@ export const BookDetails = Vue.extend({
   methods: {
     deleted() {
       this.$router.push(resolveListRoute('book'))
+    },
+    authorKey(author: Author) {
+      return Author.key(author)
+    }
+  },
+  computed: {
+    authors() {
+      return Book.resolveAuthor(booksModel.index, this.item)
     }
   }
 })
@@ -149,8 +158,8 @@ export const AuthorDetails = Vue.extend({
     <h1>{{item.name}}</h1>
     <h2>Books</h2>
     <ul>
-      <li v-for="book in item.books">
-        <details-link type="book" :id="book._id" :item="book">{{book.title}}</details-link>
+      <li v-for="book in books">
+        <details-link type="book" :id="bookKey(book)" :item="book">{{book.title}}</details-link>
       </li>
     </ul>
   </div>
@@ -166,6 +175,14 @@ export const AuthorDetails = Vue.extend({
   methods: {
     deleted() {
       this.$router.push(resolveListRoute('author'))
+    },
+    bookKey(book: Book) {
+      return Book.key(book)
+    }
+  },
+  computed: {
+    books() {
+      return Author.resolveBooks(booksModel.index, this.item)
     }
   }
 })
