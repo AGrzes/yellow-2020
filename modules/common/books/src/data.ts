@@ -1,6 +1,6 @@
 import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
 import _ from 'lodash'
-import { BooksCRUD, CRUD, Entity } from './crud'
+import { CRUD, Entity, PouchCRUD } from './crud'
 import { Author, Book, Genre, Library, LibraryEntry } from './model'
 
 interface Relation {
@@ -151,7 +151,7 @@ export class BookModel {
   public genres: Record<string, Genre<string>>
   public libraries: Record<string, Library<string>>
   public index: Index = new Index()
-  constructor(private crud: BooksCRUD, private entities: Record<string, Entity<any>>) {}
+  constructor(private crud: PouchCRUD, private entities: Record<string, Entity<any>>) {}
 
   public async init() {
     await Promise.all(_.map(this.entities, async (type, name) => {
@@ -163,7 +163,7 @@ export class BookModel {
   }
 }
 
-export const booksCRUD = new BooksCRUD(
+export const booksCRUD = new PouchCRUD(
   new PouchDB('http://couchdb.home.agrzes.pl:5984/books'), [Author, Book, Genre, Library])
 
 export const booksModel = new BookModel(booksCRUD, {books: Book, authors: Author, genres: Genre, libraries: Library})

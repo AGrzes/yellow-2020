@@ -24,7 +24,7 @@ function materialize<T>(clazz: Entity<T>, data: T): T {
 function materializeClass<T>(clazz: Entity<T>) {
   return (data: T): T => materialize(clazz, data)
 }
-export class BooksCRUD implements CRUD {
+export class PouchCRUD implements CRUD {
   private revMap = new Map<string, string>()
 
   constructor(private database: PouchDB.Database, private classes: Array<Entity<any>>) {}

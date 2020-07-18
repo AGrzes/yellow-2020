@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import {BookModel, Index} from '../src/data'
 import { Author, Book, Genre, Library } from '../src/model'
-import { Entity, BooksCRUD } from '../src/crud'
+import { Entity, PouchCRUD } from '../src/crud'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
 
 describe('data', function() {
@@ -48,7 +48,7 @@ describe('data', function() {
       it('should resolve forward reference', async function() {
         const crud = {
           list: sinon.spy(list)
-        } as unknown as BooksCRUD
+        } as unknown as PouchCRUD
 
         const model = new BookModel(crud, {books: Book, authors: Author, genres: Genre, libraries: Library})
         await model.init()
@@ -70,7 +70,7 @@ describe('data', function() {
       it('should resolve reverse reference', async function() {
         const crud = {
           list: sinon.spy(list)
-        } as unknown as BooksCRUD
+        } as unknown as PouchCRUD
 
         const model = new BookModel(crud, {books: Book, authors: Author, genres: Genre, libraries: Library})
         await model.init()
