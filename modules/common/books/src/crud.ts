@@ -1,7 +1,7 @@
-import { Index } from "./data"
-import {Observable} from 'rxjs'
 import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
-import _, { String } from 'lodash'
+import _ from 'lodash'
+import {Observable} from 'rxjs'
+import { Index } from './data'
 
 export interface Entity<T> {
   new (...args: any): T
@@ -15,7 +15,6 @@ export interface Change {
   key: string
   change: 'change' | 'delete'
 }
-
 
 export interface CRUD<Key = string> {
   list<T>(clazz: Entity<T>): Promise<T[]>
@@ -88,27 +87,27 @@ export class PouchCRUD implements CRUD {
   }
 
   private getEntity(id: string) {
-    return _.find(this.classes,(entity) => id.startsWith(`${entity.typeTag}:`))
+    return _.find(this.classes, (entity) => id.startsWith(`${entity.typeTag}:`))
   }
 
   private getKey(id: string): string {
-    return _.split(id,':',2)[1]
+    return _.split(id, ':', 2)[1]
   }
 
   public changes(): Observable<Change> {
     return new Observable((subscriber) => {
       const source = this.database.changes({live: true, since: 'now'})
       subscriber.add(() => source.cancel())
-      source.on('change',(value) => {
+      source.on('change', (value) => {
         const entity = this.getEntity(value.id)
         const key = this.getKey(value.id)
         const change = value.deleted ? 'delete' : 'change'
-        subscriber.next({entity,key,change})
+        subscriber.next({entity, key, change})
       })
-      source.on('complete',() => {
+      source.on('complete', () => {
         subscriber.complete()
       })
-      source.on('error',(value) => {
+      source.on('error', (value) => {
         subscriber.error(value)
       })
     })
