@@ -1,6 +1,6 @@
 
 import _ from 'lodash'
-import { Entity, Index, rel } from './data'
+import { Index, rel } from './data'
 
 export class Book<Ref = string> {
   public title: string
