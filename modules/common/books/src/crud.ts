@@ -1,20 +1,28 @@
 import { Index } from "./data"
+import {Observable} from 'rxjs'
 import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
-import _ from 'lodash'
+import _, { String } from 'lodash'
 
 export interface Entity<T> {
   new (...args: any): T
   readonly typeTag: string
   key(instance: T): string
   index(index: Index, instance: T): void
-  // resolve(index: Index, instance: T): void
 }
+
+export interface Change {
+  entity: Entity<any>
+  key: string
+  change: 'change' | 'delete'
+}
+
 
 export interface CRUD<Key = string> {
   list<T>(clazz: Entity<T>): Promise<T[]>
   get<T>(clazz: Entity<T>, key: Key): Promise<T>
   save<T>(clazz: Entity<T>, instance: T): Promise<T>
   delete<T>(clazz: Entity<T>, key: Key): Promise<T|boolean>
+  changes(): Observable<Change>
 }
 
 function materialize<T>(clazz: Entity<T>, data: T): T {
@@ -77,6 +85,33 @@ export class PouchCRUD implements CRUD {
       }
     }
     throw new Error('Delete failed')
+  }
+
+  private getEntity(id: string) {
+    return _.find(this.classes,(entity) => id.startsWith(`${entity.typeTag}:`))
+  }
+
+  private getKey(id: string): string {
+    return _.split(id,':',2)[1]
+  }
+
+  public changes(): Observable<Change> {
+    return new Observable((subscriber) => {
+      const source = this.database.changes({live: true, since: 'now'})
+      subscriber.add(() => source.cancel())
+      source.on('change',(value) => {
+        const entity = this.getEntity(value.id)
+        const key = this.getKey(value.id)
+        const change = value.deleted ? 'delete' : 'change'
+        subscriber.next({entity,key,change})
+      })
+      source.on('complete',() => {
+        subscriber.complete()
+      })
+      source.on('error',(value) => {
+        subscriber.error(value)
+      })
+    })
   }
 
 }

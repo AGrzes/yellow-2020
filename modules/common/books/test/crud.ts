@@ -168,5 +168,116 @@ describe('crud', function() {
         expect(database.remove).to.be.calledWith('test:key', 'rev')
       })
     })
+    describe('changes', function() {
+      it('should subscribe to changes', async function() {
+        const subscription = {
+          on: sinon.stub(),
+          cancel: sinon.stub()
+        }
+        const observer = {
+          next: sinon.stub()
+        }
+        const database = {
+          changes: sinon.stub().returns(subscription)
+        } as unknown as PouchDB.Database
+        const booksCRUD = new PouchCRUD(database, [])
+        booksCRUD.changes().subscribe().unsubscribe()
+        expect(database.changes).to.be.calledOnceWith({
+          live: true,
+          since: 'now'
+        })
+      })
+      it('should terminate subscription', async function() {
+        const subscription = {
+          on: sinon.stub(),
+          cancel: sinon.stub()
+        }
+        const observer = {
+          next: sinon.stub()
+        }
+        const database = {
+          changes: sinon.stub().returns(subscription)
+        } as unknown as PouchDB.Database
+        const booksCRUD = new PouchCRUD(database, [])
+        booksCRUD.changes().subscribe().unsubscribe()
+        expect(subscription.cancel).to.be.calledOnce
+      })
+      it('should handle change', async function() {
+        const subscription = {
+          on: sinon.stub(),
+          cancel: sinon.stub()
+        }
+        const observer = {
+          next: sinon.stub()
+        }
+        const database = {
+          changes: sinon.stub().returns(subscription)
+        } as unknown as PouchDB.Database
+        const booksCRUD = new PouchCRUD(database, [TestClass])
+        const result = booksCRUD.changes().subscribe(observer)
+        subscription.on.getCalls()[0].args[1]({id: 'test:id'})
+        result.unsubscribe()
+        expect(observer.next).to.be.calledOnceWith({
+          entity: TestClass,
+          key: 'id',
+          change: 'change'
+        })
+      })
+      it('should handle deletion', async function() {
+        const subscription = {
+          on: sinon.stub(),
+          cancel: sinon.stub()
+        }
+        const observer = {
+          next: sinon.stub()
+        }
+        const database = {
+          changes: sinon.stub().returns(subscription)
+        } as unknown as PouchDB.Database
+        const booksCRUD = new PouchCRUD(database, [TestClass])
+        const result = booksCRUD.changes().subscribe(observer)
+        subscription.on.getCalls()[0].args[1]({id: 'test:id', deleted: true})
+        result.unsubscribe()
+        expect(observer.next).to.be.calledOnceWith({
+          entity: TestClass,
+          key: 'id',
+          change: 'delete'
+        })
+      })
+      it('should handle completion', async function() {
+        const subscription = {
+          on: sinon.stub(),
+          cancel: sinon.stub()
+        }
+        const observer = {
+          complete: sinon.stub()
+        }
+        const database = {
+          changes: sinon.stub().returns(subscription)
+        } as unknown as PouchDB.Database
+        const booksCRUD = new PouchCRUD(database, [TestClass])
+        const result = booksCRUD.changes().subscribe(observer)
+        subscription.on.getCalls()[1].args[1]({id: 'test:id'})
+        result.unsubscribe()
+        expect(observer.complete).to.be.calledOnce
+      })
+      it('should handle error', async function() {
+        const subscription = {
+          on: sinon.stub(),
+          cancel: sinon.stub()
+        }
+        const observer = {
+          error: sinon.stub()
+        }
+        const database = {
+          changes: sinon.stub().returns(subscription)
+        } as unknown as PouchDB.Database
+        const booksCRUD = new PouchCRUD(database, [TestClass])
+        const result = booksCRUD.changes().subscribe(observer)
+        subscription.on.getCalls()[2].args[1]('error')
+        result.unsubscribe()
+        expect(observer.error).to.be.calledOnceWith('error')
+      })
+    })
   })
 })
