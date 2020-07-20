@@ -4,7 +4,7 @@ import 'mocha'
 import { Indexer} from '../src/indexer'
 const {expect} = chai.use(chaiAsPromised)
 
-describe('dataer', function() {
+describe('indexer', function() {
   describe('Indexer', function() {
     class TestClass {
       public relation?: string[]
