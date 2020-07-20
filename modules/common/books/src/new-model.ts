@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import {Observable, Subject} from 'rxjs'
 import { CRUD, Entity } from './crud'
-import { Index } from './data'
+import { Indexer } from './indexer'
 
 export interface ModelChange {
   change: 'change' | 'addRelation' | 'removeRelation' | 'delete'
@@ -42,7 +42,7 @@ export interface Model {
 
 export class IndexModel implements Model {
   private data: Map<Entity<any>, Record<string, InstanceType<Entity<any>>>> = new Map()
-  public index: Index = new Index()
+  public index: Indexer = new Indexer()
   private changesSubject = new Subject<ModelChange>()
   constructor(private crud: CRUD, private entities: Array<Entity<any>>) {}
 

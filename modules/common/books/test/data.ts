@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised'
 import 'mocha'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import {BookModel, Index} from '../src/data'
+import {BookModel} from '../src/data'
 import { Author, Book, Genre, Library } from '../src/model'
 import { Entity, PouchCRUD } from '../src/crud'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
@@ -87,72 +87,6 @@ describe('data', function() {
           .to.have.nested.property('[1].title', 'book A')
         expect(Library.resolveEntries(model.index, model.libraries['library-a']))
           .to.have.nested.property('[1].book.title', 'book A')
-      })
-    })
-  })
-  describe('Index', function() {
-    class TestClass {
-      public relation?: string[]
-      public reverseRelation?: string[]
-      public relationEntity?: {target:string, source?:string}[]
-      public reverseRelationEntity?: {}[]
-      public static typeTag = 'test'
-      public static key(instance: TestClass) {
-        return 'key'
-      }
-      public static index<T>(index: Index, instance: TestClass) {
-        index.indexRelation(TestClass,instance,'relation',TestClass,'reverseRelation')
-        index.indexRelationEntity(TestClass,instance,'relationEntity','target',TestClass,'reverseRelationEntity','source')
-      }
-      public static resolve<T>(index: Index, genre: TestClass) {
-        //
-      }
-    }
-    describe('index', function() {
-      it('should record changes', async function() {
-
-        const index = new Index()
-        const changes = index.index(TestClass,{relation:['a'],relationEntity:[{target: 'a'}]})
-
-        expect(changes)
-          .to.have.property('length',3)
-        expect(changes[0]).to.be.deep.equal({entity: TestClass, key: 'key', change: 'change' })
-        expect(changes[1]).to.be.deep.equal({
-          source: TestClass, sourceKey: 'key', sourcePath: 'relation', target: TestClass, targetKey: 'a', targetPath: 'reverseRelation', change: 'addRelation'
-        })
-        expect(changes[2]).to.be.deep.equal({
-          source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity.target', target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity.source', change: 'addRelation'
-        })
-      })
-      it('should record relation removal', async function() {
-        const index = new Index()
-        index.index(TestClass,{relation:['a'],relationEntity:[{target: 'a'}]})
-        const changes = index.index(TestClass,{relation:[],relationEntity:[]})
-
-        expect(changes)
-          .to.have.property('length',3)
-        expect(changes[0]).to.be.deep.equal({entity: TestClass, key: 'key', change: 'change' })
-        expect(changes[1]).to.be.deep.equal({
-          source: TestClass, sourceKey: 'key', sourcePath: 'relation', target: TestClass, targetKey: 'a', targetPath: 'reverseRelation', change: 'removeRelation'
-        })
-        expect(changes[2]).to.be.deep.equal({
-          source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity.target', target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity.source', change: 'removeRelation'
-        })
-      })
-      it('should record removal', async function() {
-        const index = new Index()
-        index.index(TestClass,{relation:['a'],relationEntity:[{target: 'a'}]})
-        const changes = index.remove(TestClass,'key')
-
-        expect(changes)
-          .to.have.property('length',3)
-        expect(changes[0]).to.be.deep.equal({entity: TestClass, key: 'key', change: 'delete' })
-        expect(changes[1]).to.be.deep.equal({
-          source: TestClass, sourceKey: 'key', sourcePath: 'relation', target: TestClass, targetKey: 'a', targetPath: 'reverseRelation', change: 'removeRelation'
-        })
-        expect(changes[2]).to.be.deep.equal({
-          source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity.target', target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity.source', change: 'removeRelation'
-        })
       })
     })
   })

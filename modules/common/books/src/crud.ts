@@ -1,13 +1,13 @@
 import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
 import _ from 'lodash'
 import {Observable} from 'rxjs'
-import { Index } from './data'
+import { Indexer } from './indexer'
 
 export interface Entity<T> {
   new (...args: any): T
   readonly typeTag: string
   key(instance: T): string
-  index(index: Index, instance: T): void
+  index(index: Indexer, instance: T): void
 }
 
 export interface Change {

@@ -6,7 +6,7 @@ import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import {PouchCRUD, Entity} from '../src/crud'
 import { Author, Book, Genre, Library } from '../src/model'
-import { Index } from '../src/data'
+import { Indexer } from '../src/indexer'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
 
 class TestClass {
@@ -16,10 +16,10 @@ class TestClass {
   public static key(instance: TestClass) {
     return 'key'
   }
-  public static index<T>(index: Index, genre: TestClass) {
+  public static index<T>(index: Indexer, genre: TestClass) {
     //
   }
-  public static resolve<T>(index: Index, genre: TestClass) {
+  public static resolve<T>(index: Indexer, genre: TestClass) {
     //
   }
 }
