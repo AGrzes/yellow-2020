@@ -54,13 +54,15 @@ export class IndexModel implements Model {
       _.forEach(this.data.get(type), _.bind(this.index.index, this.index, type))
     })
     this.crud.changes().subscribe({
-      async next(change) {
+      next: async (change) => {
         if (change.change === 'change') {
-          this.data.get(change.entity)[change.key] = await this.crud.get(change.entity, change.key)
+          const instance = await this.crud.get(change.entity, change.key)
+          this.data.get(change.entity)[change.key] = instance
+          _.forEach(this.index.index(change.entity, instance), (c) => this.changesSubject.next(c))
         } else {
           delete this.data.get(change.entity)[change.key]
+          _.forEach(this.index.remove(change.entity, change.key), (c) => this.changesSubject.next(c))
         }
-        this.changesSubject.next(change)
       }
     })
   }
