@@ -2,6 +2,7 @@ import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
 import _ from 'lodash'
 import { CRUD, Entity, PouchCRUD } from './crud'
 import { Author, Book, Genre, Library, LibraryEntry } from './model'
+import { EntityChange, ModelChange, RelationChange } from './new-model'
 
 interface Relation {
   source: Entity<any>
@@ -39,13 +40,40 @@ export class Index {
     }
   }
 
-  public index<T>(type: Entity<T>, instance: T) {
-    if (this.entities.has(type)) {
-      this.entities.get(type)[type.key(instance)] = instance
-    } else {
-      this.entities.set(type, {[type.key(instance)] : instance})
+  private clearRelations<T>(type: Entity<T>, key: string): Record<string, Relation[]> {
+    if (this.forwardRelations.has(type) ) {
+      const oldRelations: Record<string, Relation[]> = this.forwardRelations.get(type)[key] || {}
+      delete this.forwardRelations.get(type)[key]
+      _.forEach(oldRelations,
+        (relations) => _.forEach(relations,
+          (relation) =>
+            _.remove(this.reverseRelations.get(relation.target)[relation.targetKey][relation.targetPath], relation)))
+      return oldRelations
     }
+    return {}
+  }
+
+  public index<T>(type: Entity<T>, instance: T): ModelChange[] {
+    const key = type.key(instance)
+    if (this.entities.has(type)) {
+      this.entities.get(type)[key] = instance
+    } else {
+      this.entities.set(type, {[key] : instance})
+    }
+    const oldRelations = _.mapValues(this.clearRelations(type, key), (relations) => _.keyBy(relations, 'targetKey'))
+
     type.index(this, instance)
+    const newRelations = _.mapValues(this.forwardRelations.get(type)[key] || {},
+      (relations) => _.keyBy(relations, 'targetKey'))
+    const addedRelations: RelationChange[] = _.flatMap(newRelations,
+      (relations, path) => _.map(_.omit(relations, _.keys(oldRelations[path])),
+      ({source, sourceKey, sourcePath, target, targetKey, targetPath}) =>
+        ({source, sourceKey, sourcePath, target, targetKey, targetPath, change: 'addRelation'})))
+    const removedRelations: RelationChange[] = _.flatMap(oldRelations,
+      (relations, path) => _.map(_.omit(relations, _.keys(newRelations[path])),
+      ({source, sourceKey, sourcePath, target, targetKey, targetPath}) =>
+        ({source, sourceKey, sourcePath, target, targetKey, targetPath, change: 'removeRelation'})))
+    return [{entity: type, key, change: 'change'} as EntityChange, ...addedRelations, ...removedRelations]
   }
 
   public resolve<T>(type: Entity<T>, key: string): T| string {
