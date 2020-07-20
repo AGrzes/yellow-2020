@@ -1,8 +1,6 @@
-import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
 import _ from 'lodash'
-import { CRUD, Entity, PouchCRUD } from './crud'
-import { Author, Book, Genre, Library, LibraryEntry } from './model'
-import { EntityChange, ModelChange, RelationChange } from './new-model'
+import { Entity } from './crud'
+import { EntityChange, ModelChange, RelationChange } from './data'
 
 interface Relation {
   source: Entity<any>
