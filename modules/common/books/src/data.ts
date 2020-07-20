@@ -76,6 +76,21 @@ export class Index {
     return [{entity: type, key, change: 'change'} as EntityChange, ...addedRelations, ...removedRelations]
   }
 
+  public remove<T>(type: Entity<T>, key: string): ModelChange[] {
+    if (this.entities.has(type)) {
+      delete this.entities.get(type)[key]
+    } else {
+      return []
+    }
+    const oldRelations = _.mapValues(this.clearRelations(type, key), (relations) => _.keyBy(relations, 'targetKey'))
+    const newRelations = {}
+    const removedRelations: RelationChange[] = _.flatMap(oldRelations,
+      (relations, path) => _.map(_.omit(relations, _.keys(newRelations[path])),
+      ({source, sourceKey, sourcePath, target, targetKey, targetPath}) =>
+        ({source, sourceKey, sourcePath, target, targetKey, targetPath, change: 'removeRelation'})))
+    return [{entity: type, key, change: 'delete'} as EntityChange, ...removedRelations]
+  }
+
   public resolve<T>(type: Entity<T>, key: string): T| string {
     if (this.entities.has(type)) {
       return this.entities.get(type)[key] as T

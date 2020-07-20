@@ -139,6 +139,21 @@ describe('data', function() {
           source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity.target', target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity.source', change: 'removeRelation'
         })
       })
+      it('should record removal', async function() {
+        const index = new Index()
+        index.index(TestClass,{relation:['a'],relationEntity:[{target: 'a'}]})
+        const changes = index.remove(TestClass,'key')
+
+        expect(changes)
+          .to.have.property('length',3)
+        expect(changes[0]).to.be.deep.equal({entity: TestClass, key: 'key', change: 'delete' })
+        expect(changes[1]).to.be.deep.equal({
+          source: TestClass, sourceKey: 'key', sourcePath: 'relation', target: TestClass, targetKey: 'a', targetPath: 'reverseRelation', change: 'removeRelation'
+        })
+        expect(changes[2]).to.be.deep.equal({
+          source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity.target', target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity.source', change: 'removeRelation'
+        })
+      })
     })
   })
 })
