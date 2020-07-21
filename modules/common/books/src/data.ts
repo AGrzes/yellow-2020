@@ -1,7 +1,9 @@
+import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
 import _ from 'lodash'
 import {Observable, Subject} from 'rxjs'
-import { CRUD, Entity } from './crud'
+import { CRUD, Entity, PouchCRUD } from './crud'
 import { Indexer } from './indexer'
+import { Author, Book, Genre, Library } from './model'
 
 export interface ModelChange {
   change: 'change' | 'addRelation' | 'removeRelation' | 'delete'
@@ -38,13 +40,14 @@ export interface Model {
   update<T>(entity: Entity<T>, instance: T): Promise<T>
   delete<T>(entity: Entity<T>, key: string): Promise<void>
   changes(): Observable<ModelChange>
+  readonly entities: Array<Entity<any>>
 }
 
 export class IndexModel implements Model {
   private data: Map<Entity<any>, Record<string, InstanceType<Entity<any>>>> = new Map()
   public index: Indexer = new Indexer()
   private changesSubject = new Subject<ModelChange>()
-  constructor(private crud: CRUD, private entities: Array<Entity<any>>) {}
+  constructor(private crud: CRUD, public entities: Array<Entity<any>>) {}
 
   public async load() {
     await Promise.all(_.map(this.entities, async (type) => {
@@ -83,3 +86,7 @@ export class IndexModel implements Model {
   }
 
 }
+
+export const bookModel = new IndexModel(
+  new PouchCRUD(new PouchDB('http://couchdb.home.agrzes.pl:5984/books'), [Author, Book, Genre, Library]),
+  [Author, Book, Genre, Library])
