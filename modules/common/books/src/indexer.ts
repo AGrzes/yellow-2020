@@ -2,27 +2,44 @@ import _ from 'lodash'
 import { Entity } from './crud'
 import { EntityChange, ModelChange, RelationChange } from './data'
 
-interface Relation {
+export interface Relation {
   source: Entity<any>
   sourceKey: string
   sourcePath: string
+  sourceNestedPath?: string
   targetPath: string
+  targetNestedPath?: string
   target: Entity<any>
   targetKey: string,
-  relationData?: any
+  relationEntity?: any
 }
-
 export function rel(source: Entity<any>, sourceKey: string, sourcePath: string,
-                    target: Entity<any>, targetKey: string, targetPath: string, relationData?: any): Relation {
-  return {
+                    target: Entity<any>, targetKey: string, targetPath: string, relationEntity?: any): Relation {
+  return _.omitBy({
     source,
     sourceKey,
     sourcePath,
     target,
     targetKey,
     targetPath,
-    relationData
-  }
+    relationEntity
+  }, _.isUndefined) as Relation
+}
+
+export function relent(source: Entity<any>, sourceKey: string, sourcePath: string, sourceNestedPath: string,
+                       target: Entity<any>, targetKey: string, targetPath: string, targetNestedPath: string,
+                       relationEntity?: any): Relation {
+  return _.omitBy({
+    source,
+    sourceKey,
+    sourcePath,
+    sourceNestedPath,
+    target,
+    targetKey,
+    targetPath,
+    targetNestedPath,
+    relationEntity
+  }, _.isUndefined) as Relation
 }
 
 export class Indexer {
@@ -65,12 +82,12 @@ export class Indexer {
       (relations) => _.keyBy(relations, 'targetKey'))
     const addedRelations: RelationChange[] = _.flatMap(newRelations,
       (relations, path) => _.map(_.omit(relations, _.keys(oldRelations[path])),
-      ({source, sourceKey, sourcePath, target, targetKey, targetPath}) =>
-        ({source, sourceKey, sourcePath, target, targetKey, targetPath, change: 'addRelation'})))
+      (relation) =>
+        ({...relation, change: 'addRelation'})))
     const removedRelations: RelationChange[] = _.flatMap(oldRelations,
       (relations, path) => _.map(_.omit(relations, _.keys(newRelations[path])),
-      ({source, sourceKey, sourcePath, target, targetKey, targetPath}) =>
-        ({source, sourceKey, sourcePath, target, targetKey, targetPath, change: 'removeRelation'})))
+      (relation) =>
+        ({...relation, change: 'removeRelation'})))
     return [{entity: type, key, change: 'change'} as EntityChange, ...addedRelations, ...removedRelations]
   }
 
@@ -84,8 +101,8 @@ export class Indexer {
     const newRelations = {}
     const removedRelations: RelationChange[] = _.flatMap(oldRelations,
       (relations, path) => _.map(_.omit(relations, _.keys(newRelations[path])),
-      ({source, sourceKey, sourcePath, target, targetKey, targetPath}) =>
-        ({source, sourceKey, sourcePath, target, targetKey, targetPath, change: 'removeRelation'})))
+      (relation) =>
+        ({...relation, change: 'removeRelation'})))
     return [{entity: type, key, change: 'delete'} as EntityChange, ...removedRelations]
   }
 
@@ -134,8 +151,8 @@ export class Indexer {
     reverseNestedProperty: keyof E & string) {
     const key = type.key(entity)
     _.forEach(entity[property], (entry: E) =>
-      this.relation(rel(type, key, `${property}.${nestedProperty}`,
-      targetType, entry[nestedProperty] as string, `${reverseProperty}.${reverseNestedProperty}`, entry)))
+      this.relation(relent(type, key, property, nestedProperty as string,
+      targetType, entry[nestedProperty] as string, reverseProperty, reverseNestedProperty, entry)))
   }
 
   public resolveRelations<T extends Entity<any>, R extends Entity<any>>(
@@ -162,8 +179,8 @@ export class Indexer {
       clone[reverseNestedProperty] = entity
       clone[nestedProperty] = this.resolve(targetType, entry[nestedProperty] as string)
       return clone
-    }), ..._.map(this.resolveRelation(type, key, `${property}.${nestedProperty}`), ({sourceKey, relationData}) => {
-      const clone = _.cloneDeep(relationData)
+    }), ..._.map(this.resolveRelation(type, key, property), ({sourceKey, relationEntity}) => {
+      const clone = _.cloneDeep(relationEntity)
       clone[reverseNestedProperty] = entity
       clone[nestedProperty] = this.resolve(targetType, sourceKey)
       return clone

@@ -33,10 +33,15 @@ describe('indexer', function() {
           .to.have.property('length',3)
         expect(changes[0]).to.be.deep.equal({entity: TestClass, key: 'key', change: 'change' })
         expect(changes[1]).to.be.deep.equal({
-          source: TestClass, sourceKey: 'key', sourcePath: 'relation', target: TestClass, targetKey: 'a', targetPath: 'reverseRelation', change: 'addRelation'
+          source: TestClass, sourceKey: 'key', sourcePath: 'relation', 
+          target: TestClass, targetKey: 'a', targetPath: 'reverseRelation', 
+          change: 'addRelation'
         })
         expect(changes[2]).to.be.deep.equal({
-          source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity.target', target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity.source', change: 'addRelation'
+          source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity', sourceNestedPath: 'target', 
+          target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity', targetNestedPath: 'source', 
+          relationEntity: {target: 'a'},
+          change: 'addRelation'
         })
       })
       it('should record relation removal', async function() {
@@ -51,7 +56,10 @@ describe('indexer', function() {
           source: TestClass, sourceKey: 'key', sourcePath: 'relation', target: TestClass, targetKey: 'a', targetPath: 'reverseRelation', change: 'removeRelation'
         })
         expect(changes[2]).to.be.deep.equal({
-          source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity.target', target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity.source', change: 'removeRelation'
+          source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity', sourceNestedPath: 'target', 
+          target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity', targetNestedPath: 'source', 
+          relationEntity: {target: 'a'},
+          change: 'removeRelation'
         })
       })
       it('should record removal', async function() {
@@ -66,7 +74,10 @@ describe('indexer', function() {
           source: TestClass, sourceKey: 'key', sourcePath: 'relation', target: TestClass, targetKey: 'a', targetPath: 'reverseRelation', change: 'removeRelation'
         })
         expect(changes[2]).to.be.deep.equal({
-          source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity.target', target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity.source', change: 'removeRelation'
+          source: TestClass, sourceKey: 'key', sourcePath: 'relationEntity', sourceNestedPath: 'target', 
+          target: TestClass, targetKey: 'a', targetPath: 'reverseRelationEntity', targetNestedPath: 'source', 
+          relationEntity: {target: 'a'},
+          change: 'removeRelation'
         })
       })
     })

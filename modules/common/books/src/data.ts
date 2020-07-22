@@ -2,7 +2,7 @@ import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
 import _ from 'lodash'
 import {Observable, Subject} from 'rxjs'
 import { CRUD, Entity, PouchCRUD } from './crud'
-import { Indexer } from './indexer'
+import { Indexer, Relation } from './indexer'
 import { Author, Book, Genre, Library } from './model'
 
 export interface ModelChange {
@@ -15,13 +15,7 @@ export interface EntityChange extends ModelChange {
   change: 'change' | 'delete'
 }
 
-export interface RelationChange extends ModelChange {
-  source: Entity<any>
-  sourceKey: string
-  sourcePath: string
-  target: Entity<any>
-  targetKey: string
-  targetPath?: string
+export interface RelationChange extends ModelChange, Relation {
   change: 'addRelation' | 'removeRelation'
 }
 
