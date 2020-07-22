@@ -35,6 +35,7 @@ export interface Model {
   delete<T>(entity: Entity<T>, key: string): Promise<void>
   changes(): Observable<ModelChange>
   readonly entities: Array<Entity<any>>
+  relations(type: Entity<any>): Promise<Readonly<Record<string, Record<string, Relation[]>>>>
 }
 
 export class IndexModel implements Model {
@@ -56,6 +57,9 @@ export class IndexModel implements Model {
         }
       }
     })
+  }
+  public async relations(entity: Entity<any>): Promise<Readonly<Record<string, Record<string, Relation[]>>>> {
+    return this.index.relations(entity)
   }
   public async list<T>(entity: Entity<T>): Promise<T[]> {
     return _.values(this.index.instances(entity))
