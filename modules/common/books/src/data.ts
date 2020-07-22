@@ -38,36 +38,30 @@ export interface Model {
 }
 
 export class IndexModel implements Model {
-  private data: Map<Entity<any>, Record<string, InstanceType<Entity<any>>>> = new Map()
   public index: Indexer = new Indexer()
   private changesSubject = new Subject<ModelChange>()
   constructor(private crud: CRUD, public entities: Array<Entity<any>>) {}
 
   public async load() {
     await Promise.all(_.map(this.entities, async (type) => {
-      this.data.set(type, _.keyBy(await this.crud.list(type), type.key))
+      _.forEach(_.keyBy(await this.crud.list(type), type.key), _.bind(this.index.index, this.index, type))
     }))
-    _.forEach(this.entities, (type) => {
-      _.forEach(this.data.get(type), _.bind(this.index.index, this.index, type))
-    })
     this.crud.changes().subscribe({
       next: async (change) => {
         if (change.change === 'change') {
           const instance = await this.crud.get(change.entity, change.key)
-          this.data.get(change.entity)[change.key] = instance
           _.forEach(this.index.index(change.entity, instance), (c) => this.changesSubject.next(c))
         } else {
-          delete this.data.get(change.entity)[change.key]
           _.forEach(this.index.remove(change.entity, change.key), (c) => this.changesSubject.next(c))
         }
       }
     })
   }
   public async list<T>(entity: Entity<T>): Promise<T[]> {
-    return _.values(this.data.get(entity))
+    return _.values(this.index.instances(entity))
   }
   public async get<T>(entity: Entity<T>, key: string): Promise<T> {
-    return this.data.get(entity)[key]
+    return this.index.instances(entity)[key]
   }
   public async update<T>(entity: Entity<T>, instance: T): Promise<T> {
     return await this.crud.save(entity, instance)

@@ -46,6 +46,15 @@ export class Indexer {
   private entities: Map<Entity<any>, Record<string, InstanceType<Entity<any>>>> = new Map()
   private forwardRelations: Map<Entity<any>, Record<string, Record<string, Relation[]>>> = new Map()
   private reverseRelations: Map<Entity<any>, Record<string, Record<string, Relation[]>>> = new Map()
+
+  public relations(type: Entity<any>): Readonly< Record<string, Record<string, Relation[]>>> {
+    return this.forwardRelations.get(type)
+  }
+
+  public instances(type: Entity<any>): Readonly<Record<string, InstanceType<Entity<any>>>> {
+    return this.entities.get(type)
+  }
+
   public resolveRelation<T>(target: Entity<T>, targetKey: string, targetPath: string): Relation[] {
     if (this.reverseRelations.has(target)) {
       const rr = this.reverseRelations.get(target)
