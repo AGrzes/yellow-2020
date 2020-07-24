@@ -80,6 +80,19 @@ describe('indexer', function() {
           change: 'removeRelation'
         })
       })
+      it('should gather relations', async function() {
+
+        const index = new Indexer()
+        const entity = {relation:['key'],relationEntity:[{target: 'key'}]}
+        index.index(TestClass, entity)
+        const relations = index.relations(TestClass)
+        expect(relations).to.have.deep.nested.property('key.relation',[entity])
+        expect(relations).to.have.deep.nested.property('key.relationEntity[0].target',entity)
+        expect(relations).to.have.deep.nested.property('key.relationEntity[0].source',entity)
+        expect(relations).to.have.deep.nested.property('key.reverseRelation',[entity])
+        expect(relations).to.have.deep.nested.property('key.reverseRelationEntity[0].target',entity)
+        expect(relations).to.have.deep.nested.property('key.reverseRelationEntity[0].source',entity)
+      })
     })
   })
 })

@@ -47,8 +47,37 @@ export class Indexer {
   private forwardRelations: Map<Entity<any>, Record<string, Record<string, Relation[]>>> = new Map()
   private reverseRelations: Map<Entity<any>, Record<string, Record<string, Relation[]>>> = new Map()
 
-  public relations(type: Entity<any>): Readonly< Record<string, Record<string, Relation[]>>> {
-    return this.forwardRelations.get(type)
+  private resolveRelationEntity(relation: Relation): any {
+    const entity = _.cloneDeep(relation.relationEntity)
+    entity[relation.sourceNestedPath] = this.resolve(relation.target, relation.targetKey)
+    entity[relation.targetNestedPath] = this.resolve(relation.source, relation.sourceKey)
+    return entity
+  }
+
+  public relations(type: Entity<any>): Readonly< Record<string, Record<string, any[]>>> {
+    return _.merge(
+      _.mapValues(this.forwardRelations.get(type), (entityRelations) =>
+        _.mapValues(entityRelations, (relations) =>
+          _.filter(
+            _.map(relations, (relation) =>
+              relation.relationEntity
+                ? this.resolveRelationEntity(relation)
+                : this.resolve(relation.target, relation.targetKey))
+          )
+        )),
+      _.mapValues(this.reverseRelations.get(type), (entityRelations) =>
+        _.mapValues(entityRelations, (relations) =>
+          _.filter(
+            _.filter(
+              _.map(relations, (relation) =>
+                relation.relationEntity
+                  ? this.resolveRelationEntity(relation)
+                  : this.resolve(relation.source, relation.sourceKey))
+            )
+          )
+        )),
+      (a: any, b: any) => _.isArray(a) && _.isArray(b) ? a.concat(b) : b
+    )
   }
 
   public instances(type: Entity<any>): Readonly<Record<string, InstanceType<Entity<any>>>> {
