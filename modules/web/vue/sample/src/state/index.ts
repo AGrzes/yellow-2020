@@ -8,7 +8,7 @@ async function store() {
   await bookModel.load()
   return new Vuex.Store({
     modules: {
-      books: await modelState(bookModel)
+      model: await modelState(bookModel)
     }
   })
 }

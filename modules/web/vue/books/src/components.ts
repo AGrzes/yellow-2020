@@ -1,9 +1,10 @@
-import { Author, Book, booksModel } from '@agrzes/yellow-2020-common-books'
+import { Author, Book } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton } from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
+import { mapState } from 'vuex'
 
 export const BooksList = Vue.extend({
   props: {
@@ -116,9 +117,11 @@ export const BookDetails = Vue.extend({
     }
   },
   computed: {
-    authors() {
-      return Book.resolveAuthor(booksModel.index, this.item)
-    }
+    ...mapState('model', {
+      authors(state: any) {
+        return state.relations[Book.typeTag][Book.key(this.item)].author
+      }
+    })
   }
 })
 
@@ -181,8 +184,10 @@ export const AuthorDetails = Vue.extend({
     }
   },
   computed: {
-    books() {
-      return Author.resolveBooks(booksModel.index, this.item)
-    }
+    ...mapState('model', {
+      books(state: any) {
+        return state.relations[Author.typeTag][Author.key(this.item)].books
+      }
+    })
   }
 })

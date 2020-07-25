@@ -10,7 +10,7 @@ export function itemComponent(entity: Entity<any>, theComponent: VueConstructor)
   return Vue.extend({
     template: `<the-component v-if="item" :item="item"></the-component>`,
     computed: {
-      ...mapState('books', {
+      ...mapState('model', {
           item(state: any) {
               return state.entities[entity.typeTag][this.$route.params.key]
           }
@@ -26,7 +26,7 @@ export function listComponent(entity: Entity<any>, theComponent: VueConstructor)
   return Vue.extend({
     template: `<the-component :list="list"></the-component>`,
     computed: {
-      ...mapState('books', {
+      ...mapState('model', {
           list(state: any) {
               return state.entities[entity.typeTag]
           }
