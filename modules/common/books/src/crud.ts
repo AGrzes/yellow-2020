@@ -55,12 +55,12 @@ export class PouchCRUD implements CRUD {
     let existing: any = {}
     for (let i = 0; i < 3; i++) {
       try {
-        const response = await this.database.put({_id: id, _rev: this.revMap.get(id), ...existing, ...instance})
+        const response = await this.database.put({...existing, ...instance, _id: id, _rev: this.revMap.get(id)})
         return materialize(clazz, {...existing, ...instance})
       } catch (e) {
         if (e.name === 'conflict') {
           existing = await this.database.get<T>(id)
-          this.revMap.set(existing._id, existing._rev)
+          this.revMap.set(id, existing._rev)
         } else {
           throw e
         }
