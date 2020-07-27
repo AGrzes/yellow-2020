@@ -19,7 +19,7 @@ export const BooksList = Vue.extend({
         <small v-for="author in item.author" class="ml-1">{{author.name}}</small>
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button type="book" :id="key"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
         <delete-button type="book" :id="key"></delete-button>
       </span>
@@ -48,7 +48,7 @@ export const BooksTable = Vue.extend({
     <tr v-for="(item,key) in list" >
       <td>{{item.title}}</td>
       <td>
-        <edit-button type="book" :id="key"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
         <delete-button type="book" :id="key"></delete-button>
       </td>
@@ -72,7 +72,7 @@ export const BooksCards = Vue.extend({
         {{item.title}}
       </div>
       <div class="card-footer text-right">
-        <edit-button type="book" :id="key"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
         <delete-button type="book" :id="key"></delete-button>
       </div>
@@ -100,7 +100,7 @@ export const BookDetails = Vue.extend({
     </ul>
   </div>
   <div class="card-footer text-right">
-    <edit-button type="book" :id="item._id">Edit</edit-button>
+    <edit-button :item="item">Edit</edit-button>
     <list-button type="book">Back</list-button>
     <delete-button type="book" :id="item._id">Delete</delete-button>
   </div>
@@ -138,7 +138,7 @@ export const AuthorList = Vue.extend({
         <span class="badge badge-pill badge-primary" v-if="item.books">{{item.books.length}}</span>
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button type="author" :id="key"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button type="author" :id="key"></details-button>
         <delete-button type="author" :id="key"></delete-button>
       </span>
@@ -167,7 +167,7 @@ export const AuthorDetails = Vue.extend({
     </ul>
   </div>
   <div class="card-footer text-right">
-    <edit-button type="author" :id="item._id">Edit</edit-button>
+    <edit-button :item="item">Edit</edit-button>
     <list-button type="author">Back</list-button>
     <delete-button type="author" :id="item._id">Delete</delete-button>
   </div>

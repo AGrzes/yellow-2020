@@ -1,4 +1,4 @@
-import { Entity, Model, Relation } from '@agrzes/yellow-2020-common-books'
+import { Entity, Model, ModelChange, Relation } from '@agrzes/yellow-2020-common-books'
 import _ from 'lodash'
 import { Module } from 'vuex'
 
@@ -17,8 +17,19 @@ export async function modelState<R>(model: Model):
           get: (state) => <T>(entity: Entity<T>, key: string) => state[entity.typeTag][key]
         },
         mutations: {
+          change(state, change: ModelChange) {
+            console.log(change)
+          }
         },
         actions: {
+          update<T extends Entity<any>>({commit}, value: InstanceType<T>) {
+            model.update(value.constructor, value)
+          },
+          listen({commit}) {
+            model.changes().subscribe({next(change) {
+              commit('change', change)
+            }})
+          }
         }
     }
 }
