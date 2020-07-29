@@ -1,6 +1,7 @@
 import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
 import _ from 'lodash'
-import {Observable, Subject} from 'rxjs'
+import {merge, Observable, of, Subject} from 'rxjs'
+import { map } from 'rxjs/operators'
 import { CRUD, Entity, PouchCRUD } from './crud'
 import { Indexer, Relation } from './indexer'
 import { Author, Book, Genre, Library } from './model'
@@ -35,12 +36,14 @@ export interface Model {
   delete<T>(entity: Entity<T>, key: string): Promise<void>
   changes(): Observable<ModelChange>
   readonly entities: Array<Entity<any>>
-  relations(type: Entity<any>): Promise<Readonly<Record<string, Record<string, Relation[]>>>>
+  relations(type: Entity<any>): Promise<Readonly<Record<string, Record<string, any[]>>>>
+  instances(): Observable<Record<string, Record<string, InstanceType<Entity<any>>>>>
 }
 
 export class IndexModel implements Model {
   public index: Indexer = new Indexer()
   private changesSubject = new Subject<ModelChange>()
+  private instancesSubject = new Subject<Record<string, Array<InstanceType<Entity<any>>>>>()
   constructor(private crud: CRUD, public entities: Array<Entity<any>>) {}
 
   public async load() {
@@ -58,7 +61,7 @@ export class IndexModel implements Model {
       }
     })
   }
-  public async relations(entity: Entity<any>): Promise<Readonly<Record<string, Record<string, Relation[]>>>> {
+  public async relations(entity: Entity<any>): Promise<Readonly<Record<string, Record<string, any[]>>>> {
     return this.index.relations(entity)
   }
   public async list<T>(entity: Entity<T>): Promise<T[]> {
@@ -76,7 +79,28 @@ export class IndexModel implements Model {
   public changes(): Observable<ModelChange> {
     return this.changesSubject
   }
-
+  public instances(): Observable<Record<string, Record<string, InstanceType<Entity<any>>>>> {
+    const accumulator = _(this.entities)
+      .keyBy('typeTag')
+      .mapValues((entity) => _.cloneDeep<Record<string, InstanceType<Entity<any>>>>(this.index.instances(entity)))
+      .value()
+    return merge(
+      of(_.cloneDeep(accumulator)),
+      this.changesSubject.pipe(map((change) => {
+        if (isEntityChange(change)) {
+          const {entity, key} = change
+          if (change.change === 'change') {
+            accumulator[entity.typeTag] = accumulator[entity.typeTag] || {}
+            accumulator[entity.typeTag][key] = this.index.instances(entity)[key]
+          } else {
+            accumulator[entity.typeTag] = accumulator[entity.typeTag] || {}
+            delete accumulator[entity.typeTag][key]
+          }
+        }
+        return _.cloneDeep(accumulator)
+      }))
+    )
+  }
 }
 
 export const bookModel = new IndexModel(

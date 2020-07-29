@@ -80,7 +80,7 @@ export class Indexer {
     )
   }
 
-  public instances(type: Entity<any>): Readonly<Record<string, InstanceType<Entity<any>>>> {
+  public instances<T>(type: Entity<T>): Readonly<Record<string, InstanceType<Entity<T>>>> {
     return this.entities.get(type)
   }
 
