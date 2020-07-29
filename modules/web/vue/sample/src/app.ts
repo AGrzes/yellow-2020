@@ -11,7 +11,9 @@ import store from './state'
     store: await store(),
     router: await router(),
     data: {
+    },
+    mounted() {
+      this.$store.dispatch('model/listen')
     }
   })
 })()
-

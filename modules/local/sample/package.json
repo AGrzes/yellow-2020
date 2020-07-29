@@ -46,6 +46,7 @@
     "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.5",
     "@agrzes/yellow-2020-common-metadata": "^1.1.5",
     "@agrzes/yellow-2020-common-model": "^1.1.5",
+    "@agrzes/yellow-2020-common-books": "^1.1.5",
     "config": "^3.3.1",
     "confluence-client": "^1.1.0",
     "exceljs": "^3.9.0",

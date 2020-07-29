@@ -1,5 +1,5 @@
-import { Location } from 'vue-router'
 import _ from 'lodash'
+import { Location } from 'vue-router'
 
 interface ItemRouteEntry {
   type: string
@@ -10,7 +10,8 @@ interface ItemRouteEntry {
 
 const itemRouteRegistry: ItemRouteEntry[] = []
 
-export function registerItemRoute(type: string, name: string, idParam: string = 'key', selectors: string[] = ['default']) {
+export function registerItemRoute(type: string, name: string,
+                                  idParam: string = 'key', selectors: string[] = ['default']) {
   itemRouteRegistry.push( {
     type,
     name,
@@ -19,15 +20,15 @@ export function registerItemRoute(type: string, name: string, idParam: string = 
   })
 }
 
-export function resolveItemRoute(type: string,id: string, selector: string = 'default'): Location {
-  const entry =_.find(itemRouteRegistry,(entry) => entry.type === type && _.includes(entry.selectors,selector))
+export function resolveItemRoute(type: string, id: string, selector: string = 'default'): Location {
+  const entry = _.find(itemRouteRegistry, (e) => e.type === type && _.includes(e.selectors, selector))
   if (entry) {
     return {
-      name: entry.name, 
-      params: {[entry.idParam]:id}
+      name: entry.name,
+      params: {[entry.idParam]: id}
     }
   }
-  
+
 }
 
 interface ListRouteEntry {
@@ -47,7 +48,7 @@ export function registerListRoute(type: string, name: string, selectors: string[
 }
 
 export function resolveListRoute(type: string, selector: string = 'default'): Location {
-  const entry =_.find(listRouteRegistry,(entry) => entry.type === type && _.includes(entry.selectors,selector))
+  const entry = _.find(listRouteRegistry, (e) => e.type === type && _.includes(e.selectors, selector))
   if (entry) {
     return {
       name: entry.name

@@ -1,10 +1,10 @@
-import Vue from 'vue'
-import { modal } from './modal'
 import {resolveItemRoute, resolveListRoute} from '@agrzes/yellow-2020-web-vue-router'
-import { Location} from 'vue-router'
-import _ from 'lodash'
 import '@fortawesome/fontawesome-free/css/all.css'
-import { Edit, Create } from './edit'
+import _ from 'lodash'
+import Vue from 'vue'
+import { Location} from 'vue-router'
+import { Create, Edit } from './edit'
+import { modal } from './modal'
 
 export const DeleteButton = Vue.extend({
   props: {
@@ -17,7 +17,7 @@ export const DeleteButton = Vue.extend({
     <i class="fas fa-trash"></i>
   </slot>
 </button>
-  `, 
+  `,
   methods: {
     async remove() {
       await this.$store.dispatch(`${this.type}/delete`, this.id)
@@ -41,7 +41,7 @@ export const DetailsButton = Vue.extend({
   `,
   computed: {
     route(): Location {
-      return resolveItemRoute(this.type, this.id,this.selector)
+      return resolveItemRoute(this.type, this.id, this.selector)
     }
   }
 })
@@ -81,7 +81,7 @@ export const DetailsLink = Vue.extend({
   `,
   computed: {
     route(): Location {
-      return resolveItemRoute(this.type, this.id,this.selector)
+      return resolveItemRoute(this.type, this.id, this.selector)
     },
     label(): string {
       return _.startCase(this.id)
@@ -91,8 +91,7 @@ export const DetailsLink = Vue.extend({
 
 export const EditButton = Vue.extend({
   props: {
-    type: String,
-    id: String
+    item: Object
   },
   template: `
 <button @click="edit()" class="btn btn-outline-primary" type="button" title="Edit">
@@ -100,22 +99,20 @@ export const EditButton = Vue.extend({
     <i class="fas fa-edit"></i>
   </slot>
 </button>
-  `, 
+  `,
   methods: {
     async edit() {
+      const type = this.item.constructor
       modal({
         component: Edit,
         host: this.$root.$el,
         title: 'Edit',
-        props: {content: await this.$store.dispatch(`${this.type}/raw`, {key: this.id})},
+        props: {content: this.item},
         buttons: [
           {
             name: 'Save',
             onclick: async (m) => {
-              await this.$store.dispatch(`${this.type}/raw`, {
-                key: this.id,
-                value: m.component.current
-              })
+              await this.$store.dispatch(`model/update`, {item: m.component.current, type})
               m.close()
             },
             class: 'btn-primary'
@@ -142,7 +139,7 @@ export const CreateButton = Vue.extend({
     <i class="fas fa-plus"></i>
   </slot>
 </button>
-  `, 
+  `,
   methods: {
     async add() {
       modal({

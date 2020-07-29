@@ -1,7 +1,10 @@
-import Vue from 'vue'
-import { DeleteButton, EditButton, DetailsButton, DetailsLink, ListButton, CreateButton } from '@agrzes/yellow-2020-web-vue-components'
+import { Author, Book } from '@agrzes/yellow-2020-common-books'
+import { CreateButton, DeleteButton, DetailsButton,
+  DetailsLink, EditButton, ListButton } from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
+import Vue from 'vue'
+import { mapState } from 'vuex'
 
 export const BooksList = Vue.extend({
   props: {
@@ -16,14 +19,14 @@ export const BooksList = Vue.extend({
         <small v-for="author in item.author" class="ml-1">{{author.name}}</small>
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button type="book" :id="key"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
         <delete-button type="book" :id="key"></delete-button>
       </span>
     </span>
   </li>
   <li class="list-group-item"><create-button type="book">Add</create-button></li>
-</ul>`, 
+</ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton
   }
@@ -45,13 +48,13 @@ export const BooksTable = Vue.extend({
     <tr v-for="(item,key) in list" >
       <td>{{item.title}}</td>
       <td>
-        <edit-button type="book" :id="key"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
         <delete-button type="book" :id="key"></delete-button>
       </td>
     </tr>
   </tbody>
-</table>`, 
+</table>`,
   components: {
     DeleteButton, EditButton, DetailsButton
   }
@@ -69,13 +72,13 @@ export const BooksCards = Vue.extend({
         {{item.title}}
       </div>
       <div class="card-footer text-right">
-        <edit-button type="book" :id="key"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
         <delete-button type="book" :id="key"></delete-button>
       </div>
     </div>
   </div>
-</div>`, 
+</div>`,
   components: {
     DeleteButton, EditButton, DetailsButton
   }
@@ -91,27 +94,36 @@ export const BookDetails = Vue.extend({
     <h1>{{item.title}}</h1>
     <h2>Authors</h2>
     <ul>
-      <li v-for="author in item.author">
-        <details-link type="author" :id="author._id" :item="author">{{author.name}}</details-link>
+      <li v-for="author in authors">
+        <details-link type="author" :id="authorKey(author)" :item="author">{{author.name}}</details-link>
       </li>
     </ul>
   </div>
   <div class="card-footer text-right">
-    <edit-button type="book" :id="item._id">Edit</edit-button>
+    <edit-button :item="item">Edit</edit-button>
     <list-button type="book">Back</list-button>
     <delete-button type="book" :id="item._id">Delete</delete-button>
   </div>
-</div>`, 
+</div>`,
   components: {
     DeleteButton, EditButton, DetailsLink, ListButton
-  }, 
+  },
   methods: {
     deleted() {
       this.$router.push(resolveListRoute('book'))
+    },
+    authorKey(author: Author) {
+      return Author.key(author)
     }
+  },
+  computed: {
+    ...mapState('model', {
+      authors(state: any) {
+        return state.relations[Book.typeTag][Book.key(this.item)].author
+      }
+    })
   }
 })
-
 
 export const AuthorList = Vue.extend({
   props: {
@@ -126,14 +138,14 @@ export const AuthorList = Vue.extend({
         <span class="badge badge-pill badge-primary" v-if="item.books">{{item.books.length}}</span>
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button type="author" :id="key"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button type="author" :id="key"></details-button>
         <delete-button type="author" :id="key"></delete-button>
       </span>
     </span>
   </li>
   <li class="list-group-item"><create-button type="author">Add</create-button></li>
-</ul>`, 
+</ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton
   }
@@ -149,23 +161,33 @@ export const AuthorDetails = Vue.extend({
     <h1>{{item.name}}</h1>
     <h2>Books</h2>
     <ul>
-      <li v-for="book in item.books">
-        <details-link type="book" :id="book._id" :item="book">{{book.title}}</details-link>
+      <li v-for="book in books">
+        <details-link type="book" :id="bookKey(book)" :item="book">{{book.title}}</details-link>
       </li>
     </ul>
   </div>
   <div class="card-footer text-right">
-    <edit-button type="author" :id="item._id">Edit</edit-button>
+    <edit-button :item="item">Edit</edit-button>
     <list-button type="author">Back</list-button>
     <delete-button type="author" :id="item._id">Delete</delete-button>
   </div>
-</div>`, 
+</div>`,
   components: {
     DeleteButton, EditButton, DetailsLink, ListButton
-  }, 
+  },
   methods: {
     deleted() {
       this.$router.push(resolveListRoute('author'))
+    },
+    bookKey(book: Book) {
+      return Book.key(book)
     }
+  },
+  computed: {
+    ...mapState('model', {
+      books(state: any) {
+        return state.relations[Author.typeTag][Author.key(this.item)].books
+      }
+    })
   }
 })
