@@ -38,12 +38,14 @@ export interface Model {
   readonly entities: Array<Entity<any>>
   relations(type: Entity<any>): Promise<Readonly<Record<string, Record<string, any[]>>>>
   instances(): Observable<Record<string, Record<string, InstanceType<Entity<any>>>>>
+  instanceRelations(): Observable<Record<string, Record<string, Record<string, any[]>>>>
 }
 
 export class IndexModel implements Model {
   public index: Indexer = new Indexer()
   private changesSubject = new Subject<ModelChange>()
   private instancesSubject = new Subject<Record<string, Array<InstanceType<Entity<any>>>>>()
+  private instanceRelationsSubject = new Subject<Readonly<Record<string, Record<string, any[]>>>>()
   constructor(private crud: CRUD, public entities: Array<Entity<any>>) {}
 
   public async load() {
@@ -100,6 +102,53 @@ export class IndexModel implements Model {
         return _.cloneDeep(accumulator)
       }))
     )
+  }
+
+  public instanceRelations(): Observable<Record<string, Record<string, Record<string, any[]>>>> {
+    const accumulator = _(this.entities)
+    .keyBy('typeTag')
+    .mapValues((entity) => _.cloneDeep<Record<string, Record<string, any[]>>>(this.index.relations(entity)))
+    .value()
+
+    return merge(
+      of(_.cloneDeep(accumulator)),
+      this.changesSubject.pipe(map((change) => {
+        if (isRelationChange(change)) {
+          if (change.change === 'addRelation') {
+            accumulator[change.source.typeTag] = accumulator[change.source.typeTag] || {}
+            accumulator[change.source.typeTag][change.sourceKey] =
+              accumulator[change.source.typeTag][change.sourceKey] || {}
+            accumulator[change.source.typeTag][change.sourceKey][change.sourcePath] =
+              accumulator[change.source.typeTag][change.sourceKey][change.sourcePath] || []
+            accumulator[change.source.typeTag][change.sourceKey][change.sourcePath]
+              .push(this.index.instances(change.target)[change.targetKey])
+            accumulator[change.target.typeTag] = accumulator[change.target.typeTag] || {}
+            accumulator[change.target.typeTag][change.targetKey] =
+              accumulator[change.target.typeTag][change.targetKey] || {}
+            accumulator[change.target.typeTag][change.targetKey][change.targetPath] =
+              accumulator[change.target.typeTag][change.targetKey][change.targetPath] || []
+            accumulator[change.target.typeTag][change.targetKey][change.targetPath]
+              .push(this.index.instances(change.source)[change.sourceKey])
+          } else if (change.change === 'removeRelation') {
+            accumulator[change.source.typeTag] = accumulator[change.source.typeTag] || {}
+            accumulator[change.source.typeTag][change.sourceKey] =
+              accumulator[change.source.typeTag][change.sourceKey] || {}
+            accumulator[change.source.typeTag][change.sourceKey][change.sourcePath] =
+              accumulator[change.source.typeTag][change.sourceKey][change.sourcePath] || []
+            _.remove(accumulator[change.source.typeTag][change.sourceKey][change.sourcePath],
+              (instance) => instance === change.targetKey || change.target.key(instance) === change.targetKey)
+            accumulator[change.target.typeTag] = accumulator[change.target.typeTag] || {}
+            accumulator[change.target.typeTag][change.targetKey] =
+              accumulator[change.target.typeTag][change.targetKey] || {}
+            accumulator[change.target.typeTag][change.targetKey][change.targetPath] =
+              accumulator[change.target.typeTag][change.targetKey][change.targetPath] || []
+            _.remove(accumulator[change.target.typeTag][change.targetKey][change.targetPath],
+              (instance) => instance === change.sourceKey || change.source.key(instance) === change.sourceKey)
+          }
+        }
+        return _.cloneDeep(accumulator)
+      })
+    ))
   }
 }
 
