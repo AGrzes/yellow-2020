@@ -1,4 +1,5 @@
 import Vue, { VueConstructor } from 'vue'
+import 'vue-router'
 import { mapState } from 'vuex'
 
 export function itemComponent(type: string, theComponent: VueConstructor) {
