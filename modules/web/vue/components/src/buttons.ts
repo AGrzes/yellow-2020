@@ -102,6 +102,7 @@ export const EditButton = Vue.extend({
   `,
   methods: {
     async edit() {
+      const type = this.item.constructor
       modal({
         component: Edit,
         host: this.$root.$el,
@@ -111,7 +112,7 @@ export const EditButton = Vue.extend({
           {
             name: 'Save',
             onclick: async (m) => {
-              await this.$store.dispatch(`model/update`, m.component.current)
+              await this.$store.dispatch(`model/update`, {item: m.component.current, type})
               m.close()
             },
             class: 'btn-primary'
