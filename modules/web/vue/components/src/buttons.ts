@@ -131,7 +131,7 @@ export const EditButton = Vue.extend({
 
 export const CreateButton = Vue.extend({
   props: {
-    type: String
+    type: Function
   },
   template: `
 <button @click="add()" class="btn btn-outline-primary" type="button" title="Create">
@@ -151,10 +151,7 @@ export const CreateButton = Vue.extend({
           {
             name: 'Save',
             onclick: async (m) => {
-              await this.$store.dispatch(`${this.type}/raw`, {
-                key: m.component.key,
-                value: m.component.current
-              })
+              await this.$store.dispatch(`model/update`, {item: m.component.current, type: this.type})
               m.close()
             },
             class: 'btn-primary'
