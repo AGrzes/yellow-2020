@@ -1,4 +1,4 @@
-import { Author, Book } from '@agrzes/yellow-2020-common-books'
+import { Author, Book, Library } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton } from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
@@ -187,6 +187,77 @@ export const AuthorDetails = Vue.extend({
     ...mapState('model', {
       books(state: any) {
         return state.relations[Author.typeTag][Author.key(this.item)].books
+      }
+    })
+  }
+})
+
+export const LibraryList = Vue.extend({
+  props: {
+    list: Object
+  },
+  template: `
+<ul class="list-group">
+  <li v-for="(item,key) in list" class="list-group-item">
+    <span class="d-flex">
+      <span class="mr-auto">
+        {{item.name}}
+      </span>
+      <span class="flex-grow-0 flex-shrink-0 align-self-center">
+        <edit-button :item="item"></edit-button>
+        <details-button type="library" :id="key"></details-button>
+        <delete-button type="library" :id="key"></delete-button>
+      </span>
+    </span>
+  </li>
+  <li class="list-group-item"><create-button :type="libraryType">Add</create-button></li>
+</ul>`,
+  components: {
+    DeleteButton, EditButton, DetailsButton, CreateButton
+  },
+  computed: {
+    libraryType() {
+      return Library
+    }
+  }
+})
+
+export const LibraryDetails = Vue.extend({
+  props: {
+    item: Object
+  },
+  template: `
+<div class="card h-100" v-if="item">
+  <div class="card-body">
+    <h1>{{item.name}}</h1>
+    <h2>Books</h2>
+    <ul>
+      <li v-for="entry in entries">
+        <details-link type="book" :id="bookKey(entry.book)" :item="entry.book">{{entry.book.title}}</details-link>
+      </li>
+    </ul>
+  </div>
+  <div class="card-footer text-right">
+    <edit-button :item="item">Edit</edit-button>
+    <list-button type="library">Back</list-button>
+    <delete-button type="library" :id="item._id">Delete</delete-button>
+  </div>
+</div>`,
+  components: {
+    DeleteButton, EditButton, DetailsLink, ListButton
+  },
+  methods: {
+    deleted() {
+      this.$router.push(resolveListRoute('library'))
+    },
+    bookKey(book: Book) {
+      return Book.key(book)
+    }
+  },
+  computed: {
+    ...mapState('model', {
+      entries(state: any) {
+        return state.relations[Library.typeTag][Library.key(this.item)].entries
       }
     })
   }
