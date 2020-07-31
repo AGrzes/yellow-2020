@@ -1,8 +1,8 @@
+import { bookRoutes} from '@agrzes/yellow-2020-web-vue-books'
+import { navigationMenu } from '@agrzes/yellow-2020-web-vue-components'
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import { uiModel } from '../uiModel'
-import { navigationMenu } from '@agrzes/yellow-2020-web-vue-components'
-import { bookRoutes} from '@agrzes/yellow-2020-web-vue-books'
 Vue.use(VueRouter)
 
 async function router() {
@@ -32,7 +32,7 @@ async function router() {
                navigationMenu
            }
         },
-        children: [,...bookRoutes]
+        children: [...bookRoutes]
       }]
     return new VueRouter({
         mode: 'history',
@@ -40,6 +40,5 @@ async function router() {
         linkActiveClass: 'active'
     })
 }
-
 
 export default router
