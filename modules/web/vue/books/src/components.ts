@@ -204,7 +204,7 @@ export const LibraryList = Vue.extend({
         {{item.name}}
       </span>
       <span class="badge badge-pill badge-primary mr-auto">
-        {{entries[key].length}}
+        {{entries[key].length}} books
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
@@ -241,7 +241,16 @@ export const LibraryDetails = Vue.extend({
     <h2>Books</h2>
     <ul>
       <li v-for="entry in entries">
-        <details-link type="book" :id="bookKey(entry.book)" :item="entry.book">{{entry.book.title}}</details-link>
+        <details-link type="book" :id="bookKey(entry.book)" :item="entry.book" class="mr-auto">
+          {{entry.book.title}}
+        </details-link>
+        <span class="badge badge-pill badge-primary mr-1" v-if="entry.owned">
+          Owned
+        </span>
+        <a class="btn btn-success btn-sm mr-1" v-if="entry.url" :href="entry.url" target="_blank">
+          Buy
+          <span class="badge badge-light" v-if="entry.price">{{entry.price}}</span>
+        </a>
       </li>
     </ul>
   </div>
