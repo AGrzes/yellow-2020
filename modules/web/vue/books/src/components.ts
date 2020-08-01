@@ -1,4 +1,4 @@
-import { Author, Book, Library } from '@agrzes/yellow-2020-common-books'
+import { Author, Book, Genre, Library } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton } from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
@@ -13,22 +13,35 @@ export const BooksList = Vue.extend({
   template: `
 <ul class="list-group">
   <li v-for="(item,key) in list" class="list-group-item">
-    <span class="d-flex">
-      <span class="mr-auto">
+    <span class="d-flex align-items-center">
+      <span class="mr-1">
         {{item.title}}
         <small v-for="author in item.author" class="ml-1">{{author.name}}</small>
       </span>
-      <span class="flex-grow-0 flex-shrink-0 align-self-center">
+      <span class="badge badge-pill badge-primary mr-1" v-for="genre in genres[key]">
+        {{genre.name}}
+      </span>
+      <span class="flex-grow-0 flex-shrink-0 align-self-center ml-auto">
         <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
-        <delete-button type="book" :id="key"></delete-button>
+        <delete-button :type="return" :id="key"></delete-button>
       </span>
     </span>
   </li>
-  <li class="list-group-item"><create-button type="book">Add</create-button></li>
+  <li class="list-group-item"><create-button :type="bookType">Add</create-button></li>
 </ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton
+  },
+  computed: {
+    bookType() {
+      return Book
+    },
+    ...mapState('model', {
+      genres(state: any) {
+        return _.mapValues(state.relations[Book.typeTag], (r) => r.genre)
+      }
+    })
   }
 })
 
@@ -91,7 +104,12 @@ export const BookDetails = Vue.extend({
   template: `
 <div class="card h-100" v-if="item">
   <div class="card-body">
-    <h1>{{item.title}}</h1>
+    <h1>
+      {{item.title}}
+      <span class="badge badge-pill badge-primary mr-1" v-for="genre in genres">
+        {{genre.name}}
+      </span>
+    </h1>
     <h2>Authors</h2>
     <ul>
       <li v-for="author in authors">
@@ -102,7 +120,7 @@ export const BookDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="book">Back</list-button>
-    <delete-button type="book" :id="item._id">Delete</delete-button>
+    <delete-button :type="bookType" :id="item._id">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -117,9 +135,15 @@ export const BookDetails = Vue.extend({
     }
   },
   computed: {
+    bookType() {
+      return Book
+    },
     ...mapState('model', {
       authors(state: any) {
         return state.relations[Book.typeTag][Book.key(this.item)].author
+      },
+      genres(state: any) {
+        return state.relations[Book.typeTag][Book.key(this.item)].genre
       }
     })
   }
@@ -140,14 +164,19 @@ export const AuthorList = Vue.extend({
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
         <details-button type="author" :id="key"></details-button>
-        <delete-button type="author" :id="key"></delete-button>
+        <delete-button :type="authorType" :id="key"></delete-button>
       </span>
     </span>
   </li>
-  <li class="list-group-item"><create-button type="author">Add</create-button></li>
+  <li class="list-group-item"><create-button :type="authorType">Add</create-button></li>
 </ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton
+  },
+  computed: {
+    authorType() {
+      return Author
+    }
   }
 })
 
@@ -169,7 +198,7 @@ export const AuthorDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="author">Back</list-button>
-    <delete-button type="author" :id="item._id">Delete</delete-button>
+    <delete-button :type="authorType" :id="item._id">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -184,6 +213,9 @@ export const AuthorDetails = Vue.extend({
     }
   },
   computed: {
+    authorType() {
+      return Author
+    },
     ...mapState('model', {
       books(state: any) {
         return state.relations[Author.typeTag][Author.key(this.item)].books
@@ -212,7 +244,7 @@ export const LibraryList = Vue.extend({
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
         <details-button type="library" :id="key"></details-button>
-        <delete-button type="library" :id="key"></delete-button>
+        <delete-button :type="libraryType" :id="key"></delete-button>
       </span>
     </span>
   </li>
@@ -266,7 +298,7 @@ export const LibraryDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="library">Back</list-button>
-    <delete-button type="library" :id="item._id">Delete</delete-button>
+    <delete-button :type="libraryType" :id="item._id">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -281,9 +313,98 @@ export const LibraryDetails = Vue.extend({
     }
   },
   computed: {
+    libraryType() {
+      return Library
+    },
     ...mapState('model', {
       entries(state: any) {
         return state.relations[Library.typeTag][Library.key(this.item)].entries
+      }
+    })
+  }
+})
+
+export const GenreList = Vue.extend({
+  props: {
+    list: Object
+  },
+  template: `
+<ul class="list-group">
+  <li v-for="(item,key) in list" class="list-group-item">
+    <span class="d-flex align-items-center">
+      <span class="mr-1">
+        {{item.name}}
+      </span>
+      <span class="badge badge-pill badge-primary mr-auto">
+        {{books[key].length}} books
+      </span>
+      <span class="flex-grow-0 flex-shrink-0 align-self-center">
+        <edit-button :item="item"></edit-button>
+        <details-button type="genre" :id="key"></details-button>
+        <delete-button :type="genreType" :id="key"></delete-button>
+      </span>
+    </span>
+  </li>
+  <li class="list-group-item"><create-button :type="genreType">Add</create-button></li>
+</ul>`,
+  components: {
+    DeleteButton, EditButton, DetailsButton, CreateButton
+  },
+  computed: {
+    genreType() {
+      return Genre
+    },
+    ...mapState('model', {
+      books(state: any) {
+        return _.mapValues(state.relations[Genre.typeTag], (r) => r.books)
+      }
+    })
+  }
+})
+
+export const GenreDetails = Vue.extend({
+  props: {
+    item: Object
+  },
+  template: `
+<div class="card h-100" v-if="item">
+  <div class="card-body">
+    <h1>
+      {{item.name}}
+    </h1>
+    <h2>Books</h2>
+    <ul>
+      <li v-for="book in books">
+        <details-link type="book" :id="bookKey(book)" :item="book" class="mr-auto">
+          {{book.title}}
+        </details-link>
+      </li>
+    </ul>
+  </div>
+  <div class="card-footer text-right">
+    <edit-button :item="item">Edit</edit-button>
+    <list-button type="genre">Back</list-button>
+    <delete-button :type="genreType" :id="item._id">Delete</delete-button>
+  </div>
+</div>`,
+  components: {
+    DeleteButton, EditButton, DetailsLink, ListButton
+  },
+  methods: {
+    deleted() {
+      this.$router.push(resolveListRoute('genre'))
+    },
+    bookKey(book: Book) {
+      return Book.key(book)
+    }
+  },
+  computed: {
+    genreType() {
+      return Genre
+    },
+    ...mapState('model', {
+      books(state: any) {
+        return state.relations[Genre.typeTag][Genre.key(this.item)].books
       }
     })
   }

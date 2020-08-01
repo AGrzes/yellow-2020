@@ -2,7 +2,7 @@ import {json, Router} from 'express'
 const router = Router()
 router.use(json())
 
-router.get('/config',(req,res) => {
+router.get('/config', (req, res) => {
     res.send({
         state: {
             metadata: 'http://couchdb:5984/model',
@@ -15,16 +15,19 @@ router.get('/config',(req,res) => {
                 author: 'books.classes.author'
             }
         },
-        ui:{
+        ui: {
             navigation: [{
               label: 'Books',
               route: { name: 'bookList'}
-            },{
+            }, {
               label: 'Authors',
               route: { name: 'authorList'}
-            },{
+            }, {
               label: 'Library',
               route: { name: 'libraryList'}
+            }, {
+              label: 'Genre',
+              route: { name: 'genreList'}
             }]
           }
     })
