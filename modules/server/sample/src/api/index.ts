@@ -18,17 +18,13 @@ router.get('/config',(req,res) => {
         ui:{
             navigation: [{
               label: 'Books',
-              route: { name: 'bookList'},
-              children: [{
-                label: 'Table',
-                route: { name: 'bookTable'}
-              },{
-                label: 'Cards',
-                route: { name: 'bookCards'}
-              }]
+              route: { name: 'bookList'}
             },{
               label: 'Authors',
               route: { name: 'authorList'}
+            },{
+              label: 'Library',
+              route: { name: 'libraryList'}
             }]
           }
     })

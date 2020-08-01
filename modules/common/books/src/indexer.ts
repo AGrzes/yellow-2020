@@ -47,7 +47,7 @@ export class Indexer {
   private forwardRelations: Map<Entity<any>, Record<string, Record<string, Relation[]>>> = new Map()
   private reverseRelations: Map<Entity<any>, Record<string, Record<string, Relation[]>>> = new Map()
 
-  private resolveRelationEntity(relation: Relation): any {
+  public resolveRelationEntity(relation: Relation): any {
     const entity = _.cloneDeep(relation.relationEntity)
     entity[relation.sourceNestedPath] = this.resolve(relation.target, relation.targetKey)
     entity[relation.targetNestedPath] = this.resolve(relation.source, relation.sourceKey)
