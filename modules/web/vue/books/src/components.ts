@@ -200,6 +200,9 @@ export const LibraryList = Vue.extend({
 <ul class="list-group">
   <li v-for="(item,key) in list" class="list-group-item">
     <span class="d-flex align-items-center">
+      <span class="badge badge-info mr-1" v-if="item.kind">
+        {{item.kind}}
+      </span>
       <span class="mr-1">
         {{item.name}}
       </span>
@@ -237,7 +240,13 @@ export const LibraryDetails = Vue.extend({
   template: `
 <div class="card h-100" v-if="item">
   <div class="card-body">
-    <h1>{{item.name}}</h1>
+    <h1>
+      <span class="badge badge-info mr-1" v-if="item.kind">
+        {{item.kind}}
+      </span>
+      {{item.name}}
+    </h1>
+    <p v-if="item.description">{{item.description}}</p>
     <h2>Books</h2>
     <ul>
       <li v-for="entry in entries">
