@@ -121,14 +121,18 @@ export class IndexModel implements Model {
             accumulator[change.source.typeTag][change.sourceKey][change.sourcePath] =
               accumulator[change.source.typeTag][change.sourceKey][change.sourcePath] || []
             accumulator[change.source.typeTag][change.sourceKey][change.sourcePath]
-              .push(this.index.instances(change.target)[change.targetKey])
+              .push(change.relationEntity
+                ? this.index.resolveRelationEntity(change)
+                : this.index.resolve(change.target, change.targetKey))
             accumulator[change.target.typeTag] = accumulator[change.target.typeTag] || {}
             accumulator[change.target.typeTag][change.targetKey] =
               accumulator[change.target.typeTag][change.targetKey] || {}
             accumulator[change.target.typeTag][change.targetKey][change.targetPath] =
               accumulator[change.target.typeTag][change.targetKey][change.targetPath] || []
             accumulator[change.target.typeTag][change.targetKey][change.targetPath]
-              .push(this.index.instances(change.source)[change.sourceKey])
+              .push(change.relationEntity
+                ? this.index.resolveRelationEntity(change)
+                : this.index.resolve(change.source, change.sourceKey))
           } else if (change.change === 'removeRelation') {
             accumulator[change.source.typeTag] = accumulator[change.source.typeTag] || {}
             accumulator[change.source.typeTag][change.sourceKey] =
@@ -136,14 +140,18 @@ export class IndexModel implements Model {
             accumulator[change.source.typeTag][change.sourceKey][change.sourcePath] =
               accumulator[change.source.typeTag][change.sourceKey][change.sourcePath] || []
             _.remove(accumulator[change.source.typeTag][change.sourceKey][change.sourcePath],
-              (instance) => instance === change.targetKey || change.target.key(instance) === change.targetKey)
+              (instance) => instance === change.targetKey
+              || change.target.key(instance) === change.targetKey
+              || change.target.key(instance[change.sourceNestedPath]) === change.targetKey)
             accumulator[change.target.typeTag] = accumulator[change.target.typeTag] || {}
             accumulator[change.target.typeTag][change.targetKey] =
               accumulator[change.target.typeTag][change.targetKey] || {}
             accumulator[change.target.typeTag][change.targetKey][change.targetPath] =
               accumulator[change.target.typeTag][change.targetKey][change.targetPath] || []
             _.remove(accumulator[change.target.typeTag][change.targetKey][change.targetPath],
-              (instance) => instance === change.sourceKey || change.source.key(instance) === change.sourceKey)
+              (instance) => instance === change.sourceKey
+              || change.source.key(instance) === change.sourceKey
+              || change.source.key(instance[change.targetNestedPath]) === change.sourceKey)
           }
         }
         return _.cloneDeep(accumulator)
