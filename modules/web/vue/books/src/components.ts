@@ -1,4 +1,4 @@
-import { Author, Book, Library } from '@agrzes/yellow-2020-common-books'
+import { Author, Book, Genre, Library } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton } from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
@@ -284,6 +284,89 @@ export const LibraryDetails = Vue.extend({
     ...mapState('model', {
       entries(state: any) {
         return state.relations[Library.typeTag][Library.key(this.item)].entries
+      }
+    })
+  }
+})
+
+export const GenreList = Vue.extend({
+  props: {
+    list: Object
+  },
+  template: `
+<ul class="list-group">
+  <li v-for="(item,key) in list" class="list-group-item">
+    <span class="d-flex align-items-center">
+      <span class="mr-1">
+        {{item.name}}
+      </span>
+      <span class="badge badge-pill badge-primary mr-auto">
+        {{books[key].length}} books
+      </span>
+      <span class="flex-grow-0 flex-shrink-0 align-self-center">
+        <edit-button :item="item"></edit-button>
+        <details-button type="genre" :id="key"></details-button>
+        <delete-button type="genre" :id="key"></delete-button>
+      </span>
+    </span>
+  </li>
+  <li class="list-group-item"><create-button :type="genreType">Add</create-button></li>
+</ul>`,
+  components: {
+    DeleteButton, EditButton, DetailsButton, CreateButton
+  },
+  computed: {
+    genreType() {
+      return Genre
+    },
+    ...mapState('model', {
+      books(state: any) {
+        return _.mapValues(state.relations[Genre.typeTag], (r) => r.books)
+      }
+    })
+  }
+})
+
+export const GenreDetails = Vue.extend({
+  props: {
+    item: Object
+  },
+  template: `
+<div class="card h-100" v-if="item">
+  <div class="card-body">
+    <h1>
+      {{item.name}}
+    </h1>
+    <h2>Books</h2>
+    <ul>
+      <li v-for="book in books">
+        <details-link type="book" :id="bookKey(book)" :item="book" class="mr-auto">
+          {{book.title}}
+        </details-link>
+      </li>
+    </ul>
+  </div>
+  <div class="card-footer text-right">
+    <edit-button :item="item">Edit</edit-button>
+    <list-button type="genre">Back</list-button>
+    <delete-button type="genre" :id="item._id">Delete</delete-button>
+  </div>
+</div>`,
+  components: {
+    DeleteButton, EditButton, DetailsLink, ListButton
+  },
+  methods: {
+    deleted() {
+      this.$router.push(resolveListRoute('genre'))
+    },
+    bookKey(book: Book) {
+      return Book.key(book)
+    }
+  },
+  computed: {
+    ...mapState('model', {
+      books(state: any) {
+        return state.relations[Genre.typeTag][Genre.key(this.item)].books
       }
     })
   }
