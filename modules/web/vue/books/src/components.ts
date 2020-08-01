@@ -199,9 +199,12 @@ export const LibraryList = Vue.extend({
   template: `
 <ul class="list-group">
   <li v-for="(item,key) in list" class="list-group-item">
-    <span class="d-flex">
-      <span class="mr-auto">
+    <span class="d-flex align-items-center">
+      <span class="mr-1">
         {{item.name}}
+      </span>
+      <span class="badge badge-pill badge-primary mr-auto">
+        {{entries[key].length}}
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
@@ -218,7 +221,12 @@ export const LibraryList = Vue.extend({
   computed: {
     libraryType() {
       return Library
-    }
+    },
+    ...mapState('model', {
+      entries(state: any) {
+        return _.mapValues(state.relations[Library.typeTag], (r) => r.entries)
+      }
+    })
   }
 })
 
