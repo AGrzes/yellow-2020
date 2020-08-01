@@ -104,7 +104,12 @@ export const BookDetails = Vue.extend({
   template: `
 <div class="card h-100" v-if="item">
   <div class="card-body">
-    <h1>{{item.title}}</h1>
+    <h1>
+      {{item.title}}
+      <span class="badge badge-pill badge-primary mr-1" v-for="genre in genres">
+        {{genre.name}}
+      </span>
+    </h1>
     <h2>Authors</h2>
     <ul>
       <li v-for="author in authors">
@@ -133,6 +138,9 @@ export const BookDetails = Vue.extend({
     ...mapState('model', {
       authors(state: any) {
         return state.relations[Book.typeTag][Book.key(this.item)].author
+      },
+      genres(state: any) {
+        return state.relations[Book.typeTag][Book.key(this.item)].genre
       }
     })
   }
