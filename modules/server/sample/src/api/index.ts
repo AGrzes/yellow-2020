@@ -2,7 +2,7 @@ import {json, Router} from 'express'
 const router = Router()
 router.use(json())
 
-router.get('/config',(req,res) => {
+router.get('/config', (req, res) => {
     res.send({
         state: {
             metadata: 'http://couchdb:5984/model',
