@@ -13,22 +13,35 @@ export const BooksList = Vue.extend({
   template: `
 <ul class="list-group">
   <li v-for="(item,key) in list" class="list-group-item">
-    <span class="d-flex">
-      <span class="mr-auto">
+    <span class="d-flex align-items-center">
+      <span class="mr-1">
         {{item.title}}
         <small v-for="author in item.author" class="ml-1">{{author.name}}</small>
       </span>
-      <span class="flex-grow-0 flex-shrink-0 align-self-center">
+      <span class="badge badge-pill badge-primary mr-1" v-for="genre in genres[key]">
+        {{genre.name}}
+      </span>
+      <span class="flex-grow-0 flex-shrink-0 align-self-center ml-auto">
         <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
         <delete-button type="book" :id="key"></delete-button>
       </span>
     </span>
   </li>
-  <li class="list-group-item"><create-button type="book">Add</create-button></li>
+  <li class="list-group-item"><create-button :type="bookType">Add</create-button></li>
 </ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton
+  },
+  computed: {
+    bookType() {
+      return Book
+    },
+    ...mapState('model', {
+      genres(state: any) {
+        return _.mapValues(state.relations[Book.typeTag], (r) => r.genre)
+      }
+    })
   }
 })
 
