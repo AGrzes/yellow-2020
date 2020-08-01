@@ -15,16 +15,19 @@ router.get('/config',(req,res) => {
                 author: 'books.classes.author'
             }
         },
-        ui:{
+        ui: {
             navigation: [{
               label: 'Books',
               route: { name: 'bookList'}
-            },{
+            }, {
               label: 'Authors',
               route: { name: 'authorList'}
-            },{
+            }, {
               label: 'Library',
               route: { name: 'libraryList'}
+            }, {
+              label: 'Genre',
+              route: { name: 'genreList'}
             }]
           }
     })
