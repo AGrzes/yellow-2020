@@ -27,8 +27,11 @@ export async function modelState<R>(model: Model):
           }
         },
         actions: {
-          update<T extends Entity<any>>({commit}, {item, type}: {item: InstanceType<T>, type: T}) {
+          update<T extends Entity<any>>({}, {item, type}: {item: InstanceType<T>, type: T}) {
             model.update(type, item)
+          },
+          delete<T extends Entity<any>>({}, {id, type}: {id: string, type: T}) {
+            model.delete(type, id)
           },
           async listen({commit}) {
             instances.pipe(skip(1)).subscribe({next(entities) {

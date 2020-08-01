@@ -8,7 +8,7 @@ import { modal } from './modal'
 
 export const DeleteButton = Vue.extend({
   props: {
-    type: String,
+    type: Function,
     id: String
   },
   template: `
@@ -20,7 +20,7 @@ export const DeleteButton = Vue.extend({
   `,
   methods: {
     async remove() {
-      await this.$store.dispatch(`${this.type}/delete`, this.id)
+      await this.$store.dispatch(`model/delete`, {id: this.id, type: this.type})
       this.$emit('delete')
     }
   }
