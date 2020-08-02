@@ -28,6 +28,9 @@ router.get('/config', (req, res) => {
             }, {
               label: 'Genre',
               route: { name: 'genreList'}
+            }, {
+              label: 'Series',
+              route: { name: 'seriesList'}
             }]
           }
     })
