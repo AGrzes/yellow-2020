@@ -4,7 +4,7 @@ import {merge, Observable, of, Subject} from 'rxjs'
 import { map } from 'rxjs/operators'
 import { CRUD, Entity, PouchCRUD } from './crud'
 import { Indexer, Relation } from './indexer'
-import { Author, Book, Genre, Library } from './model'
+import { Author, Book, Genre, Library, Series } from './model'
 
 export interface ModelChange {
   change: 'change' | 'addRelation' | 'removeRelation' | 'delete'
@@ -161,5 +161,5 @@ export class IndexModel implements Model {
 }
 
 export const bookModel = new IndexModel(
-  new PouchCRUD(new PouchDB('http://couchdb.home.agrzes.pl:5984/books'), [Author, Book, Genre, Library]),
-  [Author, Book, Genre, Library])
+  new PouchCRUD(new PouchDB('http://couchdb.home.agrzes.pl:5984/books'), [Author, Book, Genre, Library, Series]),
+  [Author, Book, Genre, Library, Series])
