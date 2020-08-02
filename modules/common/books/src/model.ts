@@ -7,6 +7,7 @@ export class Book<Ref = string> {
   public description?: string
   public author: Array<Ref | Author<Ref>>
   public genre: Array<Ref | Genre<Ref>>
+  public series: Array<Ref | Series<Ref>>
   public libraries: Array<LibraryEntry<Ref>>
   public static typeTag = 'book'
   public static key<T>(book: Book<T>) {
@@ -56,6 +57,21 @@ export class Genre<Ref = never> {
   }
   public static resolveBooks(index: Indexer, genre: Genre<string>) {
     return index.resolveRelations(Genre, genre, 'books', Book) as Array<string | Book<string>>
+  }
+}
+
+export class Series<Ref = never> {
+  public name: string
+  public books: Array<Ref | Book<Ref>>
+  public static typeTag = 'series'
+  public static key<T>(series: Series<T>) {
+    return _.kebabCase(series.name)
+  }
+  public static index<T>(index: Indexer, series: Series<string>) {
+    index.indexRelation(Series, series, 'books', Book, 'series')
+  }
+  public static resolveBooks(index: Indexer, series: Series<string>) {
+    return index.resolveRelations(Series, series, 'books', Book) as Array<string | Book<string>>
   }
 }
 
