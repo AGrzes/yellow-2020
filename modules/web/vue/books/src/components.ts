@@ -16,9 +16,11 @@ export const BooksList = Vue.extend({
     <span class="d-flex align-items-center">
       <span class="mr-1">
         {{item.title}}
-        <small v-for="author in authors[key]" class="ml-1">{{author.name}}</small>
-        <small v-for="serie in series[key]">
-          <details-link type="series" :id="seriesKey(serie)" :item="series">{{serie.name}}</details-link>
+        <small v-for="author in authors[key]" class="ml-1">
+          <details-link type="author" :id="seriesKey(author)" :item="author">{{author.name}}</details-link>
+        </small>
+        <small v-for="serie in series[key]" class="ml-1">
+          <details-link type="series" :id="authorKey(serie)" :item="series">{{serie.name}}</details-link>
         </small>
       </span>
       <span class="badge badge-pill badge-primary mr-1" v-for="genre in genres[key]">
@@ -37,6 +39,9 @@ export const BooksList = Vue.extend({
     DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink
   },
   methods: {
+    authorKey(author: Author) {
+      return Author.key(author)
+    },
     seriesKey(series: Series) {
       return Series.key(series)
     }
