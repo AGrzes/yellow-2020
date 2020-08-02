@@ -187,7 +187,10 @@ export const AuthorList = Vue.extend({
     <span class="d-flex">
       <span class="mr-auto">
         {{item.name}}
-        <span class="badge badge-pill badge-primary" v-if="item.books">{{item.books.length}}</span>
+        <span class="badge badge-pill badge-primary" v-if="books[key]">{{books[key].length}}</span>
+        <small v-for="serie in series[key]">
+          <details-link type="series" :id="seriesKey(serie)" :item="series">{{serie.name}}</details-link>
+        </small>
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
@@ -199,12 +202,25 @@ export const AuthorList = Vue.extend({
   <li class="list-group-item"><create-button :type="authorType">Add</create-button></li>
 </ul>`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton
+    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink
+  },
+  methods: {
+    seriesKey(series: Series) {
+      return Series.key(series)
+    }
   },
   computed: {
     authorType() {
       return Author
-    }
+    },
+    ...mapState('model', {
+      books(state: any) {
+        return _.mapValues(state.relations[Author.typeTag], (r) => r.books)
+      },
+      series(state: any) {
+        return _.mapValues(state.relations[Author.typeTag], (r) => r.series)
+      }
+    })
   }
 })
 
@@ -222,6 +238,14 @@ export const AuthorDetails = Vue.extend({
         <details-link type="book" :id="bookKey(book)" :item="book">{{book.title}}</details-link>
       </li>
     </ul>
+    <template v-if="series">
+      <h2>Series</h2>
+      <ul>
+        <li v-for="serie in series">
+          <details-link type="series" :id="seriesKey(serie)" :item="serie">{{serie.name}}</details-link>
+        </li>
+      </ul>
+    </template>
   </div>
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
@@ -238,6 +262,9 @@ export const AuthorDetails = Vue.extend({
     },
     bookKey(book: Book) {
       return Book.key(book)
+    },
+    seriesKey(series: Series) {
+      return Series.key(series)
     }
   },
   computed: {
@@ -247,6 +274,9 @@ export const AuthorDetails = Vue.extend({
     ...mapState('model', {
       books(state: any) {
         return state.relations[Author.typeTag][Author.key(this.item)].books
+      },
+      series(state: any) {
+        return state.relations[Author.typeTag][Author.key(this.item)].series
       }
     })
   }
@@ -449,6 +479,11 @@ export const SeriesList = Vue.extend({
       <span class="mr-1">
         {{item.name}}
       </span>
+      <small v-for="author in authors[key]" class="mr-1">
+        <details-link type="author" :id="authorKey(author)" :item="author" class="mr-auto">
+          {{author.name}}
+        </details-link>
+      </small>
       <span class="badge badge-pill badge-primary mr-auto">
         {{books[key].length}} books
       </span>
@@ -462,7 +497,12 @@ export const SeriesList = Vue.extend({
   <li class="list-group-item"><create-button :type="seriesType">Add</create-button></li>
 </ul>`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton
+    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink
+  },
+  methods: {
+    authorKey(author: Author) {
+      return Author.key(author)
+    }
   },
   computed: {
     seriesType() {
@@ -471,6 +511,9 @@ export const SeriesList = Vue.extend({
     ...mapState('model', {
       books(state: any) {
         return _.mapValues(state.relations[Series.typeTag], (r) => r.books)
+      },
+      authors(state: any) {
+        return _.mapValues(state.relations[Series.typeTag], (r) => r.author)
       }
     })
   }
@@ -494,6 +537,14 @@ export const SeriesDetails = Vue.extend({
         </details-link>
       </li>
     </ul>
+    <template v-if="authors">
+      <h2>Authors</h2>
+      <ul>
+        <li v-for="author in authors">
+          <details-link type="author" :id="authorKey(author)" :item="author">{{author.name}}</details-link>
+        </li>
+      </ul>
+    </template>
   </div>
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
@@ -510,6 +561,9 @@ export const SeriesDetails = Vue.extend({
     },
     bookKey(book: Book) {
       return Book.key(book)
+    },
+    authorKey(author: Author) {
+      return Author.key(author)
     }
   },
   computed: {
@@ -519,6 +573,9 @@ export const SeriesDetails = Vue.extend({
     ...mapState('model', {
       books(state: any) {
         return state.relations[Series.typeTag][Series.key(this.item)].books
+      },
+      authors(state: any) {
+        return state.relations[Series.typeTag][Series.key(this.item)].author
       }
     })
   }
