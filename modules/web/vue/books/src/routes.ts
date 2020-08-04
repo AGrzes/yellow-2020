@@ -1,4 +1,5 @@
-import { Author, Book, Entity, Genre, Library, Series } from '@agrzes/yellow-2020-common-books'
+import { Author, Book, Genre, Library, Series } from '@agrzes/yellow-2020-common-books'
+import { Entity } from '@agrzes/yellow-2020-common-model'
 import { registerItemRoute, registerListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue, { VueConstructor } from 'vue'

@@ -100,7 +100,7 @@ export function isRelationChange(change: ModelChange): change is RelationChange 
   return change.change === 'addRelation' || change.change === 'removeRelation'
 }
 
-export interface Model {
+export interface Model2 {
   load(): Promise<void>
   list<T>(entity: Entity<T>): Promise<T[]>
   get<T>(entity: Entity<T>, key: string): Promise<T>

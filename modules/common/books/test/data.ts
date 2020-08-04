@@ -7,7 +7,7 @@ import sinonChai from 'sinon-chai'
 import {IndexModel} from '../src/data'
 import { Author, Book, Genre, Library } from '../src/model'
 import { PouchCRUD } from '../src/crud'
-import { Entity } from '../src/interface'
+import { Entity } from '@agrzes/yellow-2020-common-model'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
 
 describe('data', function() {

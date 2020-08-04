@@ -1,6 +1,6 @@
+import { Entity, EntityChange, Indexer, ModelChange,
+  Relation, RelationChange } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
-import { EntityChange, Indexer, ModelChange, RelationChange } from './interface'
-import { Entity, Relation } from './interface'
 
 export function rel(source: Entity<any>, sourceKey: string, sourcePath: string,
                     target: Entity<any>, targetKey: string, targetPath: string, relationEntity?: any): Relation {

@@ -1,13 +1,14 @@
 import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
+import { CRUD, Entity, Indexer, isEntityChange,
+  isRelationChange, Model, Model2, ModelChange } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
 import {merge, Observable, of, Subject} from 'rxjs'
 import { map } from 'rxjs/operators'
 import { PouchCRUD } from './crud'
 import { TheIndexer } from './indexer'
-import { CRUD, Entity, Indexer, isEntityChange, isRelationChange, Model, ModelChange } from './interface'
 import { Author, Book, Genre, Library, Series } from './model'
 
-export class IndexModel implements Model {
+export class IndexModel implements Model2 {
   public index: Indexer = new TheIndexer()
   private changesSubject = new Subject<ModelChange>()
   private instancesSubject = new Subject<Record<string, Array<InstanceType<Entity<any>>>>>()

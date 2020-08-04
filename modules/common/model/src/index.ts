@@ -2,6 +2,8 @@ import { ConflictMode, DataAccess, DataWrapper } from '@agrzes/yellow-2020-commo
 import { Class, isRelation, ModelAccess, Relation, StructuralFeature} from '@agrzes/yellow-2020-common-metadata'
 import _ from 'lodash'
 
+export * from './interface'
+
 export interface Model {
     metaModel: ModelAccess
     get(type: Class, key: string): object
