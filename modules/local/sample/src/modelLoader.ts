@@ -1,8 +1,9 @@
-import { setupModel, SimpleTypedDataAccess , TypedDataAccess, TypeMapTypeDataWrapper, Model} from '@agrzes/yellow-2020-common-model'
-import config from 'config'
-import { SimpleModelAccess, ModelDescriptor, Class } from '@agrzes/yellow-2020-common-metadata'
-import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
 import { DataAccess } from '@agrzes/yellow-2020-common-data'
+import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
+import { Class, ModelDescriptor, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
+import { Model, setupModel , SimpleTypedDataAccess,
+  TypedDataAccess, TypeMapTypeDataWrapper} from '@agrzes/yellow-2020-common-model'
+import config from 'config'
 import _ from 'lodash'
 
 interface PouchDBDatabase {
@@ -51,7 +52,8 @@ interface SimpleTypedDataAccessConfig extends TypedDataAccessConfig {
   classPath: string
 }
 
-function isSimpleTypedDataAccessConfig(typedDataAccessConfig: TypedDataAccessConfig): typedDataAccessConfig is SimpleTypedDataAccessConfig {
+function isSimpleTypedDataAccessConfig(typedDataAccessConfig: TypedDataAccessConfig)
+  : typedDataAccessConfig is SimpleTypedDataAccessConfig {
   return typedDataAccessConfig.kind === 'simple'
 }
 
@@ -64,16 +66,14 @@ interface TypeMapTypedDataAccessConfig extends TypedDataAccessConfig {
   dataAccess: DataAccessConfig
 }
 
-
-function isTypeMapTypedDataAccessConfig(typedDataAccessConfig: TypedDataAccessConfig): typedDataAccessConfig is TypeMapTypedDataAccessConfig {
+function isTypeMapTypedDataAccessConfig(typedDataAccessConfig: TypedDataAccessConfig)
+  : typedDataAccessConfig is TypeMapTypedDataAccessConfig {
   return typedDataAccessConfig.kind === 'map'
 }
 
 interface ModelConfig {
   dataAccess: TypedDataAccessConfig[]
 }
-
-
 
 function resolvePouchDB<T extends object>(database: PouchDBDatabase): PouchDB.Database<T> {
   if (isPouchDBUrlDatabase(database)) {
@@ -88,20 +88,23 @@ function resolvePouchDB<T extends object>(database: PouchDBDatabase): PouchDB.Da
 function resolveDataAccess<T extends object>(database: DataAccessConfig): DataAccess<T, string, string, void> {
   if (isPouchDBDataAccessConfig(database)) {
     return  new PouchDBDataAccess(resolvePouchDB<T>(database.database))
-   }else {
+   } else {
     throw new Error('Database configuration not supported')
   }
 }
 
-function resolveTypedDataAccess<T extends object>(metadata:SimpleModelAccess, typedDataAccessConfig: TypedDataAccessConfig): TypedDataAccess<T, string, string, void> {
+function resolveTypedDataAccess<T extends object>(metadata: SimpleModelAccess,
+                                                  typedDataAccessConfig: TypedDataAccessConfig)
+                                                  : TypedDataAccess<T, string, string, void> {
   if (isSimpleTypedDataAccessConfig(typedDataAccessConfig)) {
     return new SimpleTypedDataAccess(
-      _.get(metadata.models,typedDataAccessConfig.classPath) as unknown as Class,
+      _.get(metadata.models, typedDataAccessConfig.classPath) as unknown as Class,
       resolveDataAccess(typedDataAccessConfig.dataAccess)
     )
    } else if (isTypeMapTypedDataAccessConfig(typedDataAccessConfig)) {
     return new TypeMapTypeDataWrapper(
-      _.mapValues(_.keyBy(typedDataAccessConfig.map,'tag'),({classPath}) => _.get(metadata.models,classPath) as unknown as Class),
+      _.mapValues(_.keyBy(typedDataAccessConfig.map, 'tag'),
+        ({classPath}) => _.get(metadata.models, classPath) as unknown as Class),
       resolveDataAccess(typedDataAccessConfig.dataAccess)
     )
    } else {
@@ -119,7 +122,7 @@ export async function loadMetadata(): Promise<SimpleModelAccess> {
     .loadFromAdapter(await loadModelDb())
 }
 
-export async function loadModel(metadata:SimpleModelAccess,name: string): Promise<Model> {
+export async function loadModel(metadata: SimpleModelAccess, name: string): Promise<Model> {
   const modelConfig: ModelConfig = config.get(`yellow.model.${name}`)
-  return await setupModel( metadata ,_.map(modelConfig.dataAccess,(x) => resolveTypedDataAccess(metadata, x)))
+  return await setupModel( metadata , _.map(modelConfig.dataAccess, (x) => resolveTypedDataAccess(metadata, x)))
 }

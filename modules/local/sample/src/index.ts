@@ -11,13 +11,9 @@ export interface TransformResult {
   value: object
 }
 
-export interface TransformFunction<SourceData> {
-  (metadata: SimpleModelAccess, data: SourceData) : TransformResult[]
-}
+export type TransformFunction<SourceData> = (metadata: SimpleModelAccess, data: SourceData)  => TransformResult[]
 
-export interface ExtractFunction<SourceData> {
-  (): Promise<SourceData>
-}
+export type ExtractFunction<SourceData> = () => Promise<SourceData>
 
 export interface LoaderDefinition<SourceData> {
   extract: ExtractFunction<SourceData>
@@ -25,13 +21,12 @@ export interface LoaderDefinition<SourceData> {
   model: string
 }
 
-
 export function executeLoader<SourceData>(loader: LoaderDefinition<SourceData>): void {
   (async () => {
     const sourceData = await loader.extract()
     const metadata = await loadMetadata()
     const model = await loadModel(metadata, loader.model)
-    const result = loader.transform(metadata,sourceData)
-    await Promise.all(_.map(result,({type,key,value}) => model.raw(type, key, value)))
+    const result = loader.transform(metadata, sourceData)
+    await Promise.all(_.map(result, ({type, key, value}) => model.raw(type, key, value)))
   })().catch(log)
 }

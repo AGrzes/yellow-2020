@@ -1,6 +1,6 @@
 
-import Vue from 'vue'
 import {MenuItem} from '@agrzes/yellow-2020-common-ui-model'
+import Vue from 'vue'
 
 export const navigationMenu = Vue.extend({
   props: {
@@ -24,7 +24,7 @@ export const navigationMenu = Vue.extend({
             <menu-item :item="childItem" v-for="(childItem,key) in item.children" :key="key"></menu-item>
         </ul>
       </router-link>
-      
+
       `
     }
   }

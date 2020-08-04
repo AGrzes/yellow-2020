@@ -32,12 +32,12 @@ class OriginConfigLoader implements ConfigLoader {
         }
     }
     public async load<T>(url: string, loadDelegate: load<T>): Promise<T> {
-        return (await axios.get(url.replace('origin:',''))).data
+        return (await axios.get(url.replace('origin:', ''))).data
     }
 
 }
 
-const loaders: ConfigLoader[] = [new HttpConfigLoader(),new OriginConfigLoader()]
+const loaders: ConfigLoader[] = [new HttpConfigLoader(), new OriginConfigLoader()]
 
 export async function config<T>(url: string): Promise<T> {
     return load(url, load)

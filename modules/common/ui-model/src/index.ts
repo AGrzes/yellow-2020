@@ -57,7 +57,7 @@ export interface EntityView {
 
 export interface MenuItem {
   label: string
-  route: string | Record<string,unknown>
+  route: string | Record<string, unknown>
   children?: MenuItem[]
 }
 

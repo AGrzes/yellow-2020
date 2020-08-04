@@ -37,13 +37,13 @@ async function loadConfluenceData(): Promise<any> {
 
 executeLoader({
   model: 'games',
-  async extract(): Promise<any> { 
+  async extract(): Promise<any> {
     return await loadConfluenceData()
   },
-  transform(metadata,games: any) {
+  transform(metadata, games: any) {
     return _.map(games, (game) => ({
-      type: metadata.models.computerGames.classes.game, 
-      key: _.kebabCase(game.name), 
+      type: metadata.models.computerGames.classes.game,
+      key: _.kebabCase(game.name),
       value: game
     }))
   }
