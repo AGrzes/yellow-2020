@@ -35,7 +35,8 @@
   "license": "MIT",
   "dependencies": {
     "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.5",
-    "@agrzes/yellow-2020-common-model": "^1.1.5"
+    "@agrzes/yellow-2020-common-model": "^1.1.5",
+    "@agrzes/yellow-2020-common-indexer": "^1.1.5"
   },
   "files": [
     "/package.json",
