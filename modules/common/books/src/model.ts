@@ -1,6 +1,6 @@
 
+import { Indexer } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
-import { Indexer } from './indexer'
 
 export class Book<Ref = string> {
   public title: string

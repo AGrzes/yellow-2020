@@ -1,7 +1,7 @@
+import 'bootstrap'
+import 'jquery'
 import * as _ from 'lodash'
 import Vue from 'vue'
-import 'jquery'
-import 'bootstrap'
 
 const Modal = Vue.extend({
   props: ['component', 'title', 'componentProps', 'buttons'],
@@ -71,7 +71,7 @@ interface ModalConfig<Component extends Vue.VueConstructor > {
   component: string | Component
   title: string
   props?: any
-  buttons?: ModalButtonConfig<Component>[]
+  buttons?: Array<ModalButtonConfig<Component>>
 }
 
 interface ModalResult<Component extends Vue.VueConstructor> {

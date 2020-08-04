@@ -1,12 +1,10 @@
-import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
-import chai, { assert } from 'chai'
+import { Indexer } from '@agrzes/yellow-2020-common-model'
+import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import 'mocha'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import {PouchCRUD, Entity} from '../src/crud'
-import { Author, Book, Genre, Library } from '../src/model'
-import { Indexer } from '../src/indexer'
+import { PouchCRUD } from '../src/crud'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
 
 class TestClass {

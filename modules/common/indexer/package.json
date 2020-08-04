@@ -1,5 +1,5 @@
 {
-  "name": "@agrzes/yellow-2020-web-vue-books",
+  "name": "@agrzes/yellow-2020-common-indexer",
   "version": "1.1.5",
   "description": "",
   "main": "target",
@@ -31,15 +31,6 @@
       "source-map-support/register"
     ]
   },
-  "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.5",
-    "@agrzes/yellow-2020-common-books": "^1.1.5",
-    "@agrzes/yellow-2020-common-model": "^1.1.5",
-    "@agrzes/yellow-2020-web-vue-components": "^1.1.5",
-    "@agrzes/yellow-2020-web-vue-router": "^1.1.5"
-  },
   "files": [
     "/package.json",
     "/package-lock.json",
@@ -48,14 +39,13 @@
     "/target",
     "/types"
   ],
+  "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@agrzes/yellow-2020-common-model": "^1.1.5"
+  },
   "devDependencies": {
     "mocha": "^7.1.2",
-    "nyc": "^15.0.1",
-    "file-loader": "^6.0.0"
-  },
-  "peerDependencies": {
-    "vue": "^2.6.11",
-    "vue-router": "^3.3.4",
-    "vuex": "^3.4.0"
+    "nyc": "^15.0.1"
   }
 }

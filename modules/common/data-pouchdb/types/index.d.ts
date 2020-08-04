@@ -4,6 +4,7 @@
 /// <reference types="pouchdb-find" />
 /// <reference types="pouchdb-mapreduce" />
 import { ConflictMode, DataAccess, DataWrapper } from '@agrzes/yellow-2020-common-data';
+export * from './crud';
 export declare const PouchDB: PouchDB.Static;
 export declare class PouchDBDataAccess<DataType extends object> implements DataAccess<DataType, string, string, void> {
     private db;

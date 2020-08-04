@@ -1,19 +1,19 @@
-import 'mocha'
-import {ModelStateAdapter} from '../src/model'
-import chai,{expect}  from 'chai'
-import { Model } from '@agrzes/yellow-2020-common-model'
 import { Class } from '@agrzes/yellow-2020-common-metadata'
+import { Model } from '@agrzes/yellow-2020-common-model'
+import chai, {expect} from 'chai'
+import 'mocha'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
+import {ModelStateAdapter} from '../src/model'
 chai.use(sinonChai)
 
 describe('ModelStateAdapter', function() {
 
     describe('state', function() {
-        it('Should setup module',async function() {
-            const adapter = new ModelStateAdapter({map(){return {}}} as unknown as Model)
+        it('Should setup module', async function() {
+            const adapter = new ModelStateAdapter({map() {return {}}} as unknown as Model)
             const modelModule = adapter.state({} as Class)
-            expect(modelModule).to.have.property('namespaced',true)
+            expect(modelModule).to.have.property('namespaced', true)
             expect(modelModule).to.have.nested.property('actions.fetch')
             expect(modelModule).to.have.nested.property('mutations.update')
             expect(modelModule).to.have.nested.property('mutations.delete')
@@ -23,12 +23,12 @@ describe('ModelStateAdapter', function() {
         })
         describe('actions', function() {
             describe('raw', function() {
-                it('Should delegate to raw read',async function() {
+                it('Should delegate to raw read', async function() {
                     const model = {
-                        map: sinon.spy(()=> {
+                        map: sinon.spy(() => {
                             return {}
                         }),
-                        raw: sinon.spy(()=> {
+                        raw: sinon.spy(() => {
                             return 'raw'
                         })
                     } as unknown as Model
@@ -36,17 +36,17 @@ describe('ModelStateAdapter', function() {
                     const state = {}
                     const type = {} as Class
                     const modelModule = adapter.state(type)
-                    const result = await (modelModule.actions.raw as any).call(null,state, {key: 'key'})
+                    const result = await (modelModule.actions.raw as any).call(null, state, {key: 'key'})
                     expect(model.raw).to.be.calledWith(type, 'key')
                     expect(result).to.be.equals('raw')
                 })
-                it('Should delegate to raw write',async function() {
+                it('Should delegate to raw write', async function() {
                     const model = {
-                        map: sinon.spy(()=> {
+                        map: sinon.spy(() => {
                             return {}
                         }),
                         raw: sinon.spy(),
-                        get: sinon.spy(()=> {
+                        get: sinon.spy(() => {
                             return 'get'
                         })
                     } as unknown as Model
@@ -56,16 +56,16 @@ describe('ModelStateAdapter', function() {
                     }
                     const type = {} as Class
                     const modelModule = adapter.state(type)
-                    await (modelModule.actions.raw as any).call(null,state, {key: 'key',value:'value'})
-                    expect(model.raw).to.be.calledWith(type, 'key','value')
-                    expect(state.commit).to.be.calledWith('update', {key:'key',value:'get'})
+                    await (modelModule.actions.raw as any).call(null, state, {key: 'key', value: 'value'})
+                    expect(model.raw).to.be.calledWith(type, 'key', 'value')
+                    expect(state.commit).to.be.calledWith('update', {key: 'key', value: 'get'})
                 })
             })
 
             describe('delete', function() {
-                it('Should delegate to raw delete',async function() {
+                it('Should delegate to raw delete', async function() {
                     const model = {
-                        map: sinon.spy(()=> {
+                        map: sinon.spy(() => {
                             return {}
                         }),
                         delete: sinon.spy()
@@ -76,15 +76,15 @@ describe('ModelStateAdapter', function() {
                     }
                     const type = {} as Class
                     const modelModule = adapter.state(type)
-                    await (modelModule.actions.delete as any).call(null,state, 'key')
+                    await (modelModule.actions.delete as any).call(null, state, 'key')
                     expect(model.delete).to.be.calledWith(type, 'key')
                     expect(state.commit).to.be.calledWith('delete', 'key')
                 })
             })
             describe('fetch', function() {
-                it('Should not fail',async function() {
+                it('Should not fail', async function() {
                     const model = {
-                        map: sinon.spy(()=> {
+                        map: sinon.spy(() => {
                             return {}
                         }),
                         delete: sinon.spy()
@@ -95,16 +95,16 @@ describe('ModelStateAdapter', function() {
                     }
                     const type = {} as Class
                     const modelModule = adapter.state(type)
-                    await (modelModule.actions.fetch as any).call(null,state)
+                    await (modelModule.actions.fetch as any).call(null, state)
                 })
             })
         })
 
         describe('mutations', function() {
             describe('update', function() {
-                it('Should update state',async function() {
+                it('Should update state', async function() {
                     const model = {
-                        map: sinon.spy(()=> {
+                        map: sinon.spy(() => {
                             return {}
                         })
                     } as unknown as Model
@@ -112,23 +112,23 @@ describe('ModelStateAdapter', function() {
                     const state = {}
                     const type = {} as Class
                     const modelModule = adapter.state(type)
-                    modelModule.mutations.update.call(null,state, {key: 'key',value:'value'})
-                    expect(state).to.have.property('key','value')
+                    modelModule.mutations.update.call(null, state, {key: 'key', value: 'value'})
+                    expect(state).to.have.property('key', 'value')
                 })
             })
             describe('delete', function() {
-                it('Should update state',async function() {
+                it('Should update state', async function() {
                     const model = {
-                        map: sinon.spy(()=> {
+                        map: sinon.spy(() => {
                             return {}
                         })
                     } as unknown as Model
                     const adapter = new ModelStateAdapter(model)
-                    const state = {key:'value'}
+                    const state = {key: 'value'}
                     const type = {} as Class
                     const modelModule = adapter.state(type)
-                    modelModule.mutations.delete.call(null,state, 'key')
-                    expect(state).not.to.have.property('key','value')
+                    modelModule.mutations.delete.call(null, state, 'key')
+                    expect(state).not.to.have.property('key', 'value')
                 })
             })
         })

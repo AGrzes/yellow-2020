@@ -1,28 +1,6 @@
-import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
+import { Change, CRUD, Entity } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
 import {Observable} from 'rxjs'
-import { Indexer } from './indexer'
-
-export interface Entity<T> {
-  new (...args: any): T
-  readonly typeTag: string
-  key(instance: T): string
-  index(index: Indexer, instance: T): void
-}
-
-export interface Change {
-  entity: Entity<any>
-  key: string
-  change: 'change' | 'delete'
-}
-
-export interface CRUD<Key = string> {
-  list<T>(clazz: Entity<T>): Promise<T[]>
-  get<T>(clazz: Entity<T>, key: Key): Promise<T>
-  save<T>(clazz: Entity<T>, instance: T): Promise<T>
-  delete<T>(clazz: Entity<T>, key: Key): Promise<T|boolean>
-  changes(): Observable<Change>
-}
 
 function materialize<T>(clazz: Entity<T>, data: T): T {
   return Object.create(clazz.prototype, Object.getOwnPropertyDescriptors(data))

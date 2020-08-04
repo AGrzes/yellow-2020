@@ -27,9 +27,9 @@ async function loadConfluenceData(): Promise<any> {
         }
         artistNode.childNodes.forEach((artistChild) => {
           if (artistChild instanceof dom.window.Text) {
-            artist.name+= artistChild.data
+            artist.name += artistChild.data
           } else if (artistChild instanceof dom.window.HTMLAnchorElement) {
-            artist.name+= artistChild.text
+            artist.name += artistChild.text
             artist.link = artistChild.href
           } else if (artistChild instanceof dom.window.HTMLUListElement) {
             artist.albums = []
@@ -39,9 +39,9 @@ async function loadConfluenceData(): Promise<any> {
               }
               albumNode.childNodes.forEach((albumChild) => {
                 if (albumChild instanceof dom.window.Text) {
-                  album.name+= albumChild.data
+                  album.name += albumChild.data
                 } else if (albumChild instanceof dom.window.HTMLAnchorElement) {
-                  album.name+= albumChild.text
+                  album.name += albumChild.text
                   album.link = albumChild.href
                 } else if (albumChild instanceof dom.window.HTMLUListElement) {
                   album.songs = []
@@ -51,9 +51,9 @@ async function loadConfluenceData(): Promise<any> {
                     }
                     songNode.childNodes.forEach((songChild) => {
                       if (songChild instanceof dom.window.Text) {
-                        song.name+= songChild.data
+                        song.name += songChild.data
                       } else if (songChild instanceof dom.window.HTMLAnchorElement) {
-                        song.name+= songChild.text
+                        song.name += songChild.text
                         song.link = songChild.href
                       }
                     })
@@ -73,10 +73,10 @@ async function loadConfluenceData(): Promise<any> {
 
 executeLoader({
   model: 'music',
-  async extract(): Promise<any> { 
+  async extract(): Promise<any> {
     return await  loadConfluenceData()
   },
-  transform(metadata,confluenceData: any) {
+  transform(metadata, confluenceData: any) {
     const songs = []
     const artists = []
     const albums = []
@@ -84,13 +84,13 @@ executeLoader({
       artists.push({
         name: artist.name,
         albums: _(artist.albums).map('name').map(_.kebabCase).value(),
-        songs: _(artist.albums).flatMap('songs').map('name').map(_.kebabCase).value(),
+        songs: _(artist.albums).flatMap('songs').map('name').map(_.kebabCase).value()
       })
       _.forEach(artist.albums, (album) => {
         albums.push({
           title: album.name,
           artists: [_.kebabCase(artist.name)],
-          tracks: _(album.songs).map('name').map(_.kebabCase).value(),
+          tracks: _(album.songs).map('name').map(_.kebabCase).value()
         })
         _.forEach(album.songs, (song) => {
           songs.push({
@@ -102,18 +102,18 @@ executeLoader({
       })
     })
     return [..._.map(songs, (song) => ({
-      type: metadata.models.music.classes.song, 
-      key: _.kebabCase(song.name), 
+      type: metadata.models.music.classes.song,
+      key: _.kebabCase(song.name),
       value: song
     })),
     ..._.map(artists, (artist) => ({
-      type: metadata.models.music.classes.artist, 
-      key: _.kebabCase(artist.name), 
+      type: metadata.models.music.classes.artist,
+      key: _.kebabCase(artist.name),
       value: artist
     })),
     ..._.map(albums, (album) => ({
-      type: metadata.models.music.classes.album, 
-      key: _.kebabCase(album.name), 
+      type: metadata.models.music.classes.album,
+      key: _.kebabCase(album.name),
       value: album
     }))]
   }

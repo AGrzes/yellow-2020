@@ -1,18 +1,9 @@
+import { Entity, EntityChange, Indexer, ModelChange,
+  Relation, RelationChange } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
-import { Entity } from './crud'
-import { EntityChange, ModelChange, RelationChange } from './data'
 
-export interface Relation {
-  source: Entity<any>
-  sourceKey: string
-  sourcePath: string
-  sourceNestedPath?: string
-  targetPath: string
-  targetNestedPath?: string
-  target: Entity<any>
-  targetKey: string,
-  relationEntity?: any
-}
+export * from './indexModel'
+
 export function rel(source: Entity<any>, sourceKey: string, sourcePath: string,
                     target: Entity<any>, targetKey: string, targetPath: string, relationEntity?: any): Relation {
   return _.omitBy({
@@ -42,7 +33,7 @@ export function relent(source: Entity<any>, sourceKey: string, sourcePath: strin
   }, _.isUndefined) as Relation
 }
 
-export class Indexer {
+export class TheIndexer implements Indexer {
   private entities: Map<Entity<any>, Record<string, InstanceType<Entity<any>>>> = new Map()
   private forwardRelations: Map<Entity<any>, Record<string, Record<string, Relation[]>>> = new Map()
   private reverseRelations: Map<Entity<any>, Record<string, Record<string, Relation[]>>> = new Map()

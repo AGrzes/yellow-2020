@@ -1,4 +1,4 @@
-import { resolveModels, RelationDescriptor, AttributeDescriptor } from './simple'
+import { AttributeDescriptor, RelationDescriptor, resolveModels } from './simple'
 
 export const {metamodel, typescript} = resolveModels({metamodel: {
     classes: {
@@ -171,7 +171,7 @@ export const {metamodel, typescript} = resolveModels({metamodel: {
         }
     },
     dataTypes: {}
-},typescript: {
+}, typescript: {
     classes: {},
     dataTypes: {
         string: {
