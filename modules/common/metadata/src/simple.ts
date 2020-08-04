@@ -1,6 +1,6 @@
-import { Class, DataType, ModelAccess, Model, StructuralFeature, Attribute, Relation, fixupModel } from '.'
 import { DataAccess } from '@agrzes/yellow-2020-common-data'
 import * as _ from 'lodash'
+import { Attribute, Class, DataType, fixupModel, Model, ModelAccess, Relation, StructuralFeature } from '.'
 
 interface Ref {
     $ref: string
@@ -74,7 +74,7 @@ function constructClass(descriptor: ClassDescriptor): Class {
     const clazz = {
         parent: descriptor.parent,
         name: descriptor.name,
-        features: _.mapValues(descriptor.features,constructStructuralFeature)
+        features: _.mapValues(descriptor.features, constructStructuralFeature)
     } as unknown as Class
     _.forEach(clazz.features, (sf) => sf.owner = clazz)
     return clazz
@@ -103,13 +103,13 @@ function resolveRef<T>(models: {[name: string]: Model}, model: Model, ref: Ref):
         if (!_.isEmpty(parts[0])) {
             model = models[parts[0]]
         }
-        return _.get(model, parts[1].replace(/\//g,'.'))
+        return _.get(model, parts[1].replace(/\//g, '.'))
     }
 }
 
 function resolveParent(models: {[name: string]: Model}, model: Model, clazz: Class) {
     if (clazz.parent) {
-        clazz.parent = resolveRef(models,model,clazz.parent as unknown as Ref)
+        clazz.parent = resolveRef(models, model, clazz.parent as unknown as Ref)
         if (clazz.parent.children) {
             clazz.parent.children.push(clazz)
         } else {
@@ -120,37 +120,37 @@ function resolveParent(models: {[name: string]: Model}, model: Model, clazz: Cla
 
 function resolveStructuralFeature(models: {[name: string]: Model}, model: Model, feature: StructuralFeature) {
     if (isAttribute(feature)) {
-        feature.type = resolveRef(models,model,feature.type as unknown as Ref)
+        feature.type = resolveRef(models, model, feature.type as unknown as Ref)
     }
     if (isRelation(feature)) {
-        feature.target = resolveRef(models,model,feature.target as unknown as Ref)
-        feature.reverse = resolveRef(models,model,feature.reverse as unknown as Ref)
+        feature.target = resolveRef(models, model, feature.target as unknown as Ref)
+        feature.reverse = resolveRef(models, model, feature.reverse as unknown as Ref)
     }
 }
 
 function resolveClassRefs(models: {[name: string]: Model}, model: Model, clazz: Class) {
-    resolveParent(models,model,clazz)
-    _.forEach(clazz.features,_.partial(resolveStructuralFeature,models,model))
+    resolveParent(models, model, clazz)
+    _.forEach(clazz.features, _.partial(resolveStructuralFeature, models, model))
 }
 
 function resolveModelRefs(models: {[name: string]: Model}, model: Model) {
-    _.forEach(model.classes,_.partial(resolveClassRefs, models,model))
+    _.forEach(model.classes, _.partial(resolveClassRefs, models, model))
 }
 
 function resolveModelsRefs(models: {[name: string]: Model}) {
-    _.forEach(models,_.partial(resolveModelRefs,models))
+    _.forEach(models, _.partial(resolveModelRefs, models))
 }
 
 export function resolveModels(descriptors: {[name: string]: ModelDescriptor}): {[name: string]: Model} {
     const result = _.mapValues(descriptors, constructModel)
     resolveModelsRefs(result)
-    _.forEach(result,fixupModel)
+    _.forEach(result, fixupModel)
     return result
 }
 
 export class SimpleModelAccess implements ModelAccess {
-    static async loadFromAdapter(modelData: DataAccess<ModelDescriptor,string,any,any>) {
-        return new SimpleModelAccess(resolveModels(_.mapValues(_.keyBy( await modelData.list(),'key'),'data')))
+    public static async loadFromAdapter(modelData: DataAccess<ModelDescriptor, string, any, any>) {
+        return new SimpleModelAccess(resolveModels(_.mapValues(_.keyBy( await modelData.list(), 'key'), 'data')))
     }
 
     constructor(public models: {[name: string]: Model}) {}

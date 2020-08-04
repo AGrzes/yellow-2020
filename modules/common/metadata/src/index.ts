@@ -44,15 +44,15 @@ export interface ModelAccess {
 }
 
 export function fixupModel(model: Model) {
-    _.forEach(model.classes,(clazz,name) => {
-        if(!clazz.model) {
+    _.forEach(model.classes, (clazz, name) => {
+        if (!clazz.model) {
             clazz.model = model
         }
         if (!clazz.name) {
             clazz.name = name
         }
         _.forEach(clazz.features, (feature, featureName) => {
-            if(!feature.owner) {
+            if (!feature.owner) {
                 feature.owner = clazz
             }
             if (!feature.name) {
@@ -61,16 +61,16 @@ export function fixupModel(model: Model) {
             if (!feature.multiplicity) {
                 feature.multiplicity = '?'
             }
-            if(!feature.model) {
+            if (!feature.model) {
                 feature.model = model
             }
-            if(isRelation(feature) && feature.reverse && !feature.reverse.reverse) {
+            if (isRelation(feature) && feature.reverse && !feature.reverse.reverse) {
                 feature.reverse.reverse = feature
             }
         })
     })
-    _.forEach(model.dataTypes,(type, name) => {
-        if(!type.model) {
+    _.forEach(model.dataTypes, (type, name) => {
+        if (!type.model) {
             type.model = model
         }
         if (!type.name) {
