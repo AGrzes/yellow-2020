@@ -1,9 +1,9 @@
-import { TheIndexer } from '@agrzes/yellow-2020-common-indexer'
 import { CRUD, Entity, Indexer, isEntityChange,
   isRelationChange, Model2, ModelChange } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
 import {merge, Observable, of, Subject} from 'rxjs'
 import { map } from 'rxjs/operators'
+import { TheIndexer } from '.'
 
 export class IndexModel implements Model2 {
   public index: Indexer = new TheIndexer()

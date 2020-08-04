@@ -2,6 +2,8 @@ import { Entity, EntityChange, Indexer, ModelChange,
   Relation, RelationChange } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
 
+export * from './indexModel'
+
 export function rel(source: Entity<any>, sourceKey: string, sourcePath: string,
                     target: Entity<any>, targetKey: string, targetPath: string, relationEntity?: any): Relation {
   return _.omitBy({

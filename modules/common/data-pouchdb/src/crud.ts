@@ -1,7 +1,6 @@
 import { Change, CRUD, Entity } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
 import {Observable} from 'rxjs'
-import { PouchDB } from '.'
 
 function materialize<T>(clazz: Entity<T>, data: T): T {
   return Object.create(clazz.prototype, Object.getOwnPropertyDescriptors(data))
