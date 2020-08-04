@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const { DefinePlugin } = require('webpack');
 
 module.exports = {
     mode: 'development',
@@ -61,7 +62,10 @@ module.exports = {
             'window.jQuery': 'jquery',
             Popper: ['popper.js', 'default']
         }),
-        new ForkTsCheckerWebpackPlugin()
+        new ForkTsCheckerWebpackPlugin(),
+        new DefinePlugin({
+          'process.env.COUCH_DB_ADDRESS': JSON.stringify('http://couchdb.home.agrzes.pl:5984')
+        })
     ],
     resolve: {
         symlinks: false,
