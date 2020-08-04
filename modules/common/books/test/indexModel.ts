@@ -6,7 +6,7 @@ import 'mocha'
 import {Subject} from 'rxjs'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import {IndexModel} from '../src/data'
+import {IndexModel} from '../src/indexModel'
 import { Author, Book, Genre, Library } from '../src/model'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
 
