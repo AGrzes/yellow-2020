@@ -1,10 +1,10 @@
+import { Indexer } from '@agrzes/yellow-2020-common-model'
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import 'mocha'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import { PouchCRUD } from '../src/crud'
-import { TheIndexer as Indexer } from '../src/indexer'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
 
 class TestClass {

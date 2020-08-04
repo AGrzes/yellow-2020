@@ -4,6 +4,8 @@ import pouchdbAdapterHttp from 'pouchdb-adapter-http'
 import pouchdbCore from 'pouchdb-core'
 import pouchdbMapReduce from 'pouchdb-mapreduce'
 
+export * from './crud'
+
 export const PouchDB = pouchdbCore.plugin(pouchdbAdapterHttp).plugin(pouchdbMapReduce)
 
 export class PouchDBDataAccess<DataType extends object> implements DataAccess<DataType, string, string, void> {

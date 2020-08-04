@@ -1,10 +1,10 @@
 import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
+import { PouchCRUD } from '@agrzes/yellow-2020-common-data-pouchdb'
 import { CRUD, Entity, Indexer, isEntityChange,
-  isRelationChange, Model, Model2, ModelChange } from '@agrzes/yellow-2020-common-model'
+  isRelationChange, Model2, ModelChange } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
 import {merge, Observable, of, Subject} from 'rxjs'
 import { map } from 'rxjs/operators'
-import { PouchCRUD } from './crud'
 import { TheIndexer } from './indexer'
 import { Author, Book, Genre, Library, Series } from './model'
 
