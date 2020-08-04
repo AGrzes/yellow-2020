@@ -1,6 +1,6 @@
 
 import _ from 'lodash'
-import { Indexer } from './indexer'
+import { Indexer } from './interface'
 
 export class Book<Ref = string> {
   public title: string

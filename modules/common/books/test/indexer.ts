@@ -1,7 +1,7 @@
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import 'mocha'
-import { Indexer} from '../src/indexer'
+import { TheIndexer as Indexer} from '../src/indexer'
 const {expect} = chai.use(chaiAsPromised)
 
 describe('indexer', function() {

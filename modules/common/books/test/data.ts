@@ -6,7 +6,8 @@ import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import {IndexModel} from '../src/data'
 import { Author, Book, Genre, Library } from '../src/model'
-import { Entity, PouchCRUD } from '../src/crud'
+import { PouchCRUD } from '../src/crud'
+import { Entity } from '../src/interface'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
 
 describe('data', function() {

@@ -2,47 +2,13 @@ import { PouchDB } from '@agrzes/yellow-2020-common-data-pouchdb'
 import _ from 'lodash'
 import {merge, Observable, of, Subject} from 'rxjs'
 import { map } from 'rxjs/operators'
-import { CRUD, Entity, PouchCRUD } from './crud'
-import { Indexer, Relation } from './indexer'
+import { PouchCRUD } from './crud'
+import { TheIndexer } from './indexer'
+import { CRUD, Entity, Indexer, isEntityChange, isRelationChange, Model, ModelChange } from './interface'
 import { Author, Book, Genre, Library, Series } from './model'
 
-export interface ModelChange {
-  change: 'change' | 'addRelation' | 'removeRelation' | 'delete'
-}
-
-export interface EntityChange extends ModelChange {
-  entity: Entity<any>
-  key: string
-  change: 'change' | 'delete'
-}
-
-export interface RelationChange extends ModelChange, Relation {
-  change: 'addRelation' | 'removeRelation'
-}
-
-export function isEntityChange(change: ModelChange): change is EntityChange {
-  return change.change === 'change' || change.change === 'delete'
-}
-
-export function isRelationChange(change: ModelChange): change is RelationChange {
-  return change.change === 'addRelation' || change.change === 'removeRelation'
-}
-
-export interface Model {
-  load(): Promise<void>
-  list<T>(entity: Entity<T>): Promise<T[]>
-  get<T>(entity: Entity<T>, key: string): Promise<T>
-  update<T>(entity: Entity<T>, instance: T): Promise<T>
-  delete<T>(entity: Entity<T>, key: string): Promise<void>
-  changes(): Observable<ModelChange>
-  readonly entities: Array<Entity<any>>
-  relations(type: Entity<any>): Promise<Readonly<Record<string, Record<string, any[]>>>>
-  instances(): Observable<Record<string, Record<string, InstanceType<Entity<any>>>>>
-  instanceRelations(): Observable<Record<string, Record<string, Record<string, any[]>>>>
-}
-
 export class IndexModel implements Model {
-  public index: Indexer = new Indexer()
+  public index: Indexer = new TheIndexer()
   private changesSubject = new Subject<ModelChange>()
   private instancesSubject = new Subject<Record<string, Array<InstanceType<Entity<any>>>>>()
   private instanceRelationsSubject = new Subject<Readonly<Record<string, Record<string, any[]>>>>()
