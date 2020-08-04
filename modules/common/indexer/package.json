@@ -1,0 +1,51 @@
+{
+  "name": "@agrzes/yellow-2020-common-indexer",
+  "version": "1.1.2",
+  "description": "",
+  "main": "target",
+  "types": "types",
+  "scripts": {
+    "build": "rm -rf target types && tsc",
+    "watch": "tsc --watch --preserveWatchOutput",
+    "test": "nyc mocha test/**/*.{ts,tsx}"
+  },
+  "nyc": {
+    "all": true,
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "include": [
+      "src/**/*"
+    ],
+    "reporter": [
+      "html",
+      "text",
+      "lcov"
+    ],
+    "require": [
+      "ts-node/register",
+      "source-map-support/register"
+    ]
+  },
+  "files": [
+    "/package.json",
+    "/package-lock.json",
+    "/LICENSE",
+    "/src",
+    "/target",
+    "/types"
+  ],
+  "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@agrzes/yellow-2020-common-model": "^1.1.5"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.2",
+    "nyc": "^15.0.1"
+  }
+}

@@ -1,13 +1,13 @@
+import { PouchCRUD } from '@agrzes/yellow-2020-common-data-pouchdb'
+import { Entity } from '@agrzes/yellow-2020-common-model'
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
-import {Subject} from 'rxjs'
 import 'mocha'
+import {Subject} from 'rxjs'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import {IndexModel} from '../src/data'
 import { Author, Book, Genre, Library } from '../src/model'
-import { PouchCRUD } from '@agrzes/yellow-2020-common-data-pouchdb/src/crud'
-import { Entity } from '@agrzes/yellow-2020-common-model'
 const {expect} = chai.use(sinonChai).use(chaiAsPromised)
 
 describe('data', function() {
@@ -56,17 +56,17 @@ describe('data', function() {
         const model = new IndexModel(crud, [Book, Author,  Genre, Library])
         await model.load()
 
-        expect(Book.resolveAuthor(model.index, await model.get<Book<string>>(Book,'book-a')))
+        expect(Book.resolveAuthor(model.index, await model.get<Book<string>>(Book, 'book-a')))
           .to.have.nested.property('[0].name', 'author A')
-        expect(Book.resolveGenre(model.index, await model.get<Book<string>>(Book,'book-a')))
+        expect(Book.resolveGenre(model.index, await model.get<Book<string>>(Book, 'book-a')))
           .to.have.nested.property('[0].name', 'genre A')
-        expect(Book.resolveLibraries(model.index, await model.get<Book<string>>(Book,'book-a')))
+        expect(Book.resolveLibraries(model.index, await model.get<Book<string>>(Book, 'book-a')))
           .to.have.nested.property('[0].library.name', 'library A')
-        expect(Author.resolveBooks(model.index, await model.get<Author<string>>(Author,'author-a')))
+        expect(Author.resolveBooks(model.index, await model.get<Author<string>>(Author, 'author-a')))
           .to.have.nested.property('[0].title', 'book B')
-        expect(Genre.resolveBooks(model.index, await model.get<Genre<string>>(Genre,'genre-a')))
+        expect(Genre.resolveBooks(model.index, await model.get<Genre<string>>(Genre, 'genre-a')))
           .to.have.nested.property('[0].title', 'book B')
-        expect(Library.resolveEntries(model.index, await model.get<Library<string>>(Library,'library-a')))
+        expect(Library.resolveEntries(model.index, await model.get<Library<string>>(Library, 'library-a')))
           .to.have.nested.property('[0].book.title', 'book B')
 
       })
@@ -79,17 +79,17 @@ describe('data', function() {
         const model = new IndexModel(crud, [Book, Author,  Genre, Library])
         await model.load()
 
-        expect(Book.resolveAuthor(model.index, await model.get<Book<string>>(Book,'book-b')))
+        expect(Book.resolveAuthor(model.index, await model.get<Book<string>>(Book, 'book-b')))
           .to.have.nested.property('[0].name', 'author A')
-        expect(Book.resolveGenre(model.index, await model.get<Book<string>>(Book,'book-b')))
+        expect(Book.resolveGenre(model.index, await model.get<Book<string>>(Book, 'book-b')))
           .to.have.nested.property('[0].name', 'genre A')
-        expect(Book.resolveLibraries(model.index, await model.get<Book<string>>(Book,'book-b')))
+        expect(Book.resolveLibraries(model.index, await model.get<Book<string>>(Book, 'book-b')))
           .to.have.nested.property('[0].library.name', 'library A')
-        expect(Author.resolveBooks(model.index, await model.get<Author<string>>(Author,'author-a')))
+        expect(Author.resolveBooks(model.index, await model.get<Author<string>>(Author, 'author-a')))
           .to.have.nested.property('[1].title', 'book A')
-        expect(Genre.resolveBooks(model.index, await model.get<Genre<string>>(Genre,'genre-a')))
+        expect(Genre.resolveBooks(model.index, await model.get<Genre<string>>(Genre, 'genre-a')))
           .to.have.nested.property('[1].title', 'book A')
-        expect(Library.resolveEntries(model.index, await model.get<Library<string>>(Library,'library-a')))
+        expect(Library.resolveEntries(model.index, await model.get<Library<string>>(Library, 'library-a')))
           .to.have.nested.property('[1].book.title', 'book A')
       })
     })
