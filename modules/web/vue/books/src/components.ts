@@ -29,7 +29,7 @@ export const BooksList = Vue.extend({
       <span class="flex-grow-0 flex-shrink-0 align-self-center ml-auto">
         <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
-        <delete-button :type="bookType" :id="key"></delete-button>
+        <delete-button :item="item"></delete-button>
       </span>
     </span>
   </li>
@@ -72,7 +72,7 @@ export const BooksTable = Vue.extend({
       <td>
         <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
-        <delete-button type="book" :id="key"></delete-button>
+        <delete-button :item="item"></delete-button>
       </td>
     </tr>
   </tbody>
@@ -96,7 +96,7 @@ export const BooksCards = Vue.extend({
       <div class="card-footer text-right">
         <edit-button :item="item"></edit-button>
         <details-button type="book" :id="key"></details-button>
-        <delete-button type="book" :id="key"></delete-button>
+        <delete-button :item="item"></delete-button>
       </div>
     </div>
   </div>
@@ -137,7 +137,7 @@ export const BookDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="book">Back</list-button>
-    <delete-button :type="bookType" :id="item._id">Delete</delete-button>
+    <delete-button :item="item">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -155,9 +155,6 @@ export const BookDetails = Vue.extend({
     }
   },
   computed: {
-    bookType() {
-      return Book
-    },
     ...itemRelations(Book,{authors:'author',genres:'genre',series: 'series'})
   }
 })
@@ -180,7 +177,7 @@ export const AuthorList = Vue.extend({
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
         <details-button type="author" :id="key"></details-button>
-        <delete-button :type="authorType" :id="key"></delete-button>
+        <delete-button :item="item"></delete-button>
       </span>
     </span>
   </li>
@@ -228,7 +225,7 @@ export const AuthorDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="author">Back</list-button>
-    <delete-button :type="authorType" :id="item._id">Delete</delete-button>
+    <delete-button :item="item">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -246,9 +243,6 @@ export const AuthorDetails = Vue.extend({
     }
   },
   computed: {
-    authorType() {
-      return Author
-    },
     ...itemRelations(Author,{books:'books',series: 'series'})
   }
 })
@@ -273,7 +267,7 @@ export const LibraryList = Vue.extend({
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
         <details-button type="library" :id="key"></details-button>
-        <delete-button :type="libraryType" :id="key"></delete-button>
+        <delete-button :item="item"></delete-button>
       </span>
     </span>
   </li>
@@ -323,7 +317,7 @@ export const LibraryDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="library">Back</list-button>
-    <delete-button :type="libraryType" :id="item._id">Delete</delete-button>
+    <delete-button :item="item">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -338,9 +332,6 @@ export const LibraryDetails = Vue.extend({
     }
   },
   computed: {
-    libraryType() {
-      return Library
-    },
     ...itemRelations(Library,{entries:'entries'})
   }
 })
@@ -362,7 +353,7 @@ export const GenreList = Vue.extend({
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
         <details-button type="genre" :id="key"></details-button>
-        <delete-button :type="genreType" :id="key"></delete-button>
+        <delete-button :item="item"></delete-button>
       </span>
     </span>
   </li>
@@ -401,7 +392,7 @@ export const GenreDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="genre">Back</list-button>
-    <delete-button :type="genreType" :id="item._id">Delete</delete-button>
+    <delete-button :item="item">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -416,9 +407,6 @@ export const GenreDetails = Vue.extend({
     }
   },
   computed: {
-    genreType() {
-      return Genre
-    },
     ...itemRelations(Genre,{books:'books'})
   }
 })
@@ -445,7 +433,7 @@ export const SeriesList = Vue.extend({
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
         <details-button type="series" :id="key"></details-button>
-        <delete-button :type="seriesType" :id="key"></delete-button>
+        <delete-button :item="item"></delete-button>
       </span>
     </span>
   </li>
@@ -497,7 +485,7 @@ export const SeriesDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="series">Back</list-button>
-    <delete-button :type="seriesType" :id="item._id">Delete</delete-button>
+    <delete-button :item="item">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -515,9 +503,6 @@ export const SeriesDetails = Vue.extend({
     }
   },
   computed: {
-    seriesType() {
-      return Series
-    },
     ...itemRelations(Series,{books:'books',authors:'author'})
   }
 })

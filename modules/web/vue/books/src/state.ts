@@ -7,7 +7,7 @@ import { Module, mapState } from 'vuex'
 export const listRelationResolver = (state: any, entity: Entity<any>, keys: string[], relation: string) =>
   _.mapValues(_.keyBy(keys), (k) => (state.relations[entity.typeTag][k] || {})[relation] || [])
 
-export const listRelations = (entity: Entity<any>,relations: Record<string,string>): Record<string, (state: any) => void> =>
+export const listRelations = (entity: Entity<any>,relations: Record<string,string>) =>
   mapState('model',_.mapValues(relations,
     (relation: string) =>
       function (state: any) {
@@ -17,7 +17,7 @@ export const listRelations = (entity: Entity<any>,relations: Record<string,strin
 export const itemRelationResolver = (state: any, entity: Entity<any>, key: string, relation: string) =>
   (state.relations[entity.typeTag][key] || {})[relation] || []
 
-export const itemRelations = (entity: Entity<any>,relations: Record<string,string>): Record<string, (state: any) => void> =>
+export const itemRelations = (entity: Entity<any>,relations: Record<string,string>) =>
   mapState('model',_.mapValues(relations,
     (relation: string) =>
       function (state: any) {
