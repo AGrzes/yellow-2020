@@ -66,8 +66,6 @@ export const ListButton = Vue.extend({
 
 export const DetailsLink = Vue.extend({
   props: {
-    type: String,
-    id: String,
     selector: String,
     item: Object
   },
@@ -79,8 +77,11 @@ export const DetailsLink = Vue.extend({
 </router-link>
   `,
   computed: {
+    id() {
+      return this.item.constructor.key(this.item)
+    },
     route(): Location {
-      return resolveItemRoute(this.type, this.id, this.selector)
+      return resolveItemRoute(this.item.constructor.typeTag, this.id, this.selector)
     },
     label(): string {
       return _.startCase(this.id)
