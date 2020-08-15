@@ -5,6 +5,10 @@ import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import { Entity } from '@agrzes/yellow-2020-common-model'
+
+const listRelationResolver = (state: any, entity: Entity<any>, keys: string[], relation: string) =>
+  _.mapValues(_.keyBy(keys), (k) => (state.relations[entity.typeTag][k] || {})[relation] || [])
 
 export const BooksList = Vue.extend({
   props: {
@@ -52,13 +56,13 @@ export const BooksList = Vue.extend({
     },
     ...mapState('model', {
       authors(state: any) {
-        return _.mapValues(state.relations[Book.typeTag], (r) => r.author)
+        return listRelationResolver(state,Book,_.keys(this.list),'author')
       },
       genres(state: any) {
-        return _.mapValues(state.relations[Book.typeTag], (r) => r.genre)
+        return listRelationResolver(state,Book,_.keys(this.list),'genre')
       },
       series(state: any) {
-        return _.mapValues(state.relations[Book.typeTag], (r) => r.series)
+        return listRelationResolver(state,Book,_.keys(this.list),'series')
       }
     })
   }
@@ -322,7 +326,7 @@ export const LibraryList = Vue.extend({
     },
     ...mapState('model', {
       entries(state: any) {
-        return _.mapValues(state.relations[Library.typeTag], (r) => r.entries)
+        return listRelationResolver(state,Library,_.keys(this.list),'entries')
       }
     })
   }
@@ -419,7 +423,7 @@ export const GenreList = Vue.extend({
     },
     ...mapState('model', {
       books(state: any) {
-        return _.mapValues(state.relations[Genre.typeTag], (r) => r.books)
+        return listRelationResolver(state,Genre,_.keys(this.list),'books')
       }
     })
   }
@@ -515,10 +519,10 @@ export const SeriesList = Vue.extend({
     },
     ...mapState('model', {
       books(state: any) {
-        return _.mapValues(state.relations[Series.typeTag], (r) => r.books)
+        return listRelationResolver(state,Series,_.keys(this.list),'books')
       },
       authors(state: any) {
-        return _.mapValues(state.relations[Series.typeTag], (r) => r.author)
+        return listRelationResolver(state,Series,_.keys(this.list),'author')
       }
     })
   }
