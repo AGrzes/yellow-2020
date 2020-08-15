@@ -107,7 +107,7 @@ export class TheIndexer implements Indexer {
     const oldRelations = _.mapValues(this.clearRelations(type, key), (relations) => _.keyBy(relations, 'targetKey'))
 
     type.index(this, instance)
-    const newRelations = _.mapValues(this.forwardRelations.get(type)[key] || {},
+    const newRelations = _.mapValues((this.forwardRelations.get(type) || {})[key] || {},
       (relations) => _.keyBy(relations, 'targetKey'))
     const addedRelations: RelationChange[] = _.flatMap(newRelations,
       (relations, path) => _.map(_.omit(relations, _.keys(oldRelations[path])),
