@@ -4,28 +4,7 @@ import { CreateButton, DeleteButton, DetailsButton,
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
-import { mapState } from 'vuex'
-import { Entity } from '@agrzes/yellow-2020-common-model'
-
-const listRelationResolver = (state: any, entity: Entity<any>, keys: string[], relation: string) =>
-  _.mapValues(_.keyBy(keys), (k) => (state.relations[entity.typeTag][k] || {})[relation] || [])
-
-const listRelations = (entity: Entity<any>,relations: Record<string,string>): Record<string, (state: any) => void> =>
-  mapState('model',_.mapValues(relations,
-    (relation: string) =>
-      function (state: any) {
-        return listRelationResolver(state,entity, _.keys(this.list), relation)
-      }))
-
-const itemRelationResolver = (state: any, entity: Entity<any>, key: string, relation: string) =>
-  (state.relations[entity.typeTag][key] || {})[relation] || []
-
-const itemRelations = (entity: Entity<any>,relations: Record<string,string>): Record<string, (state: any) => void> =>
-  mapState('model',_.mapValues(relations,
-    (relation: string) =>
-      function (state: any) {
-        return itemRelationResolver(state,entity, entity.key(this.item), relation)
-      }))
+import { listRelations, itemRelations } from './state'
 
 export const BooksList = Vue.extend({
   props: {
