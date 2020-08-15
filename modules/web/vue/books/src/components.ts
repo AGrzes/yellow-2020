@@ -129,7 +129,7 @@ export const BookDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="book">Back</list-button>
-    <delete-button :item="item">Delete</delete-button>
+    <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -206,7 +206,7 @@ export const AuthorDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="author">Back</list-button>
-    <delete-button :item="item">Delete</delete-button>
+    <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -292,7 +292,7 @@ export const LibraryDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="library">Back</list-button>
-    <delete-button :item="item">Delete</delete-button>
+    <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -364,7 +364,7 @@ export const GenreDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="genre">Back</list-button>
-    <delete-button :item="item">Delete</delete-button>
+    <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
 </div>`,
   components: {
@@ -449,7 +449,7 @@ export const SeriesDetails = Vue.extend({
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
     <list-button type="series">Back</list-button>
-    <delete-button :item="item">Delete</delete-button>
+    <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
 </div>`,
   components: {
