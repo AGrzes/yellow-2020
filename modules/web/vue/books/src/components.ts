@@ -28,7 +28,7 @@ export const BooksList = Vue.extend({
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center ml-auto">
         <edit-button :item="item"></edit-button>
-        <details-button type="book" :id="key"></details-button>
+        <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
     </span>
@@ -63,7 +63,7 @@ export const BooksTable = Vue.extend({
       <td>{{item.title}}</td>
       <td>
         <edit-button :item="item"></edit-button>
-        <details-button type="book" :id="key"></details-button>
+        <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </td>
     </tr>
@@ -87,7 +87,7 @@ export const BooksCards = Vue.extend({
       </div>
       <div class="card-footer text-right">
         <edit-button :item="item"></edit-button>
-        <details-button type="book" :id="key"></details-button>
+        <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </div>
     </div>
@@ -162,7 +162,7 @@ export const AuthorList = Vue.extend({
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
-        <details-button type="author" :id="key"></details-button>
+        <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
     </span>
@@ -241,7 +241,7 @@ export const LibraryList = Vue.extend({
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
-        <details-button type="library" :id="key"></details-button>
+        <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
     </span>
@@ -324,7 +324,7 @@ export const GenreList = Vue.extend({
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
-        <details-button type="genre" :id="key"></details-button>
+        <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
     </span>
@@ -401,7 +401,7 @@ export const SeriesList = Vue.extend({
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
         <edit-button :item="item"></edit-button>
-        <details-button type="series" :id="key"></details-button>
+        <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
     </span>

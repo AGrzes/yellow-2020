@@ -27,8 +27,7 @@ export const DeleteButton = Vue.extend({
 
 export const DetailsButton = Vue.extend({
   props: {
-    type: String,
-    id: String,
+    item: Object,
     selector: String
   },
   template: `
@@ -40,7 +39,7 @@ export const DetailsButton = Vue.extend({
   `,
   computed: {
     route(): Location {
-      return resolveItemRoute(this.type, this.id, this.selector)
+      return resolveItemRoute(this.item.constructor.typeTag, this.item.constructor.key(this.item), this.selector)
     }
   }
 })
