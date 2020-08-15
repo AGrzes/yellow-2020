@@ -1,8 +1,28 @@
-import { Entity, isRelationChange, Model2, ModelChange, Relation } from '@agrzes/yellow-2020-common-model'
+import { Entity, Model2} from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
 import { skip, take } from 'rxjs/operators'
 import Vue from 'vue'
-import { Module } from 'vuex'
+import { Module, mapState } from 'vuex'
+
+export const listRelationResolver = (state: any, entity: Entity<any>, keys: string[], relation: string) =>
+  _.mapValues(_.keyBy(keys), (k) => (state.relations[entity.typeTag][k] || {})[relation] || [])
+
+export const listRelations = (entity: Entity<any>,relations: Record<string,string>): Record<string, (state: any) => void> =>
+  mapState('model',_.mapValues(relations,
+    (relation: string) =>
+      function (state: any) {
+        return listRelationResolver(state,entity, _.keys(this.list), relation)
+      }))
+
+export const itemRelationResolver = (state: any, entity: Entity<any>, key: string, relation: string) =>
+  (state.relations[entity.typeTag][key] || {})[relation] || []
+
+export const itemRelations = (entity: Entity<any>,relations: Record<string,string>): Record<string, (state: any) => void> =>
+  mapState('model',_.mapValues(relations,
+    (relation: string) =>
+      function (state: any) {
+        return itemRelationResolver(state,entity, entity.key(this.item), relation)
+      }))
 
 export async function modelState<R>(model: Model2):
   Promise<Module<any, any>> {

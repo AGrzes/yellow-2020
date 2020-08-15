@@ -4,7 +4,7 @@ import { CreateButton, DeleteButton, DetailsButton,
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
-import { mapState } from 'vuex'
+import { listRelations, itemRelations } from './state'
 
 export const BooksList = Vue.extend({
   props: {
@@ -50,17 +50,7 @@ export const BooksList = Vue.extend({
     bookType() {
       return Book
     },
-    ...mapState('model', {
-      authors(state: any) {
-        return _.mapValues(state.relations[Book.typeTag], (r) => r.author)
-      },
-      genres(state: any) {
-        return _.mapValues(state.relations[Book.typeTag], (r) => r.genre)
-      },
-      series(state: any) {
-        return _.mapValues(state.relations[Book.typeTag], (r) => r.series)
-      }
-    })
+    ...listRelations(Book,{authors: 'author',genres:'genre',series:'series'})
   }
 })
 
@@ -168,17 +158,7 @@ export const BookDetails = Vue.extend({
     bookType() {
       return Book
     },
-    ...mapState('model', {
-      authors(state: any) {
-        return state.relations[Book.typeTag][Book.key(this.item)].author
-      },
-      genres(state: any) {
-        return state.relations[Book.typeTag][Book.key(this.item)].genre
-      },
-      series(state: any) {
-        return state.relations[Book.typeTag][Book.key(this.item)].series
-      }
-    })
+    ...itemRelations(Book,{authors:'author',genres:'genre',series: 'series'})
   }
 })
 
@@ -218,14 +198,7 @@ export const AuthorList = Vue.extend({
     authorType() {
       return Author
     },
-    ...mapState('model', {
-      books(state: any) {
-        return _.mapValues(state.relations[Author.typeTag], (r) => r.books)
-      },
-      series(state: any) {
-        return _.mapValues(state.relations[Author.typeTag], (r) => r.series)
-      }
-    })
+    ...listRelations(Author,{books: 'books',series:'series'})
   }
 })
 
@@ -276,14 +249,7 @@ export const AuthorDetails = Vue.extend({
     authorType() {
       return Author
     },
-    ...mapState('model', {
-      books(state: any) {
-        return state.relations[Author.typeTag][Author.key(this.item)].books
-      },
-      series(state: any) {
-        return state.relations[Author.typeTag][Author.key(this.item)].series
-      }
-    })
+    ...itemRelations(Author,{books:'books',series: 'series'})
   }
 })
 
@@ -320,11 +286,7 @@ export const LibraryList = Vue.extend({
     libraryType() {
       return Library
     },
-    ...mapState('model', {
-      entries(state: any) {
-        return _.mapValues(state.relations[Library.typeTag], (r) => r.entries)
-      }
-    })
+    ...listRelations(Library,{entries: 'entries'})
   }
 })
 
@@ -379,11 +341,7 @@ export const LibraryDetails = Vue.extend({
     libraryType() {
       return Library
     },
-    ...mapState('model', {
-      entries(state: any) {
-        return state.relations[Library.typeTag][Library.key(this.item)].entries
-      }
-    })
+    ...itemRelations(Library,{entries:'entries'})
   }
 })
 
@@ -417,11 +375,7 @@ export const GenreList = Vue.extend({
     genreType() {
       return Genre
     },
-    ...mapState('model', {
-      books(state: any) {
-        return _.mapValues(state.relations[Genre.typeTag], (r) => r.books)
-      }
-    })
+    ...listRelations(Genre,{books: 'books'})
   }
 })
 
@@ -465,11 +419,7 @@ export const GenreDetails = Vue.extend({
     genreType() {
       return Genre
     },
-    ...mapState('model', {
-      books(state: any) {
-        return state.relations[Genre.typeTag][Genre.key(this.item)].books
-      }
-    })
+    ...itemRelations(Genre,{books:'books'})
   }
 })
 
@@ -513,14 +463,7 @@ export const SeriesList = Vue.extend({
     seriesType() {
       return Series
     },
-    ...mapState('model', {
-      books(state: any) {
-        return _.mapValues(state.relations[Series.typeTag], (r) => r.books)
-      },
-      authors(state: any) {
-        return _.mapValues(state.relations[Series.typeTag], (r) => r.author)
-      }
-    })
+    ...listRelations(Series,{books: 'books', authors: 'author'})
   }
 })
 
@@ -575,13 +518,6 @@ export const SeriesDetails = Vue.extend({
     seriesType() {
       return Series
     },
-    ...mapState('model', {
-      books(state: any) {
-        return state.relations[Series.typeTag][Series.key(this.item)].books
-      },
-      authors(state: any) {
-        return state.relations[Series.typeTag][Series.key(this.item)].author
-      }
-    })
+    ...itemRelations(Series,{books:'books',authors:'author'})
   }
 })
