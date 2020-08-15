@@ -8,8 +8,7 @@ import { modal } from './modal'
 
 export const DeleteButton = Vue.extend({
   props: {
-    type: Function,
-    id: String
+    item: Object
   },
   template: `
 <button @click="remove()" class="btn btn-outline-danger" type="button" title="Delete">
@@ -20,7 +19,7 @@ export const DeleteButton = Vue.extend({
   `,
   methods: {
     async remove() {
-      await this.$store.dispatch(`model/delete`, {id: this.id, type: this.type})
+      await this.$store.dispatch(`model/delete`, {id: this.item.constructor.key(this.item), type: this.item.constructor})
       this.$emit('delete')
     }
   }
@@ -28,8 +27,7 @@ export const DeleteButton = Vue.extend({
 
 export const DetailsButton = Vue.extend({
   props: {
-    type: String,
-    id: String,
+    item: Object,
     selector: String
   },
   template: `
@@ -41,7 +39,7 @@ export const DetailsButton = Vue.extend({
   `,
   computed: {
     route(): Location {
-      return resolveItemRoute(this.type, this.id, this.selector)
+      return resolveItemRoute(this.item.constructor.typeTag, this.item.constructor.key(this.item), this.selector)
     }
   }
 })
@@ -67,8 +65,6 @@ export const ListButton = Vue.extend({
 
 export const DetailsLink = Vue.extend({
   props: {
-    type: String,
-    id: String,
     selector: String,
     item: Object
   },
@@ -80,8 +76,11 @@ export const DetailsLink = Vue.extend({
 </router-link>
   `,
   computed: {
+    id() {
+      return this.item.constructor.key(this.item)
+    },
     route(): Location {
-      return resolveItemRoute(this.type, this.id, this.selector)
+      return resolveItemRoute(this.item.constructor.typeTag, this.id, this.selector)
     },
     label(): string {
       return _.startCase(this.id)
