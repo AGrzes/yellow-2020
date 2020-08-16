@@ -232,7 +232,7 @@ export const BookDetails = Vue.extend({
     </template>
   </div>
   <div class="card-footer text-right">
-    <edit-button :item="item">Edit</edit-button>
+    <edit-button :item="item" :component="editBook">Edit</edit-button>
     <list-button type="book">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
@@ -246,6 +246,9 @@ export const BookDetails = Vue.extend({
     }
   },
   computed: {
+    editBook() {
+      return EditBook
+    },
     ...itemRelations(Book,{authors:'author',genres:'genre',series: 'series'})
   }
 })
@@ -345,7 +348,7 @@ export const AuthorDetails = Vue.extend({
     </template>
   </div>
   <div class="card-footer text-right">
-    <edit-button :item="item">Edit</edit-button>
+    <edit-button :item="item" :component="editAuthor">Edit</edit-button>
     <list-button type="author">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
@@ -359,6 +362,9 @@ export const AuthorDetails = Vue.extend({
     }
   },
   computed: {
+    editAuthor() {
+      return EditAuthor
+    },
     ...itemRelations(Author,{books:'books',series: 'series'})
   }
 })
