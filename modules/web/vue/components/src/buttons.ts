@@ -105,7 +105,7 @@ export const EditButton = Vue.extend({
       const type = this.item.constructor
       modal({
         component: this.component || Edit,
-        host: this.$root.$el,
+        parent: this.$root,
         title: 'Edit',
         props: {content: this.item},
         buttons: [
@@ -144,7 +144,7 @@ export const CreateButton = Vue.extend({
     async add() {
       modal({
         component: Create,
-        host: this.$root.$el,
+        parent: this.$root,
         title: 'Create',
         props: {content: {}},
         buttons: [

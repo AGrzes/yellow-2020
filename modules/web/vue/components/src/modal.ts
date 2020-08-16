@@ -67,7 +67,7 @@ interface ModalButtonConfig<Component extends Vue.VueConstructor> {
 }
 
 interface ModalConfig<Component extends Vue.VueConstructor > {
-  host: Element
+  parent: Vue
   component: string | Component
   title: string
   props?: any
@@ -83,6 +83,7 @@ export const modal = <Component extends Vue.VueConstructor>
   (options: ModalConfig<Component>): Promise<InstanceType<Component>> => {
   return new Promise((resolve, reject) => {
     const instance = new Modal({
+        parent: options.parent,
         propsData: {
           component: options.component,
           title: options.title,
@@ -91,7 +92,7 @@ export const modal = <Component extends Vue.VueConstructor>
         }
     })
     instance.$mount()
-    options.host.appendChild(instance.$el)
+    options.parent.$el.appendChild(instance.$el)
     $(instance.$el).modal()
     .on('hidden.bs.modal', (e) => {
       $(instance.$el).modal('dispose')

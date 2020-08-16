@@ -5,6 +5,7 @@ import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
 import { listRelations, itemRelations } from './state'
+import { mapState } from 'vuex'
 
 export const EditBook = Vue.extend({
   props: ['content'],
@@ -12,18 +13,59 @@ export const EditBook = Vue.extend({
 <form>
   <div class="form-group">
     <label for="title">Title</label>
-    <input type="text" class="form-control" id="title" v-model="current.title">
+    <input type="text" class="form-control" id="title" v-model="current.title"/>
   </div>
   <div class="form-group">
     <label for="description">Description</label>
     <textarea class="form-control" id="description"></textarea>
   </div>
+  <div class="form-group">
+    <label for="author">Description</label>
+    <ul class="list-group">
+      <li class="list-group-item" v-for="(author,i) in current.author">
+        <div class="input-group">
+          <select class="form-control" id="author" v-model="current.author[i]">
+            <option v-for="(a,k) in authors" :value="k">{{a.name}}</option>
+          </select>
+          <div class="input-group-append">
+            <button @click="current.author.splice(i,1)" class="btn btn-outline-secondary" type="button" title="Delete">
+              <slot>
+                <i class="fas fa-trash"></i>
+              </slot>
+            </button>
+          </div>
+        </div>  
+      </li>
+      <li class="list-group-item">
+        <div class="input-group">
+          <select class="form-control" id="author" v-model="newAuthor">
+            <option v-for="(a,k) in authors" :value="k">{{a.name}}</option>
+          </select>
+          <div class="input-group-append">
+            <button @click="current.author.push(newAuthor); newAuthor = ''" class="btn btn-outline-secondary" type="button" title="Delete">
+              <slot>
+                <i class="fas fa-plus"></i>
+              </slot>
+            </button>
+          </div>
+        </div>  
+      </li>
+    </ul>
+  </div>
 </form>
   `,
   data() {
     return {
-      current: _.cloneDeep(this.$props.content)
+      current: _.cloneDeep(this.$props.content),
+      newAuthor: ''
     }
+  },
+  computed: {
+    ...mapState('model', {
+        authors(state: any) {
+            return state.entities[Author.typeTag]
+        }
+    })
   }
 })
 
