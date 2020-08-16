@@ -61,6 +61,7 @@ export interface Entity<T> {
   new (...args: any): T
   readonly typeTag: string
   key(instance: T): string
+  label(instance: T): string
   index(index: Indexer, instance: T): void
 }
 
