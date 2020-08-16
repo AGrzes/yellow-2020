@@ -16,7 +16,7 @@ export const RelationEditor = Vue.extend({
     <li class="list-group-item" v-for="(v,i) in item[property]">
       <div class="input-group">
         <select class="form-control" v-model="item[property][i]">
-          <option v-for="(a,k) in domain" :value="k">{{a.name}}</option>
+          <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
         </select>
         <div class="input-group-append">
           <button @click="item[property].splice(i,1)" class="btn btn-outline-secondary" type="button" title="Delete">
@@ -30,7 +30,7 @@ export const RelationEditor = Vue.extend({
     <li class="list-group-item">
       <div class="input-group">
         <select class="form-control" v-model="newEntry">
-          <option v-for="(a,k) in domain" :value="k">{{a.name}}</option>
+          <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
         </select>
         <div class="input-group-append">
           <button @click="add()" class="btn btn-outline-secondary" type="button" title="Delete">
@@ -56,8 +56,10 @@ export const RelationEditor = Vue.extend({
       } else {
         Vue.set(this.item,this.property,[this.newEntry])
       }
-      
       this.newEntry = ''
+    },
+    instanceLabel(instance: any) {
+      return this.entity.label(instance)
     }
   },
   computed: {
@@ -248,6 +250,39 @@ export const BookDetails = Vue.extend({
   }
 })
 
+export const EditAuthor = Vue.extend({
+  props: ['content'],
+  template: `
+<form>
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" v-model="current.name"/>
+  </div>
+  <div class="form-group">
+    <label for="description">Description</label>
+    <textarea class="form-control" id="description"></textarea>
+  </div>
+  <relation-editor label="Books" property="books" :entity="bookType" :item="current"></relation-editor>
+  <relation-editor label="Series" property="series" :entity="seriesType" :item="current"></relation-editor>
+</form>
+  `,
+  data() {
+    return {
+      current: _.cloneDeep(this.$props.content),
+      newAuthor: ''
+    }
+  },
+  computed: {
+    bookType() {
+      return Book
+    },  
+    seriesType() {
+      return Series
+    }
+  },
+  components: {RelationEditor}
+})
+
 export const AuthorList = Vue.extend({
   props: {
     list: Object
@@ -264,7 +299,7 @@ export const AuthorList = Vue.extend({
         </small>
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button :item="item"></edit-button>
+        <edit-button :item="item" :component="editAuthor"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
@@ -278,6 +313,9 @@ export const AuthorList = Vue.extend({
   computed: {
     authorType() {
       return Author
+    },
+    editAuthor() {
+      return EditAuthor
     },
     ...listRelations(Author,{books: 'books',series:'series'})
   }
