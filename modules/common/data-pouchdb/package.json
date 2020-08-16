@@ -1,6 +1,6 @@
 {
   "name": "@agrzes/yellow-2020-common-data-pouchdb",
-  "version": "1.1.6",
+  "version": "1.1.8",
   "description": "",
   "main": "target",
   "types": "types",
@@ -35,7 +35,7 @@
   "license": "MIT",
   "dependencies": {
     "@agrzes/yellow-2020-common-data": "^1.1.6",
-    "@agrzes/yellow-2020-common-model": "^1.1.6",
+    "@agrzes/yellow-2020-common-model": "^1.1.8",
     "pouchdb-adapter-http": "^7.2.1",
     "pouchdb-core": "^7.2.1",
     "pouchdb-mapreduce": "^7.2.1"
