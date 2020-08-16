@@ -7,6 +7,57 @@ import Vue from 'vue'
 import { listRelations, itemRelations } from './state'
 import { mapState } from 'vuex'
 
+export const RelationEditor = Vue.extend({
+  props: ['label','property','entity','item'],
+  template: `
+<div class="form-group">
+  <label>{{label}}</label>
+  <ul class="list-group">
+    <li class="list-group-item" v-for="(v,i) in item[property]">
+      <div class="input-group">
+        <select class="form-control" v-model="item[property][i]">
+          <option v-for="(a,k) in domain" :value="k">{{a.name}}</option>
+        </select>
+        <div class="input-group-append">
+          <button @click="item[property].splice(i,1)" class="btn btn-outline-secondary" type="button" title="Delete">
+            <slot>
+              <i class="fas fa-trash"></i>
+            </slot>
+          </button>
+        </div>
+      </div>  
+    </li>
+    <li class="list-group-item">
+      <div class="input-group">
+        <select class="form-control" v-model="newEntry">
+          <option v-for="(a,k) in domain" :value="k">{{a.name}}</option>
+        </select>
+        <div class="input-group-append">
+          <button @click="item[property].push(newEntry); newEntry = ''" class="btn btn-outline-secondary" type="button" title="Delete">
+            <slot>
+              <i class="fas fa-plus"></i>
+            </slot>
+          </button>
+        </div>
+      </div>  
+    </li>
+  </ul>
+</div>
+  `,
+  data() {
+    return {
+      newEntry: ''
+    }
+  },
+  computed: {
+    ...mapState('model', {
+        domain(state: any) {
+            return state.entities[this.entity.typeTag]
+        }
+    })
+  }
+})
+
 export const EditBook = Vue.extend({
   props: ['content'],
   template: `
@@ -19,39 +70,7 @@ export const EditBook = Vue.extend({
     <label for="description">Description</label>
     <textarea class="form-control" id="description"></textarea>
   </div>
-  <div class="form-group">
-    <label for="author">Description</label>
-    <ul class="list-group">
-      <li class="list-group-item" v-for="(author,i) in current.author">
-        <div class="input-group">
-          <select class="form-control" id="author" v-model="current.author[i]">
-            <option v-for="(a,k) in authors" :value="k">{{a.name}}</option>
-          </select>
-          <div class="input-group-append">
-            <button @click="current.author.splice(i,1)" class="btn btn-outline-secondary" type="button" title="Delete">
-              <slot>
-                <i class="fas fa-trash"></i>
-              </slot>
-            </button>
-          </div>
-        </div>  
-      </li>
-      <li class="list-group-item">
-        <div class="input-group">
-          <select class="form-control" id="author" v-model="newAuthor">
-            <option v-for="(a,k) in authors" :value="k">{{a.name}}</option>
-          </select>
-          <div class="input-group-append">
-            <button @click="current.author.push(newAuthor); newAuthor = ''" class="btn btn-outline-secondary" type="button" title="Delete">
-              <slot>
-                <i class="fas fa-plus"></i>
-              </slot>
-            </button>
-          </div>
-        </div>  
-      </li>
-    </ul>
-  </div>
+  <relation-editor label="Author" property="author" :entity="authorType" :item="current"></relation-editor>
 </form>
   `,
   data() {
@@ -61,12 +80,11 @@ export const EditBook = Vue.extend({
     }
   },
   computed: {
-    ...mapState('model', {
-        authors(state: any) {
-            return state.entities[Author.typeTag]
-        }
-    })
-  }
+    authorType() {
+      return Author
+    },
+  },
+  components: {RelationEditor}
 })
 
 export const BooksList = Vue.extend({
