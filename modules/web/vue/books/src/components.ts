@@ -33,7 +33,7 @@ export const RelationEditor = Vue.extend({
           <option v-for="(a,k) in domain" :value="k">{{a.name}}</option>
         </select>
         <div class="input-group-append">
-          <button @click="item[property].push(newEntry); newEntry = ''" class="btn btn-outline-secondary" type="button" title="Delete">
+          <button @click="add()" class="btn btn-outline-secondary" type="button" title="Delete">
             <slot>
               <i class="fas fa-plus"></i>
             </slot>
@@ -47,6 +47,17 @@ export const RelationEditor = Vue.extend({
   data() {
     return {
       newEntry: ''
+    }
+  },
+  methods: {
+    add() {
+      if (this.item[this.property]) {
+        this.item[this.property].push(this.newEntry)
+      } else {
+        Vue.set(this.item,this.property,[this.newEntry])
+      }
+      
+      this.newEntry = ''
     }
   },
   computed: {
@@ -71,6 +82,8 @@ export const EditBook = Vue.extend({
     <textarea class="form-control" id="description"></textarea>
   </div>
   <relation-editor label="Author" property="author" :entity="authorType" :item="current"></relation-editor>
+  <relation-editor label="Genre" property="genre" :entity="genreType" :item="current"></relation-editor>
+  <relation-editor label="Series" property="series" :entity="seriesType" :item="current"></relation-editor>
 </form>
   `,
   data() {
@@ -83,6 +96,12 @@ export const EditBook = Vue.extend({
     authorType() {
       return Author
     },
+    genreType() {
+      return Genre
+    },    
+    seriesType() {
+      return Series
+    }
   },
   components: {RelationEditor}
 })
