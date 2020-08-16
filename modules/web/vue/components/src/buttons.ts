@@ -90,7 +90,8 @@ export const DetailsLink = Vue.extend({
 
 export const EditButton = Vue.extend({
   props: {
-    item: Object
+    item: Object,
+    component: Function
   },
   template: `
 <button @click="edit()" class="btn btn-outline-primary" type="button" title="Edit">
@@ -103,7 +104,7 @@ export const EditButton = Vue.extend({
     async edit() {
       const type = this.item.constructor
       modal({
-        component: Edit,
+        component: this.component || Edit,
         host: this.$root.$el,
         title: 'Edit',
         props: {content: this.item},

@@ -6,6 +6,27 @@ import _ from 'lodash'
 import Vue from 'vue'
 import { listRelations, itemRelations } from './state'
 
+export const EditBook = Vue.extend({
+  props: ['content'],
+  template: `
+<form>
+  <div class="form-group">
+    <label for="title">Title</label>
+    <input type="text" class="form-control" id="title" v-model="current.title">
+  </div>
+  <div class="form-group">
+    <label for="description">Description</label>
+    <textarea class="form-control" id="description"></textarea>
+  </div>
+</form>
+  `,
+  data() {
+    return {
+      current: _.cloneDeep(this.$props.content)
+    }
+  }
+})
+
 export const BooksList = Vue.extend({
   props: {
     list: Object
@@ -27,7 +48,7 @@ export const BooksList = Vue.extend({
         {{genre.name}}
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center ml-auto">
-        <edit-button :item="item"></edit-button>
+        <edit-button :item="item" :component="editBook"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
@@ -41,6 +62,9 @@ export const BooksList = Vue.extend({
   computed: {
     bookType() {
       return Book
+    },
+    editBook() {
+      return EditBook
     },
     ...listRelations(Book,{authors: 'author',genres:'genre',series:'series'})
   }
