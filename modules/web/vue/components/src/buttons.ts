@@ -90,7 +90,8 @@ export const DetailsLink = Vue.extend({
 
 export const EditButton = Vue.extend({
   props: {
-    item: Object
+    item: Object,
+    component: Function
   },
   template: `
 <button @click="edit()" class="btn btn-outline-primary" type="button" title="Edit">
@@ -103,8 +104,8 @@ export const EditButton = Vue.extend({
     async edit() {
       const type = this.item.constructor
       modal({
-        component: Edit,
-        host: this.$root.$el,
+        component: this.component || Edit,
+        parent: this.$root,
         title: 'Edit',
         props: {content: this.item},
         buttons: [
@@ -143,7 +144,7 @@ export const CreateButton = Vue.extend({
     async add() {
       modal({
         component: Create,
-        host: this.$root.$el,
+        parent: this.$root,
         title: 'Create',
         props: {content: {}},
         buttons: [

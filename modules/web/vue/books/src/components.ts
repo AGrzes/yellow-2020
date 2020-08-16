@@ -5,6 +5,185 @@ import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
 import { listRelations, itemRelations } from './state'
+import { mapState } from 'vuex'
+
+export const RelationEditor = Vue.extend({
+  props: ['label','property','entity','item'],
+  template: `
+<div class="form-group">
+  <label>{{label}}</label>
+  <ul class="list-group">
+    <li class="list-group-item" v-for="(v,i) in item[property]">
+      <div class="input-group">
+        <select class="form-control" v-model="item[property][i]">
+          <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
+        </select>
+        <div class="input-group-append">
+          <button @click="item[property].splice(i,1)" class="btn btn-outline-secondary" type="button" title="Delete">
+              <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>  
+    </li>
+    <li class="list-group-item">
+      <div class="input-group">
+        <select class="form-control" v-model="newEntry">
+          <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
+        </select>
+        <div class="input-group-append">
+          <button @click="add()" class="btn btn-outline-secondary" type="button" title="Delete">
+              <i class="fas fa-plus"></i>
+          </button>
+        </div>
+      </div>  
+    </li>
+  </ul>
+</div>
+  `,
+  data() {
+    return {
+      newEntry: ''
+    }
+  },
+  methods: {
+    add() {
+      if (this.item[this.property]) {
+        this.item[this.property].push(this.newEntry)
+      } else {
+        Vue.set(this.item,this.property,[this.newEntry])
+      }
+      this.newEntry = ''
+    },
+    instanceLabel(instance: any) {
+      return this.entity.label(instance)
+    }
+  },
+  computed: {
+    ...mapState('model', {
+        domain(state: any) {
+            return state.entities[this.entity.typeTag]
+        }
+    })
+  }
+})
+
+export const RelationEntityEditor = Vue.extend({
+  props: ['label','property','entity','item','nestedProperty'],
+  template: `
+<div class="form-group">
+  <label>{{label}}</label>
+  <ul class="list-group">
+    <li class="list-group-item" v-for="(v,i) in item[property]">
+      <div class="input-group">
+        <select class="form-control" v-model="v[nestedProperty]">
+          <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
+        </select>
+        <div class="input-group-append">
+          <button @click="item[property].splice(i,1)" class="btn btn-outline-secondary" type="button" title="Delete">
+              <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>  
+      <slot v-bind:entity="v">
+      </slot>
+    </li>
+    <li class="list-group-item">
+      <div class="input-group">
+        <select class="form-control" v-model="newEntry[nestedProperty]">
+          <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
+        </select>
+        <div class="input-group-append">
+          <button @click="add()" class="btn btn-outline-secondary" type="button" title="Delete">
+              <i class="fas fa-plus"></i>
+          </button>
+        </div>
+      </div>  
+      <slot v-bind:entity="newEntry">
+      </slot>
+    </li>
+  </ul>
+</div>
+  `,
+  data() {
+    return {
+      newEntry: {}
+    }
+  },
+  methods: {
+    add() {
+      if (this.item[this.property]) {
+        this.item[this.property].push(this.newEntry)
+      } else {
+        Vue.set(this.item,this.property,[this.newEntry])
+      }
+      this.newEntry = ''
+    },
+    instanceLabel(instance: any) {
+      return this.entity.label(instance)
+    }
+  },
+  computed: {
+    ...mapState('model', {
+        domain(state: any) {
+            return state.entities[this.entity.typeTag]
+        }
+    })
+  }
+})
+
+export const EditBook = Vue.extend({
+  props: ['content'],
+  template: `
+<form>
+  <div class="form-group">
+    <label for="title">Title</label>
+    <input type="text" class="form-control" id="title" v-model="current.title"/>
+  </div>
+  <div class="form-group">
+    <label for="description">Description</label>
+    <textarea class="form-control" id="description" v-model="current.description"></textarea>
+  </div>
+  <relation-editor label="Author" property="author" :entity="authorType" :item="current"></relation-editor>
+  <relation-editor label="Genre" property="genre" :entity="genreType" :item="current"></relation-editor>
+  <relation-editor label="Series" property="series" :entity="seriesType" :item="current"></relation-editor>
+  <relation-entity-editor label="Libraries" property="libraries" :entity="libraryType" :item="current" nestedProperty="library" v-slot="x">
+    <div class="form-group">
+      <label for="url">Url</label>
+      <input type="text" class="form-control" id="url" v-model="x.entity.url"/>
+    </div>
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input type="number" step="0.01" class="form-control" id="price" v-model.number="x.entity.price"/>
+    </div>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="owned" v-model="x.entity.owned"/>
+      <label for="owned" class="form-check-label">Owned</label>
+    </div>
+  </relation-entity-editor>
+</form>
+  `,
+  data() {
+    return {
+      current: _.cloneDeep(this.$props.content),
+      newAuthor: ''
+    }
+  },
+  computed: {
+    authorType() {
+      return Author
+    },
+    genreType() {
+      return Genre
+    },    
+    seriesType() {
+      return Series
+    },    
+    libraryType() {
+      return Library
+    }
+  },
+  components: {RelationEditor,RelationEntityEditor}
+})
 
 export const BooksList = Vue.extend({
   props: {
@@ -27,7 +206,7 @@ export const BooksList = Vue.extend({
         {{genre.name}}
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center ml-auto">
-        <edit-button :item="item"></edit-button>
+        <edit-button :item="item" :component="editBook"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
@@ -41,6 +220,9 @@ export const BooksList = Vue.extend({
   computed: {
     bookType() {
       return Book
+    },
+    editBook() {
+      return EditBook
     },
     ...listRelations(Book,{authors: 'author',genres:'genre',series:'series'})
   }
@@ -127,7 +309,7 @@ export const BookDetails = Vue.extend({
     </template>
   </div>
   <div class="card-footer text-right">
-    <edit-button :item="item">Edit</edit-button>
+    <edit-button :item="item" :component="editBook">Edit</edit-button>
     <list-button type="book">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
@@ -141,8 +323,44 @@ export const BookDetails = Vue.extend({
     }
   },
   computed: {
+    editBook() {
+      return EditBook
+    },
     ...itemRelations(Book,{authors:'author',genres:'genre',series: 'series'})
   }
+})
+
+export const EditAuthor = Vue.extend({
+  props: ['content'],
+  template: `
+<form>
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" v-model="current.name"/>
+  </div>
+  <div class="form-group">
+    <label for="description">Description</label>
+    <textarea class="form-control" id="description"></textarea>
+  </div>
+  <relation-editor label="Books" property="books" :entity="bookType" :item="current"></relation-editor>
+  <relation-editor label="Series" property="series" :entity="seriesType" :item="current"></relation-editor>
+</form>
+  `,
+  data() {
+    return {
+      current: _.cloneDeep(this.$props.content),
+      newAuthor: ''
+    }
+  },
+  computed: {
+    bookType() {
+      return Book
+    },  
+    seriesType() {
+      return Series
+    }
+  },
+  components: {RelationEditor}
 })
 
 export const AuthorList = Vue.extend({
@@ -161,7 +379,7 @@ export const AuthorList = Vue.extend({
         </small>
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button :item="item"></edit-button>
+        <edit-button :item="item" :component="editAuthor"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
@@ -175,6 +393,9 @@ export const AuthorList = Vue.extend({
   computed: {
     authorType() {
       return Author
+    },
+    editAuthor() {
+      return EditAuthor
     },
     ...listRelations(Author,{books: 'books',series:'series'})
   }
@@ -204,7 +425,7 @@ export const AuthorDetails = Vue.extend({
     </template>
   </div>
   <div class="card-footer text-right">
-    <edit-button :item="item">Edit</edit-button>
+    <edit-button :item="item" :component="editAuthor">Edit</edit-button>
     <list-button type="author">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
@@ -218,6 +439,9 @@ export const AuthorDetails = Vue.extend({
     }
   },
   computed: {
+    editAuthor() {
+      return EditAuthor
+    },
     ...itemRelations(Author,{books:'books',series: 'series'})
   }
 })

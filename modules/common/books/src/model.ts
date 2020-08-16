@@ -13,6 +13,9 @@ export class Book<Ref = string> {
   public static key<T>(book: Book<T>) {
     return _.kebabCase(book.title)
   }
+  public static label<T>(book: Book<T>) {
+    return book.title
+  }
   public static index(index: Indexer, book: Book<string>) {
     const key = Book.key(book)
     index.indexRelation(Book, book, 'author', Author, 'books')
@@ -42,6 +45,9 @@ export class Author<Ref = never> {
   public static key<T>(author: Author<T>) {
     return _.kebabCase(author.name)
   }
+  public static label<T>(author: Author<T>) {
+    return author.name
+  }
   public static index<T>(index: Indexer, author: Author<string>) {
     index.indexRelation(Author, author, 'books', Book, 'author')
     index.indexRelation(Author, author, 'series', Series, 'author')
@@ -61,6 +67,9 @@ export class Genre<Ref = never> {
   public static key<T>(genre: Genre<T>) {
     return _.kebabCase(genre.name)
   }
+  public static label<T>(genre: Genre<T>) {
+    return genre.name
+  }
   public static index<T>(index: Indexer, genre: Genre<string>) {
     index.indexRelation(Genre, genre, 'books', Book, 'genre')
   }
@@ -76,6 +85,9 @@ export class Series<Ref = never> {
   public static typeTag = 'series'
   public static key<T>(series: Series<T>) {
     return _.kebabCase(series.name)
+  }
+  public static label<T>(series: Series<T>) {
+    return series.name
   }
   public static index<T>(index: Indexer, series: Series<string>) {
     index.indexRelation(Series, series, 'books', Book, 'series')
@@ -97,6 +109,9 @@ export class Library<Ref = never> {
   public static typeTag = 'library'
   public static key<T>(library: Library<T>) {
     return _.kebabCase(library.name)
+  }
+  public static label<T>(library: Library<T>) {
+    return library.name
   }
   public static index<T>(index: Indexer, library: Library<string>) {
     index.indexRelationEntity(Library, library, 'entries', 'book', Book, 'libraries', 'library')
