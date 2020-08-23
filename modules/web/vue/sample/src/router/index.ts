@@ -1,5 +1,5 @@
 import { bookRoutes} from '@agrzes/yellow-2020-web-vue-books'
-import { navigationMenu } from '@agrzes/yellow-2020-web-vue-components'
+import { navigationMenu, NotificationsList } from '@agrzes/yellow-2020-web-vue-components'
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import { uiModel } from '../uiModel'
@@ -13,6 +13,7 @@ async function router() {
         component: {
           template: `
         <div class="container-fluid">
+            <notifications-list></notifications-list>
             <div class="row mt-4">
               <div class="col-2">
                 <navigation-menu :navigation="navigation"></navigation-menu>
@@ -29,7 +30,7 @@ async function router() {
                }
            },
            components: {
-               navigationMenu
+               navigationMenu, NotificationsList
            }
         },
         children: [...bookRoutes]

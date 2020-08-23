@@ -1,11 +1,12 @@
 import { PouchDB , PouchDBDataAccess} from '@agrzes/yellow-2020-common-data-pouchdb'
-import { DataAccess } from '@agrzes/yellow-2020-common-data/types'
+import { DataAccess } from '@agrzes/yellow-2020-common-data'
 import { Class, ModelAccess, SimpleModelAccess } from '@agrzes/yellow-2020-common-metadata'
 import { Model, setupModel as setupModelImpl,
   SimpleTypedDataAccess, TypedDataAccess } from '@agrzes/yellow-2020-common-model'
 import * as _ from 'lodash'
 import Vuex, { Store } from 'vuex'
 import { ModelStateAdapter } from './model'
+export * from './notification'
 
 export interface StateConfig {
     metadata: string

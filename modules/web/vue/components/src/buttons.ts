@@ -19,7 +19,9 @@ export const DeleteButton = Vue.extend({
   `,
   methods: {
     async remove() {
-      await this.$store.dispatch(`model/delete`, {id: this.item.constructor.key(this.item), type: this.item.constructor})
+      const id = this.item.constructor.key(this.item)
+      await this.$store.dispatch(`model/delete`, {id, type: this.item.constructor})
+      await this.$store.dispatch(`notifications/add`, {title: 'Entity deleted', content: `Entity with key ${id} was deleted` })
       this.$emit('delete')
     }
   }
@@ -113,6 +115,8 @@ export const EditButton = Vue.extend({
             name: 'Save',
             onclick: async (m) => {
               await this.$store.dispatch(`model/update`, {item: m.component.current, type})
+              const id = this.item.constructor.key(this.item)
+              await this.$store.dispatch(`notifications/add`, {title: 'Entity updated', content: `Entity with key ${id} was updated` })
               m.close()
             },
             class: 'btn-primary'
@@ -152,6 +156,11 @@ export const CreateButton = Vue.extend({
             name: 'Save',
             onclick: async (m) => {
               await this.$store.dispatch(`model/update`, {item: m.component.current, type: this.type})
+              await this.$store.dispatch(`notifications/add`, {
+                title: 'Entity created', 
+                content: `Entity of type '${this.type.name}' was created`,
+                icon: 'plus'
+              })
               m.close()
             },
             class: 'btn-primary'
