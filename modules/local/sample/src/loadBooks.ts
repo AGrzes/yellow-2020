@@ -87,9 +87,9 @@ async function load() {
     await Promise.all(_.map(authors, ({books, ...author}, key) =>
       model.raw(metadata.models.books.classes.author, key, {...author, books: _.map(books, _.kebabCase)})))
     await Promise.all(_.map(booksMap, ({author, ...book}, key) =>
-      booksCRUD.save<Book<string>>(Book, {...book, author: _.map(author, _.kebabCase)} as Book) ))
+      booksCRUD.save(Book, {...book, author: _.map(author, _.kebabCase)})))
     await Promise.all(_.map(authors, ({books, ...author}, key) =>
-      booksCRUD.save<Partial<Author<string>>>(Author, {...author, books: _.map(books, _.kebabCase)})))
+      booksCRUD.save(Author, {...author, books: _.map(books, _.kebabCase)})))
 
 }
 

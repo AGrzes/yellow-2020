@@ -3,6 +3,7 @@ import { Class, isRelation, ModelAccess, Relation, StructuralFeature} from '@agr
 import _ from 'lodash'
 
 export * from './interface'
+export * from './builder'
 
 export interface Model {
     metaModel: ModelAccess
