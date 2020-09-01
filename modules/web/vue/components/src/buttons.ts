@@ -105,6 +105,7 @@ export const EditButton = Vue.extend({
   methods: {
     async edit() {
       const type = this.item.constructor
+      const initialId = this.item.constructor.key(this.item)
       modal({
         component: this.component || Edit,
         parent: this.$root,
@@ -114,9 +115,15 @@ export const EditButton = Vue.extend({
           {
             name: 'Save',
             onclick: async (m) => {
-              await this.$store.dispatch(`model/update`, {item: m.component.current, type})
-              const id = this.item.constructor.key(this.item)
-              await this.$store.dispatch(`notifications/add`, {title: 'Entity updated', content: `Entity with key ${id} was updated` })
+              const id = this.item.constructor.key(m.component.current)
+              if (initialId != id) {
+                await this.$store.dispatch(`model/delete`, {id: initialId, type: type})
+                await this.$store.dispatch(`model/update`, {item: m.component.current, type})
+                await this.$store.dispatch(`notifications/add`, {title: 'Entity updated', content: `Entity with key ${initialId} -> ${id} was updated` })
+              } else {
+                await this.$store.dispatch(`model/update`, {item: m.component.current, type})
+                await this.$store.dispatch(`notifications/add`, {title: 'Entity updated', content: `Entity with key ${id} was updated` })
+              }
               m.close()
             },
             class: 'btn-primary'
