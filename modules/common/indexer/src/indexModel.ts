@@ -10,7 +10,10 @@ export class IndexModel implements Model2 {
   private changesSubject = new Subject<ModelChange>()
   private instancesSubject = new Subject<Record<string, Array<InstanceType<Entity<any>>>>>()
   private instanceRelationsSubject = new Subject<Readonly<Record<string, Record<string, any[]>>>>()
-  constructor(private crud: CRUD, public entities: Array<Entity<any>>) {}
+  public entities: Array<Entity<any>>
+  constructor(private crud: CRUD) {
+    this.entities = crud.entities
+  }
 
   public async load() {
     await Promise.all(_.map(this.entities, async (type) => {

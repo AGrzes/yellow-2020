@@ -12,7 +12,7 @@ function materializeClass<T>(clazz: Entity<T>) {
 export class PouchCRUD implements CRUD {
   private revMap = new Map<string, string>()
 
-  constructor(private database: PouchDB.Database, private classes: Array<Entity<any>>) {}
+  constructor(private database: PouchDB.Database, public entities: Array<Entity<any>>) {}
 
   public async list<T>(clazz: Entity<T>): Promise<T[]> {
     const allDocs = await this.database.allDocs<T>({
@@ -65,7 +65,7 @@ export class PouchCRUD implements CRUD {
   }
 
   private getEntity(id: string) {
-    return _.find(this.classes, (entity) => id.startsWith(`${entity.typeTag}:`))
+    return _.find(this.entities, (entity) => id.startsWith(`${entity.typeTag}:`))
   }
 
   private getKey(id: string): string {
