@@ -77,6 +77,7 @@ export interface CRUD<Key = string> {
   save<T>(clazz: Entity<T>, instance: T): Promise<T>
   delete<T>(clazz: Entity<T>, key: Key): Promise<T|boolean>
   changes(): Observable<Change>
+  readonly entities: Array<Entity<any>>
 }
 
 export interface ModelChange {

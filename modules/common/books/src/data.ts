@@ -7,6 +7,4 @@ const couchDBAddress = process.env.COUCH_DB_ADDRESS || 'http://couchdb.home.agrz
 
 export const booksCRUD = new PouchCRUD(new PouchDB(`${couchDBAddress}/books`),
   [Author, Book, Genre, Library, Series])
-export const bookModel = new IndexModel(
-  booksCRUD,
-  [Author, Book, Genre, Library, Series])
+export const bookModel = new IndexModel(booksCRUD)
