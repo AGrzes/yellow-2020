@@ -7,13 +7,7 @@
         "rootDir": "src",
         "esModuleInterop": true,
         "declaration": true,
-        "declarationDir": "types",
-        "baseUrl": "./",
-        "paths": {
-            "vue":["node_moduels/vue"],
-            "vuex":["node_moduels/vuex"],
-            "vue-router":["node_moduels/vue-router"],
-        }
+        "declarationDir": "types"
     },
     "include": [
         "src"
