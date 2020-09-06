@@ -1,5 +1,5 @@
 
-import { builder, buildEntities, RelationEntityDescriptor } from '@agrzes/yellow-2020-common-model'
+import { builder, Entity } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
 
 const label = (field:string) => _.property<any,string>(field)

@@ -5,7 +5,8 @@ import { CreateButton, DeleteButton, DetailsButton,
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
-import { listRelations, itemRelations } from './state'
+import { listRelations, itemRelations } from '@agrzes/yellow-2020-web-vue-state'
+import { Entity} from '@agrzes/yellow-2020-common-model'
 
 export const EditBook = Vue.extend({
   props: ['content'],
