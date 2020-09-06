@@ -1,4 +1,4 @@
-import { Entity, Indexer } from './interface'
+import { Entity, Indexer } from './model'
 import _ from 'lodash'
 
 export interface Entities {

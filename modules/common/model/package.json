@@ -34,8 +34,7 @@
   "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@agrzes/yellow-2020-common-data": "^1.1.6",
-    "@agrzes/yellow-2020-common-metadata": "^1.1.6"
+    "@agrzes/yellow-2020-common-data": "^1.1.6"
   },
   "files": [
     "/package.json",

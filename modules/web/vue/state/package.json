@@ -36,7 +36,6 @@
   "dependencies": {
     "@agrzes/yellow-2020-common-data": "^1.1.6",
     "@agrzes/yellow-2020-common-data-pouchdb": "^1.1.8",
-    "@agrzes/yellow-2020-common-metadata": "^1.1.6",
     "@agrzes/yellow-2020-common-model": "^1.1.8",
     "@agrzes/yellow-2020-common-ui-model": "^1.1.6",
     "vue": "^2.6.11",
