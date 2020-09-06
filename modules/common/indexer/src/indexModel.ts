@@ -3,7 +3,7 @@ import { CRUD, Entity, Indexer, isEntityChange,
 import _ from 'lodash'
 import {merge, Observable, of, Subject} from 'rxjs'
 import { map } from 'rxjs/operators'
-import { TheIndexer } from '.'
+import { TheIndexer } from './indexer'
 
 export class IndexModel implements Model2 {
   public index: Indexer = new TheIndexer()
