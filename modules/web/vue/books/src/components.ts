@@ -2,7 +2,7 @@ import { Author, Book, Genre, Library, Series, Reading } from '@agrzes/yellow-20
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
   TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor,
-  NestedEntityEditor,NumberEditor} from '@agrzes/yellow-2020-web-vue-components'
+  NestedEntityEditor,NumberEditor, ChoiceEditor} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
@@ -638,6 +638,7 @@ export const EditReading = Vue.extend({
 <form>
   <date-editor label="Start Date" property="startDate" :item="current"></date-editor>
   <single-relation-editor label="Book" property="book" :entity="bookType" :item="current"></single-relation-editor>
+  <choice-editor label="Status" property="status" :item="current" :choices="{planned:'Planned',inProgress:'In Progress',finished:'Finished',abandoned:'Abandoned'}"></choice-editor>
   <nested-entity-editor label="Progress" property="progress" :item="current" v-slot="x">
     <date-editor label="Date" property="date" :item="x.entity"></date-editor>
     <number-editor label="Progress" property="progress" :item="x.entity"></number-editor>
@@ -655,5 +656,5 @@ export const EditReading = Vue.extend({
       return Book
     }
   },
-  components: {SingleRelationEditor, TextEditor, DateEditor, NestedEntityEditor, NumberEditor}
+  components: {SingleRelationEditor, TextEditor, DateEditor, NestedEntityEditor, NumberEditor, ChoiceEditor}
 })

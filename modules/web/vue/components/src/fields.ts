@@ -61,3 +61,15 @@ export const BooleanEditor = Vue.extend({
 </div>
   `
 })
+
+export const ChoiceEditor = Vue.extend({
+  props: ['label','property','item','choices'],
+  template: `
+<div class="form-group">
+  <label>{{label}}</label>
+  <select class="custom-select" v-model="item[property]">
+    <option v-for="(label,key) in choices" :key="key" :value="key">{{label}}</option>
+  </select>
+</div>
+  `
+})
