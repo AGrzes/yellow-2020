@@ -12,6 +12,16 @@ export const TextEditor = Vue.extend({
   `
 })
 
+export const DateEditor = Vue.extend({
+  props: ['label','property','item'],
+  template: `
+<div class="form-group">
+  <label>{{label}}</label>
+  <input type="date" class="form-control" v-model="item[property]"/>
+</div>
+  `
+})
+
 export const LongTextEditor = Vue.extend({
   props: ['label','property','item'],
   template: `

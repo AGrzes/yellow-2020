@@ -62,6 +62,30 @@ export const RelationEditor = Vue.extend({
   }
 })
 
+export const SingleRelationEditor = Vue.extend({
+  props: ['label','property','entity','item'],
+  template: `
+<div class="form-group">
+  <label>{{label}}</label>
+  <select class="form-control" v-model="item[property]">
+    <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
+  </select>
+</div>
+  `,
+  methods: {
+    instanceLabel(instance: any) {
+      return this.entity.label(instance)
+    }
+  },
+  computed: {
+    ...mapState('model', {
+        domain(state: any) {
+            return state.entities[this.entity.typeTag]
+        }
+    })
+  }
+})
+
 export const RelationEntityEditor = Vue.extend({
   props: ['label','property','entity','item','nestedProperty'],
   template: `
