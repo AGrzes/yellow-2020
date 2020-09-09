@@ -1,9 +1,9 @@
-import { Author, Book, Genre, Library, Series } from '@agrzes/yellow-2020-common-books'
+import { Author, Book, Genre, Library, Series, Reading } from '@agrzes/yellow-2020-common-books'
 import { registerItemRoute, registerListRoute, itemComponent, listComponent } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import { RouteConfig } from 'vue-router'
 import { AuthorDetails, AuthorList, BookDetails, BooksList, GenreDetails,
-  GenreList, LibraryDetails, LibraryList, SeriesDetails, SeriesList } from './components'
+  GenreList, LibraryDetails, LibraryList, SeriesDetails, SeriesList, ReadingDetails, ReadingList } from './components'
 
 export const bookRoutes: RouteConfig[] = [{
   path: `book/:key`,
@@ -45,6 +45,14 @@ export const bookRoutes: RouteConfig[] = [{
   path: `series`,
   name: `seriesList`,
   component: listComponent(Series, SeriesList)
+}, {
+  path: `reading/:key`,
+  name: `readingDetails`,
+  component: itemComponent(Reading, ReadingDetails)
+}, {
+  path: `reading`,
+  name: `readingList`,
+  component: listComponent(Reading, ReadingList)
 }]
 
 registerItemRoute('book', 'bookDetails')
@@ -52,8 +60,10 @@ registerItemRoute('author', 'authorDetails')
 registerItemRoute('library', 'libraryDetails')
 registerItemRoute('genre', 'genreDetails')
 registerItemRoute('series', 'seriesDetails')
+registerItemRoute('reading', 'readingDetails')
 registerListRoute('book', 'bookList')
 registerListRoute('author', 'authorList')
 registerListRoute('library', 'libraryList')
 registerListRoute('genre', 'genreList')
 registerListRoute('series', 'seriesList')
+registerListRoute('reading', 'readingList')

@@ -1,11 +1,12 @@
-import { Author, Book, Genre, Library, Series } from '@agrzes/yellow-2020-common-books'
+import { Author, Book, Genre, Library, Series, Reading } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
-  TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor} from '@agrzes/yellow-2020-web-vue-components'
+  TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor,
+  NestedEntityEditor,NumberEditor, ChoiceEditor} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
-import { listRelations, itemRelations } from '@agrzes/yellow-2020-web-vue-state'
+import { listRelations, itemRelations, listSingleRelations, itemSingleRelations } from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
 
 export const EditBook = Vue.extend({
@@ -26,8 +27,7 @@ export const EditBook = Vue.extend({
   `,
   data() {
     return {
-      current: _.cloneDeep(this.$props.content),
-      newAuthor: ''
+      current: _.cloneDeep(this.$props.content)
     }
   },
   computed: {
@@ -204,8 +204,7 @@ export const EditAuthor = Vue.extend({
   `,
   data() {
     return {
-      current: _.cloneDeep(this.$props.content),
-      newAuthor: ''
+      current: _.cloneDeep(this.$props.content)
     }
   },
   computed: {
@@ -543,4 +542,119 @@ export const SeriesDetails = Vue.extend({
   computed: {
     ...itemRelations(Series,{books:'books',authors:'author'})
   }
+})
+
+export const ReadingList = Vue.extend({
+  props: {
+    list: Object
+  },
+  template: `
+<ul class="list-group">
+  <li v-for="(item,key) in list" class="list-group-item">
+    <span class="d-flex align-items-center">
+      <span class="mr-1">
+        <small>{{item.startDate}}</small>
+        {{book[key].title}}
+      </span>
+      <span class="badge badge-pill badge-primary mr-auto">
+        {{item.status}}
+      </span>
+      <span class="flex-grow-0 flex-shrink-0 align-self-center">
+        <edit-button :item="item" :component="editReading"></edit-button>
+        <details-button :item="item"></details-button>
+        <delete-button :item="item"></delete-button>
+      </span>
+    </span>
+  </li>
+  <li class="list-group-item"><create-button :type="readingType">Add</create-button></li>
+</ul>`,
+  components: {
+    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink
+  },
+  computed: {
+    readingType() {
+      return Reading
+    },
+    editReading() {
+      return EditReading
+    },
+    ...listSingleRelations(Reading,{book: 'book'})
+  }
+})
+
+export const ReadingDetails = Vue.extend({
+  props: {
+    item: Object
+  },
+  template: `
+<div class="card h-100" v-if="item">
+  <div class="card-body">
+    <h1>
+      <small>{{item.startDate}}</small>
+      {{book.title}}
+      <span class="badge badge-pill badge-primary">
+        {{item.status}}
+      </span>
+    </h1>
+    <ul class="list-group">
+      <li class="list-group-item" v-for="increment in item.progress">
+        <small>
+          {{increment.date}}
+        </small>
+        <span class="badge badge-pill badge-success">
+        {{increment.progress}}
+        </span>
+        <span class="badge badge-pill badge-primary" v-if="increment.change">
+          +{{increment.change}}
+        </span>
+      </li>
+    </ul>
+  </div>
+  <div class="card-footer text-right">
+    <edit-button :item="item" :component="editReading">Edit</edit-button>
+    <list-button type="reading">Back</list-button>
+    <delete-button :item="item" @delete="deleted">Delete</delete-button>
+  </div>
+</div>`,
+  components: {
+    DeleteButton, EditButton, DetailsLink, ListButton
+  },
+  methods: {
+    deleted() {
+      this.$router.push(resolveListRoute('reading'))
+    }
+  },
+  computed: {
+    editReading() {
+      return EditReading
+    },
+    ...itemSingleRelations(Reading,{book:'book'})
+  }
+})
+
+export const EditReading = Vue.extend({
+  props: ['content'],
+  template: `
+<form>
+  <date-editor label="Start Date" property="startDate" :item="current"></date-editor>
+  <single-relation-editor label="Book" property="book" :entity="bookType" :item="current"></single-relation-editor>
+  <choice-editor label="Status" property="status" :item="current" :choices="{planned:'Planned',inProgress:'In Progress',finished:'Finished',abandoned:'Abandoned'}"></choice-editor>
+  <nested-entity-editor label="Progress" property="progress" :item="current" v-slot="x">
+    <date-editor label="Date" property="date" :item="x.entity"></date-editor>
+    <number-editor label="Progress" property="progress" :item="x.entity"></number-editor>
+    <number-editor label="Change" property="change" :item="x.entity"></number-editor>
+  </nested-entity-editor>
+</form>
+  `,
+  data() {
+    return {
+      current: _.cloneDeep(this.$props.content)
+    }
+  },
+  computed: {
+    bookType() {
+      return Book
+    }
+  },
+  components: {SingleRelationEditor, TextEditor, DateEditor, NestedEntityEditor, NumberEditor, ChoiceEditor}
 })

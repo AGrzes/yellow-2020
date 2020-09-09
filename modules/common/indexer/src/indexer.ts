@@ -163,8 +163,13 @@ export class TheIndexer implements Indexer {
                                                                      targetType: R,
                                                                      reverseProperty: keyof InstanceType<R> & string ) {
     const key = type.key(entity)
-    _.forEach(entity[property],
-      (target: string) => this.relation(rel(type, key, property, targetType, target, reverseProperty)))
+    if (_.isArray(entity[property])) {
+      _.forEach(entity[property],
+        (target: string) => this.relation(rel(type, key, property, targetType, target, reverseProperty)))
+    } else if (!_.isEmpty(entity[property])) {
+      this.relation(rel(type, key, property, targetType, entity[property], reverseProperty))
+    }
+    
   }
   public indexRelationEntity<T extends Entity<any>,
     P extends keyof InstanceType<T> & string,
@@ -177,9 +182,15 @@ export class TheIndexer implements Indexer {
     reverseProperty: keyof InstanceType<R> & string,
     reverseNestedProperty: keyof E & string) {
     const key = type.key(entity)
-    _.forEach(entity[property], (entry: E) =>
+    if (_.isArray(entity[property])) {
+      _.forEach(entity[property], (entry: E) =>
+        this.relation(relent(type, key, property, nestedProperty as string,
+        targetType, entry[nestedProperty] as string, reverseProperty, reverseNestedProperty, entry)))
+    } else if (!_.isEmpty(entity[property])) {
       this.relation(relent(type, key, property, nestedProperty as string,
-      targetType, entry[nestedProperty] as string, reverseProperty, reverseNestedProperty, entry)))
+        targetType, entity[property][nestedProperty] as string, reverseProperty, reverseNestedProperty, entity[property]))
+    }
+
   }
 
   public resolveRelations<T extends Entity<any>, R extends Entity<any>>(

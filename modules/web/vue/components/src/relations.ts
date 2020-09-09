@@ -62,6 +62,30 @@ export const RelationEditor = Vue.extend({
   }
 })
 
+export const SingleRelationEditor = Vue.extend({
+  props: ['label','property','entity','item'],
+  template: `
+<div class="form-group">
+  <label>{{label}}</label>
+  <select class="form-control" v-model="item[property]">
+    <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
+  </select>
+</div>
+  `,
+  methods: {
+    instanceLabel(instance: any) {
+      return this.entity.label(instance)
+    }
+  },
+  computed: {
+    ...mapState('model', {
+        domain(state: any) {
+            return state.entities[this.entity.typeTag]
+        }
+    })
+  }
+})
+
 export const RelationEntityEditor = Vue.extend({
   props: ['label','property','entity','item','nestedProperty'],
   template: `
@@ -123,5 +147,45 @@ export const RelationEntityEditor = Vue.extend({
             return state.entities[this.entity.typeTag]
         }
     })
+  }
+})
+
+export const NestedEntityEditor = Vue.extend({
+  props: ['label','property','item'],
+  template: `
+<div class="form-group">
+  <label>{{label}}</label>
+  <ul class="list-group">
+    <li class="list-group-item" v-for="(v,i) in item[property]"> 
+      <slot v-bind:entity="v">
+      </slot>
+      <button @click="item[property].splice(i,1)" class="btn btn-outline-secondary" type="button" title="Delete">
+        <i class="fas fa-trash"></i>
+      </button>
+    </li>
+    <li class="list-group-item">
+      <slot v-bind:entity="newEntry">
+      </slot>
+      <button @click="add()" class="btn btn-outline-secondary" type="button" title="Add">
+        <i class="fas fa-plus"></i>
+      </button>
+    </li>
+  </ul>
+</div>
+  `,
+  data() {
+    return {
+      newEntry: {}
+    }
+  },
+  methods: {
+    add() {
+      if (this.item[this.property]) {
+        this.item[this.property].push(this.newEntry)
+      } else {
+        Vue.set(this.item,this.property,[this.newEntry])
+      }
+      this.newEntry = {}
+    }
   }
 })

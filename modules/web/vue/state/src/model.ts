@@ -24,6 +24,26 @@ export const itemRelations = (entity: Entity<any>,relations: Record<string,strin
         return itemRelationResolver(state,entity, entity.key(this.item), relation)
       }))
 
+export const listSingleRelationResolver = (state: any, entity: Entity<any>, keys: string[], relation: string) =>
+  _.mapValues(_.keyBy(keys), (k) => _.first((state.relations[entity.typeTag][k] || {})[relation] || []))
+
+export const listSingleRelations = (entity: Entity<any>,relations: Record<string,string>) =>
+  mapState('model',_.mapValues(relations,
+    (relation: string) =>
+      function (state: any) {
+        return listSingleRelationResolver(state,entity, _.keys(this.list), relation)
+      }))
+
+export const itemSingleRelationResolver = (state: any, entity: Entity<any>, key: string, relation: string) =>
+  _.first((state.relations[entity.typeTag][key] || {})[relation] || [])
+
+export const itemSingleRelations = (entity: Entity<any>,relations: Record<string,string>) =>
+  mapState('model',_.mapValues(relations,
+    (relation: string) =>
+      function (state: any) {
+        return itemSingleRelationResolver(state,entity, entity.key(this.item), relation)
+      }))
+
 export async function modelState<R>(model: Model2):
   Promise<Module<any, any>> {
     const instances = model.instances()

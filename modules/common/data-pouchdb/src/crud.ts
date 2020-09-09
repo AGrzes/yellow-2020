@@ -69,7 +69,8 @@ export class PouchCRUD implements CRUD {
   }
 
   private getKey(id: string): string {
-    return _.split(id, ':', 2)[1]
+    const [type,...key] = _.split(id, ':')
+    return _.join(key,':')
   }
 
   public changes(): Observable<Change> {
