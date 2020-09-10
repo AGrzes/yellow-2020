@@ -85,7 +85,7 @@ export const DetailsLink = Vue.extend({
       return resolveItemRoute(this.item.constructor.typeTag, this.id, this.selector)
     },
     label(): string {
-      return _.startCase(this.id)
+      return this.item.constructor.label(this.item)
     }
   }
 })
