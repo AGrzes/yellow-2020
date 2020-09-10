@@ -34,6 +34,9 @@ router.get('/config', (req, res) => {
             }, {
               label: 'Reading',
               route: { name: 'readingList'}
+            }, {
+              label: 'Plan',
+              route: { name: 'planList'}
             }]
           }
     })
