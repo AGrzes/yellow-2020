@@ -674,7 +674,7 @@ export const PlanList = Vue.extend({
         {{items[key].length}}
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button :item="item"></edit-button>
+        <edit-button :item="item" :component="editPlan"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
@@ -688,6 +688,9 @@ export const PlanList = Vue.extend({
   computed: {
     planType() {
       return Plan
+    },
+    editPlan() {
+      return EditPlan
     },
     ...listRelations(Plan,{items: 'items'})
   }
@@ -716,7 +719,7 @@ export const PlanDetails = Vue.extend({
     </template>
   </div>
   <div class="card-footer text-right">
-    <edit-button :item="item">Edit</edit-button>
+    <edit-button :item="item" :component="editPlan">Edit</edit-button>
     <list-button type="reading">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
@@ -730,6 +733,32 @@ export const PlanDetails = Vue.extend({
     }
   },
   computed: {
-    ...itemRelations(Plan,{items: 'items'})
+    ...itemRelations(Plan,{items: 'items'}),
+    editPlan() {
+      return EditPlan
+    }
   }
+})
+
+export const EditPlan = Vue.extend({
+  props: ['content'],
+  template: `
+<form>
+  <date-editor label="Start Date" property="startDate" :item="current"></date-editor>
+  <date-editor label="End Date" property="endDate" :item="current"></date-editor>
+  <choice-editor label="Status" property="status" :item="current" :choices="{scheduled:'Scheduled',open:'Open',closed:'Closed'}"></choice-editor>
+  <relation-editor label="Items" property="items" :entity="readingType" :item="current"></relation-editor>
+</form>
+  `,
+  data() {
+    return {
+      current: _.cloneDeep(this.$props.content)
+    }
+  },
+  computed: {
+    readingType() {
+      return Reading
+    }
+  },
+  components: {RelationEditor, DateEditor, ChoiceEditor}
 })
