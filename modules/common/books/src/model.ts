@@ -3,7 +3,7 @@ import { builder, Entity } from '@agrzes/yellow-2020-common-model'
 import _ from 'lodash'
 
 const label = (field:string) => _.property<any,string>(field)
-export const { book: Book, author: Author, genre: Genre, series: Series, library: Library, reading: Reading } = 
+export const { book: Book, author: Author, genre: Genre, series: Series, library: Library, reading: Reading, plan: Plan } = 
   builder()
     .entity('book').label(label('title'))
       .relation('author').reverseProperty('books')
@@ -17,6 +17,8 @@ export const { book: Book, author: Author, genre: Genre, series: Series, library
     .entity('library').label(label('name'))
     .entity('reading').label(({book}) => _.startCase(book)).key(({book,startDate}) => `${book}:${startDate}`)
       .relation('book').reverseProperty('readings')
+    .entity('plan').label(({startDate,endDate}) => `${startDate}-${endDate}`).key(({startDate,endDate}) => `${startDate}:${endDate}`)
+      .relation('items').target('reading').reverseProperty('plans')
     .build()
 
 export class LibraryEntry<Ref = never> {
