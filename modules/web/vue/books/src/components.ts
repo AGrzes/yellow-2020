@@ -6,7 +6,7 @@ import { CreateButton, DeleteButton, DetailsButton,
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
-import { listRelations, itemRelations, listSingleRelations, itemSingleRelations } from '@agrzes/yellow-2020-web-vue-state'
+import { listRelations, itemRelations, listSingleRelations, itemSingleRelations, itemSingleRelationResolver } from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
 
 export const EditBook = Vue.extend({
@@ -544,6 +544,39 @@ export const SeriesDetails = Vue.extend({
   }
 })
 
+export const FinishReadingButton = Vue.extend({
+  props: {
+    item: Object
+  },
+  template: `
+<button @click="finish()" class="btn btn-outline-success" type="button" title="Finish" v-if="active">
+  <slot>
+    <i class="fas fa-flag-checkered"></i>
+  </slot>
+</button>
+  `,
+  computed: {
+    active() {
+      return _.includes(['planned', 'inProgress'],this.item.status)
+    }
+  },
+  methods: {
+    async finish() {
+      const id = Reading.key(this.item)
+      const item = this.item
+      const book = itemSingleRelationResolver(this.$store.state.model,Reading,Reading.key(item),'book') as any
+      if (book.pages) {
+        const lastProgress = (_.last<any>(item.progress) || {}).progress || 0
+        item.progress = item.progress || []
+        item.progress.push({date: new Date().toISOString().substring(0,10),progress: book.pages,change: book.pages-lastProgress})
+      }
+      item.status = 'finished'
+      await this.$store.dispatch(`model/update`, {item, type: Reading})
+      await this.$store.dispatch(`notifications/add`, {title: 'Reading finished', content: `Reading with key ${id} was finished` })
+    }
+  }
+})
+
 export const ReadingList = Vue.extend({
   props: {
     list: Object
@@ -563,13 +596,14 @@ export const ReadingList = Vue.extend({
         <edit-button :item="item" :component="editReading"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
+        <finish-reading-button :item="item"></finish-reading-button>
       </span>
     </span>
   </li>
   <li class="list-group-item"><create-button :type="readingType">Add</create-button></li>
 </ul>`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink
+    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, FinishReadingButton
   },
   computed: {
     readingType() {
@@ -614,10 +648,11 @@ export const ReadingDetails = Vue.extend({
     <edit-button :item="item" :component="editReading">Edit</edit-button>
     <list-button type="reading">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
+    <finish-reading-button :item="item"></finish-reading-button>
   </div>
 </div>`,
   components: {
-    DeleteButton, EditButton, DetailsLink, ListButton
+    DeleteButton, EditButton, DetailsLink, ListButton, FinishReadingButton
   },
   methods: {
     deleted() {
