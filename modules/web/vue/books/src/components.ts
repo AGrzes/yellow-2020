@@ -2,7 +2,7 @@ import { Author, Book, Genre, Library, Series, Reading, Plan } from '@agrzes/yel
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
   TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor,
-  NestedEntityEditor,NumberEditor, ChoiceEditor} from '@agrzes/yellow-2020-web-vue-components'
+  NestedEntityEditor,NumberEditor, ChoiceEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
@@ -577,6 +577,72 @@ export const FinishReadingButton = Vue.extend({
   }
 })
 
+export const ReadingProgress = Vue.extend({
+  props: ['content'],
+  template: `
+<form>
+  <number-editor label="Progress" property="progress" :item="current"></number-editor>
+</form>
+  `,
+  data() {
+    return {
+      current: _.cloneDeep(this.$props.content)
+    }
+  },
+  components: {NumberEditor}
+})
+
+export const ReadingProgressButton = Vue.extend({
+  props: {
+    item: Object,
+    component: Function
+  },
+  template: `
+<button @click="progress()" class="btn btn-outline-success" type="button" title="Progress">
+  <slot>
+    <i class="fas fa-forward"></i>
+  </slot>
+</button>
+  `,
+  methods: {
+    async progress() {
+      modal({
+        component: ReadingProgress,
+        parent: this.$root,
+        title: 'Progress',
+        props: {content: _.last(this.item.progress)},
+        buttons: [
+          {
+            name: 'Save',
+            onclick: async (m) => {
+
+              const id = Reading.key(this.item)
+              const item = this.item
+              const book = itemSingleRelationResolver(this.$store.state.model,Reading,Reading.key(item),'book') as any
+              if (book.pages) {
+                const progress = m.component.current.progress
+                const lastProgress = (_.last<any>(item.progress) || {}).progress || 0
+                item.progress = item.progress || []
+                item.progress.push({date: new Date().toISOString().substring(0,10),progress,change: progress-lastProgress})
+              }
+              await this.$store.dispatch(`model/update`, {item, type: Reading})
+              await this.$store.dispatch(`notifications/add`, {title: 'Reading moved forward', content: `Reading with key ${id} moved forward` })
+              m.close()
+            },
+            class: 'btn-primary'
+          }, {
+            name: 'Cancel',
+            onclick(m) {
+              m.close()
+            },
+            class: 'btn-secondary'
+          }
+        ]
+      })
+    }
+  }
+})
+
 export const ReadingList = Vue.extend({
   props: {
     list: Object
@@ -596,6 +662,7 @@ export const ReadingList = Vue.extend({
         <edit-button :item="item" :component="editReading"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
+        <reading-progress-button :item="item"></reading-progress-button>
         <finish-reading-button :item="item"></finish-reading-button>
       </span>
     </span>
@@ -603,7 +670,7 @@ export const ReadingList = Vue.extend({
   <li class="list-group-item"><create-button :type="readingType">Add</create-button></li>
 </ul>`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, FinishReadingButton
+    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, FinishReadingButton, ReadingProgressButton
   },
   computed: {
     readingType() {
@@ -648,11 +715,12 @@ export const ReadingDetails = Vue.extend({
     <edit-button :item="item" :component="editReading">Edit</edit-button>
     <list-button type="reading">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
+    <reading-progress-button :item="item"></reading-progress-button>
     <finish-reading-button :item="item"></finish-reading-button>
   </div>
 </div>`,
   components: {
-    DeleteButton, EditButton, DetailsLink, ListButton, FinishReadingButton
+    DeleteButton, EditButton, DetailsLink, ListButton, FinishReadingButton, ReadingProgressButton
   },
   methods: {
     deleted() {
