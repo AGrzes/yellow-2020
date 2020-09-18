@@ -47,6 +47,74 @@ export const EditBook = Vue.extend({
   components: {RelationEditor,RelationEntityEditor, TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor}
 })
 
+export const PlanReading = Vue.extend({
+  props: ['content'],
+  template: `
+<form>
+  <date-editor label="Start Date" property="startDate" :item="current"></date-editor>
+  <single-relation-editor label="Book" property="book" :entity="bookType" :item="current"></single-relation-editor>
+</form>
+  `,
+  computed: {
+    bookType() {
+      return Book
+    }
+  },
+  data() {
+    return {
+      current: _.cloneDeep(this.$props.content)
+    }
+  },
+  components: {SingleRelationEditor, DateEditor}
+})
+
+export const PlanReadingButton = Vue.extend({
+  props: {
+    item: Object
+  },
+  template: `
+<button @click="plan()" class="btn btn-outline-success" type="button" title="Plan Reading">
+  <slot>
+    <i class="fas fa-calendar-plus"></i>
+  </slot>
+</button>
+  `,
+  methods: {
+    async plan() {
+      const book = this.item
+      const bookId = Book.key(book)
+      modal({
+        component: PlanReading,
+        parent: this.$root,
+        title: 'Plan Reading',
+        props: {content: {book: bookId}},
+        buttons: [
+          {
+            name: 'Save',
+            onclick: async (m) => {
+              const item = {
+                ...m.component.current,
+                status: 'planned'
+              }
+              const id = Reading.key(item)
+              await this.$store.dispatch(`model/update`, {item, type: Reading})
+              await this.$store.dispatch(`notifications/add`, {title: 'Reading planned', content: `Reading with key ${id} planned` })
+              m.close()
+            },
+            class: 'btn-primary'
+          }, {
+            name: 'Cancel',
+            onclick(m) {
+              m.close()
+            },
+            class: 'btn-secondary'
+          }
+        ]
+      })
+    }
+  }
+})
+
 export const BooksList = Vue.extend({
   props: {
     list: Object
@@ -71,13 +139,14 @@ export const BooksList = Vue.extend({
         <edit-button :item="item" :component="editBook"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
+        <plan-reading-button :item="item"></plan-reading-button>
       </span>
     </span>
   </li>
   <li class="list-group-item"><create-button :type="bookType">Add</create-button></li>
 </ul>`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink
+    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, PlanReadingButton
   },
   computed: {
     bookType() {
@@ -174,10 +243,11 @@ export const BookDetails = Vue.extend({
     <edit-button :item="item" :component="editBook">Edit</edit-button>
     <list-button type="book">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
+    <plan-reading-button :item="item"></plan-reading-button>
   </div>
 </div>`,
   components: {
-    DeleteButton, EditButton, DetailsLink, ListButton
+    DeleteButton, EditButton, DetailsLink, ListButton, PlanReadingButton
   },
   methods: {
     deleted() {
@@ -594,8 +664,7 @@ export const ReadingProgress = Vue.extend({
 
 export const ReadingProgressButton = Vue.extend({
   props: {
-    item: Object,
-    component: Function
+    item: Object
   },
   template: `
 <button @click="progress()" class="btn btn-outline-success" type="button" title="Progress">
