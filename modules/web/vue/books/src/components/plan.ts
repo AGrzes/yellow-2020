@@ -1,11 +1,75 @@
-import { Reading, Plan } from '@agrzes/yellow-2020-common-books'
+import { Reading, Plan, Book } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
-  DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor} from '@agrzes/yellow-2020-web-vue-components'
+  DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
-import { listRelations, itemRelations } from '@agrzes/yellow-2020-web-vue-state'
+import { listRelations, itemRelations, itemRelationResolver } from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
+
+export const PlanRollover = Vue.extend({
+  props: ['content'],
+  template: `
+<form>
+  <date-editor label="Start Date" property="startDate" :item="current"></date-editor>
+  <date-editor label="End Date" property="endDate" :item="current"></date-editor>
+</form>
+  `,
+  data() {
+    return {
+      current: _.cloneDeep(this.$props.content)
+    }
+  },
+  components: {DateEditor}
+})
+
+export const PlanRolloverButton = Vue.extend({
+  props: {
+    item: Object
+  },
+  template: `
+<button @click="rollover()" class="btn btn-outline-primary" type="button" title="Plan Rollover">
+  <slot>
+    <i class="fas fa-step-forward"></i>
+  </slot>
+</button>
+  `,
+  methods: {
+    async rollover() {
+      const plan = this.item
+      const id = Plan.key(plan)
+      modal({
+        component: PlanRollover,
+        parent: this.$root,
+        title: 'Plan Rollover',
+        props: {content: {}},
+        buttons: [
+          {
+            name: 'Save',
+            onclick: async (m) => {
+              const items = itemRelationResolver(this.$store.state.model,Plan,id,'items') as any
+              const item = {
+                ...m.component.current,
+                status: 'scheduled',
+                items: _.map(_.filter(items,({status})=> _.includes(['planned','inProgress'],status)),Reading.key)
+              }
+              await this.$store.dispatch(`model/update`, {item, type: Plan})
+              await this.$store.dispatch(`notifications/add`, {title: 'Plan Rolled Over', content: `Plan with key ${id} rolled over` })
+              m.close()
+            },
+            class: 'btn-primary'
+          }, {
+            name: 'Cancel',
+            onclick(m) {
+              m.close()
+            },
+            class: 'btn-secondary'
+          }
+        ]
+      })
+    }
+  }
+})
 
 export const PlanList = Vue.extend({
   props: {
@@ -25,13 +89,14 @@ export const PlanList = Vue.extend({
         <edit-button :item="item" :component="editPlan"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
+        <plan-rollover-button :item="item"></plan-rollover-button>
       </span>
     </span>
   </li>
   <li class="list-group-item"><create-button :type="planType">Add</create-button></li>
 </ul>`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink
+    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, PlanRolloverButton
   },
   computed: {
     planType() {
@@ -70,10 +135,11 @@ export const PlanDetails = Vue.extend({
     <edit-button :item="item" :component="editPlan">Edit</edit-button>
     <list-button type="reading">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
+    <plan-rollover-button :item="item"></plan-rollover-button>
   </div>
 </div>`,
   components: {
-    DeleteButton, EditButton, DetailsLink, ListButton
+    DeleteButton, EditButton, DetailsLink, ListButton, PlanRolloverButton
   },
   methods: {
     deleted() {
