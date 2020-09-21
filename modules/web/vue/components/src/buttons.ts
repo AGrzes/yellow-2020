@@ -155,7 +155,7 @@ export const CreateButton = Vue.extend({
   methods: {
     async add() {
       modal({
-        component: Create,
+        component: resolveEditor(this.type) as any,
         parent: this.$root,
         title: 'Create',
         props: {content: {}},
