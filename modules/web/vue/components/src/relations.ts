@@ -56,12 +56,7 @@ export const RelationEditor = Vue.extend({
       this.newEntry = ''
     },
     onCreated(created) {
-      if (this.item[this.property]) {
-        this.item[this.property].push(this.entity.key(created))
-      } else {
-        Vue.set(this.item,this.property,[this.entity.key(created)])
-      }
-      this.newEntry = ''
+      this.newEntry = this.entity.key(created)
     },
     instanceLabel(instance: any) {
       return this.entity.label(instance)
@@ -142,6 +137,11 @@ export const RelationEntityEditor = Vue.extend({
           <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
         </select>
         <div class="input-group-append">
+          <create-button :type="entity" @created="onCreated($event)">
+            <i class="fas fa-plus-square"></i>
+          </create-button>
+        </div>
+        <div class="input-group-append">
           <button @click="add()" class="btn btn-outline-secondary" type="button" title="Delete">
               <i class="fas fa-plus"></i>
           </button>
@@ -165,7 +165,10 @@ export const RelationEntityEditor = Vue.extend({
       } else {
         Vue.set(this.item,this.property,[this.newEntry])
       }
-      this.newEntry = ''
+      this.newEntry = {}
+    },
+    onCreated(created) {
+      Vue.set(this.newEntry,this.nestedProperty,this.entity.key(created))
     },
     instanceLabel(instance: any) {
       return this.entity.label(instance)
@@ -177,6 +180,9 @@ export const RelationEntityEditor = Vue.extend({
             return state.entities[this.entity.typeTag]
         }
     })
+  },
+  components: {
+    CreateButton
   }
 })
 
