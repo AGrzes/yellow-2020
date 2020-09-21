@@ -2,7 +2,7 @@ import { Book, Reading } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, 
   TextEditor, DateEditor, SingleRelationEditor,
-  NestedEntityEditor,NumberEditor, ChoiceEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
+  NestedEntityEditor,NumberEditor, ChoiceEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
@@ -123,7 +123,7 @@ export const ReadingList = Vue.extend({
         {{item.status}}
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button :item="item" :component="editReading"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
         <reading-progress-button :item="item"></reading-progress-button>
@@ -139,9 +139,6 @@ export const ReadingList = Vue.extend({
   computed: {
     readingType() {
       return Reading
-    },
-    editReading() {
-      return EditReading
     },
     ...listSingleRelations(Reading,{book: 'book'})
   }
@@ -176,7 +173,7 @@ export const ReadingDetails = Vue.extend({
     </ul>
   </div>
   <div class="card-footer text-right">
-    <edit-button :item="item" :component="editReading">Edit</edit-button>
+    <edit-button :item="item">Edit</edit-button>
     <list-button type="reading">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
     <reading-progress-button :item="item"></reading-progress-button>
@@ -192,9 +189,6 @@ export const ReadingDetails = Vue.extend({
     }
   },
   computed: {
-    editReading() {
-      return EditReading
-    },
     ...itemSingleRelations(Reading,{book:'book'})
   }
 })
@@ -225,3 +219,4 @@ export const EditReading = Vue.extend({
   },
   components: {SingleRelationEditor, TextEditor, DateEditor, NestedEntityEditor, NumberEditor, ChoiceEditor}
 })
+registerEditor(Reading, EditReading)
