@@ -84,15 +84,25 @@ export const SingleRelationEditor = Vue.extend({
   template: `
 <div class="form-group">
   <label>{{label}}</label>
-  <select class="form-control" v-model="item[property]">
-    <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
-  </select>
+  <div class="input-group">
+    <select class="form-control" v-model="item[property]">
+      <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
+    </select>
+    <div class="input-group-append">
+      <create-button :type="entity" @created="onCreated($event)">
+        <i class="fas fa-plus-square"></i>
+      </create-button>
+    </div>
+  </div>
 </div>
   `,
   methods: {
     instanceLabel(instance: any) {
       return this.entity.label(instance)
-    }
+    },
+    onCreated(created) {
+      Vue.set(this.item,this.property,this.entity.key(created))
+    },
   },
   computed: {
     ...mapState('model', {
@@ -100,6 +110,9 @@ export const SingleRelationEditor = Vue.extend({
             return state.entities[this.entity.typeTag]
         }
     })
+  },
+  components: {
+    CreateButton
   }
 })
 
