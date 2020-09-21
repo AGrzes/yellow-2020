@@ -170,6 +170,7 @@ export const CreateButton = Vue.extend({
                 icon: 'plus'
               })
               m.close()
+              this.$emit('created',m.component.current)
             },
             class: 'btn-primary'
           }, {
