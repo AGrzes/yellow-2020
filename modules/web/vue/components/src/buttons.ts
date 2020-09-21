@@ -4,6 +4,7 @@ import _ from 'lodash'
 import Vue from 'vue'
 import { Location} from 'vue-router'
 import { Create, Edit } from './edit'
+import { resolveEditor } from './editorRegistry'
 import { modal } from './modal'
 
 export const DeleteButton = Vue.extend({
@@ -107,7 +108,7 @@ export const EditButton = Vue.extend({
       const type = this.item.constructor
       const initialId = this.item.constructor.key(this.item)
       modal({
-        component: this.component || Edit,
+        component: resolveEditor(type) as any,
         parent: this.$root,
         title: 'Edit',
         props: {content: this.item},
