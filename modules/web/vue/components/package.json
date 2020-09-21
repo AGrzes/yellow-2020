@@ -36,6 +36,7 @@
   "dependencies": {
     "@agrzes/yellow-2020-common-ui-model": "^1.1.6",
     "@agrzes/yellow-2020-web-vue-router": "^1.1.6",
+    "@agrzes/yellow-2020-common-model": "^1.1.8",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "ace-builds": "^1.4.9",
     "bootstrap": "^4.5.0",

@@ -1,7 +1,7 @@
 import { Author, Book, Series } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
-  TextEditor, LongTextEditor} from '@agrzes/yellow-2020-web-vue-components'
+  TextEditor, LongTextEditor, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
@@ -33,6 +33,7 @@ export const EditAuthor = Vue.extend({
   },
   components: {RelationEditor, TextEditor, LongTextEditor}
 })
+registerEditor(Author, EditAuthor)
 
 export const AuthorList = Vue.extend({
   props: {
@@ -50,7 +51,7 @@ export const AuthorList = Vue.extend({
         </small>
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button :item="item" :component="editAuthor"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
       </span>
@@ -64,9 +65,6 @@ export const AuthorList = Vue.extend({
   computed: {
     authorType() {
       return Author
-    },
-    editAuthor() {
-      return EditAuthor
     },
     ...listRelations(Author,{books: 'books',series:'series'})
   }
@@ -96,7 +94,7 @@ export const AuthorDetails = Vue.extend({
     </template>
   </div>
   <div class="card-footer text-right">
-    <edit-button :item="item" :component="editAuthor">Edit</edit-button>
+    <edit-button :item="item">Edit</edit-button>
     <list-button type="author">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
   </div>
@@ -110,9 +108,6 @@ export const AuthorDetails = Vue.extend({
     }
   },
   computed: {
-    editAuthor() {
-      return EditAuthor
-    },
     ...itemRelations(Author,{books:'books',series: 'series'})
   }
 })

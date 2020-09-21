@@ -1,6 +1,6 @@
 import { Reading, Plan, Book } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
-  DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
+  DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
@@ -86,7 +86,7 @@ export const PlanList = Vue.extend({
         {{items[key].length}}
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button :item="item" :component="editPlan"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
         <plan-rollover-button :item="item"></plan-rollover-button>
@@ -101,9 +101,6 @@ export const PlanList = Vue.extend({
   computed: {
     planType() {
       return Plan
-    },
-    editPlan() {
-      return EditPlan
     },
     ...listRelations(Plan,{items: 'items'})
   }
@@ -132,7 +129,7 @@ export const PlanDetails = Vue.extend({
     </template>
   </div>
   <div class="card-footer text-right">
-    <edit-button :item="item" :component="editPlan">Edit</edit-button>
+    <edit-button :item="item">Edit</edit-button>
     <list-button type="reading">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
     <plan-rollover-button :item="item"></plan-rollover-button>
@@ -147,10 +144,7 @@ export const PlanDetails = Vue.extend({
     }
   },
   computed: {
-    ...itemRelations(Plan,{items: 'items'}),
-    editPlan() {
-      return EditPlan
-    }
+    ...itemRelations(Plan,{items: 'items'})
   }
 })
 
@@ -176,3 +170,4 @@ export const EditPlan = Vue.extend({
   },
   components: {RelationEditor, DateEditor, ChoiceEditor}
 })
+registerEditor(Plan, EditPlan)

@@ -1,7 +1,7 @@
 import { Author, Book, Genre, Library, Series, Reading } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
-  TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
+  TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
 import Vue from 'vue'
@@ -45,6 +45,7 @@ export const EditBook = Vue.extend({
   },
   components: {RelationEditor,RelationEntityEditor, TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor}
 })
+registerEditor(Book, EditBook)
 
 export const PlanReading = Vue.extend({
   props: ['content'],
@@ -135,7 +136,7 @@ export const BooksList = Vue.extend({
         {{genre.name}}
       </span>
       <span class="flex-grow-0 flex-shrink-0 align-self-center ml-auto">
-        <edit-button :item="item" :component="editBook"></edit-button>
+        <edit-button :item="item"></edit-button>
         <details-button :item="item"></details-button>
         <delete-button :item="item"></delete-button>
         <plan-reading-button :item="item"></plan-reading-button>
@@ -150,9 +151,6 @@ export const BooksList = Vue.extend({
   computed: {
     bookType() {
       return Book
-    },
-    editBook() {
-      return EditBook
     },
     ...listRelations(Book,{authors: 'author',genres:'genre',series:'series'})
   }
@@ -239,7 +237,7 @@ export const BookDetails = Vue.extend({
     </template>
   </div>
   <div class="card-footer text-right">
-    <edit-button :item="item" :component="editBook">Edit</edit-button>
+    <edit-button :item="item">Edit</edit-button>
     <list-button type="book">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
     <plan-reading-button :item="item"></plan-reading-button>
@@ -254,9 +252,6 @@ export const BookDetails = Vue.extend({
     }
   },
   computed: {
-    editBook() {
-      return EditBook
-    },
     ...itemRelations(Book,{authors:'author',genres:'genre',series: 'series'})
   }
 })

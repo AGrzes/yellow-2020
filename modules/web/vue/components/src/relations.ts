@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import {CreateButton} from './buttons'
 
 export const RelationEditor = Vue.extend({
   props: ['label','property','entity','item'],
@@ -26,6 +27,11 @@ export const RelationEditor = Vue.extend({
           <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
         </select>
         <div class="input-group-append">
+          <create-button :type="entity" @created="onCreated($event)">
+            <i class="fas fa-plus-square"></i>
+          </create-button>
+        </div>
+        <div class="input-group-append">
           <button @click="add()" class="btn btn-outline-secondary" type="button" title="Delete">
               <i class="fas fa-plus"></i>
           </button>
@@ -49,6 +55,9 @@ export const RelationEditor = Vue.extend({
       }
       this.newEntry = ''
     },
+    onCreated(created) {
+      this.newEntry = this.entity.key(created)
+    },
     instanceLabel(instance: any) {
       return this.entity.label(instance)
     }
@@ -59,6 +68,9 @@ export const RelationEditor = Vue.extend({
             return state.entities[this.entity.typeTag]
         }
     })
+  },
+  components: {
+    CreateButton
   }
 })
 
@@ -67,15 +79,25 @@ export const SingleRelationEditor = Vue.extend({
   template: `
 <div class="form-group">
   <label>{{label}}</label>
-  <select class="form-control" v-model="item[property]">
-    <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
-  </select>
+  <div class="input-group">
+    <select class="form-control" v-model="item[property]">
+      <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
+    </select>
+    <div class="input-group-append">
+      <create-button :type="entity" @created="onCreated($event)">
+        <i class="fas fa-plus-square"></i>
+      </create-button>
+    </div>
+  </div>
 </div>
   `,
   methods: {
     instanceLabel(instance: any) {
       return this.entity.label(instance)
-    }
+    },
+    onCreated(created) {
+      Vue.set(this.item,this.property,this.entity.key(created))
+    },
   },
   computed: {
     ...mapState('model', {
@@ -83,6 +105,9 @@ export const SingleRelationEditor = Vue.extend({
             return state.entities[this.entity.typeTag]
         }
     })
+  },
+  components: {
+    CreateButton
   }
 })
 
@@ -112,6 +137,11 @@ export const RelationEntityEditor = Vue.extend({
           <option v-for="(a,k) in domain" :value="k">{{instanceLabel(a)}}</option>
         </select>
         <div class="input-group-append">
+          <create-button :type="entity" @created="onCreated($event)">
+            <i class="fas fa-plus-square"></i>
+          </create-button>
+        </div>
+        <div class="input-group-append">
           <button @click="add()" class="btn btn-outline-secondary" type="button" title="Delete">
               <i class="fas fa-plus"></i>
           </button>
@@ -135,7 +165,10 @@ export const RelationEntityEditor = Vue.extend({
       } else {
         Vue.set(this.item,this.property,[this.newEntry])
       }
-      this.newEntry = ''
+      this.newEntry = {}
+    },
+    onCreated(created) {
+      Vue.set(this.newEntry,this.nestedProperty,this.entity.key(created))
     },
     instanceLabel(instance: any) {
       return this.entity.label(instance)
@@ -147,6 +180,9 @@ export const RelationEntityEditor = Vue.extend({
             return state.entities[this.entity.typeTag]
         }
     })
+  },
+  components: {
+    CreateButton
   }
 })
 
