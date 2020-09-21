@@ -3,7 +3,6 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import _ from 'lodash'
 import Vue from 'vue'
 import { Location} from 'vue-router'
-import { Create, Edit } from './edit'
 import { resolveEditor } from './editorRegistry'
 import { modal } from './modal'
 
