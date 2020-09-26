@@ -6,9 +6,9 @@
   "license": "MIT",
   "dependencies": {
     "lodash": "^4.17.11",
-    "vue": "^2.6.11",
-    "vue-router": "^3.3.4",
-    "vuex": "^3.4.0"
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0-beta.12",
+    "vuex": "^4.0.0-beta.4"
   },
   "private": true,
   "devDependencies": {
