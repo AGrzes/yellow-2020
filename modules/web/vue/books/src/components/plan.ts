@@ -3,11 +3,11 @@ import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { listRelations, itemRelations, itemRelationResolver } from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
 
-export const PlanRollover = Vue.extend({
+export const PlanRollover = defineComponent({
   props: ['content'],
   template: `
 <form>
@@ -23,7 +23,7 @@ export const PlanRollover = Vue.extend({
   components: {DateEditor}
 })
 
-export const PlanRolloverButton = Vue.extend({
+export const PlanRolloverButton = defineComponent({
   props: {
     item: Object
   },
@@ -71,7 +71,7 @@ export const PlanRolloverButton = Vue.extend({
   }
 })
 
-export const PlanList = Vue.extend({
+export const PlanList = defineComponent({
   props: {
     list: Object
   },
@@ -106,7 +106,7 @@ export const PlanList = Vue.extend({
   }
 })
 
-export const PlanDetails = Vue.extend({
+export const PlanDetails = defineComponent({
   props: {
     item: Object
   },
@@ -148,7 +148,7 @@ export const PlanDetails = Vue.extend({
   }
 })
 
-export const EditPlan = Vue.extend({
+export const EditPlan = defineComponent({
   props: ['content'],
   template: `
 <form>

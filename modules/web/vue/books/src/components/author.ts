@@ -4,11 +4,11 @@ import { CreateButton, DeleteButton, DetailsButton,
   TextEditor, LongTextEditor, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { listRelations, itemRelations } from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
 
-export const EditAuthor = Vue.extend({
+export const EditAuthor = defineComponent({
   props: ['content'],
   template: `
 <form>
@@ -35,7 +35,7 @@ export const EditAuthor = Vue.extend({
 })
 registerEditor(Author, EditAuthor)
 
-export const AuthorList = Vue.extend({
+export const AuthorList = defineComponent({
   props: {
     list: Object
   },
@@ -70,7 +70,7 @@ export const AuthorList = Vue.extend({
   }
 })
 
-export const AuthorDetails = Vue.extend({
+export const AuthorDetails = defineComponent({
   props: {
     item: Object
   },
