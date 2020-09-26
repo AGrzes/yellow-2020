@@ -1,9 +1,9 @@
 import _ from 'lodash'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import {CreateButton} from './buttons'
 
-export const RelationEditor = Vue.extend({
+export const RelationEditor = defineComponent({
   props: ['label','property','entity','item'],
   template: `
 <div class="form-group">
@@ -51,7 +51,7 @@ export const RelationEditor = Vue.extend({
       if (this.item[this.property]) {
         this.item[this.property].push(this.newEntry)
       } else {
-        Vue.set(this.item,this.property,[this.newEntry])
+        this.item[this.property] = [this.newEntry]
       }
       this.newEntry = ''
     },
@@ -74,7 +74,7 @@ export const RelationEditor = Vue.extend({
   }
 })
 
-export const SingleRelationEditor = Vue.extend({
+export const SingleRelationEditor = defineComponent({
   props: ['label','property','entity','item'],
   template: `
 <div class="form-group">
@@ -96,7 +96,7 @@ export const SingleRelationEditor = Vue.extend({
       return this.entity.label(instance)
     },
     onCreated(created) {
-      Vue.set(this.item,this.property,this.entity.key(created))
+      this.item[this.property] = this.entity.key(created)
     },
   },
   computed: {
@@ -111,7 +111,7 @@ export const SingleRelationEditor = Vue.extend({
   }
 })
 
-export const RelationEntityEditor = Vue.extend({
+export const RelationEntityEditor = defineComponent({
   props: ['label','property','entity','item','nestedProperty'],
   template: `
 <div class="form-group">
@@ -163,12 +163,12 @@ export const RelationEntityEditor = Vue.extend({
       if (this.item[this.property]) {
         this.item[this.property].push(this.newEntry)
       } else {
-        Vue.set(this.item,this.property,[this.newEntry])
+        this.item[this.property] = [this.newEntry]
       }
       this.newEntry = {}
     },
     onCreated(created) {
-      Vue.set(this.newEntry,this.nestedProperty,this.entity.key(created))
+      this.newEntry[this.nestedProperty] = this.entity.key(created)
     },
     instanceLabel(instance: any) {
       return this.entity.label(instance)
@@ -186,7 +186,7 @@ export const RelationEntityEditor = Vue.extend({
   }
 })
 
-export const NestedEntityEditor = Vue.extend({
+export const NestedEntityEditor = defineComponent({
   props: ['label','property','item'],
   template: `
 <div class="form-group">
@@ -219,7 +219,7 @@ export const NestedEntityEditor = Vue.extend({
       if (this.item[this.property]) {
         this.item[this.property].push(this.newEntry)
       } else {
-        Vue.set(this.item,this.property,[this.newEntry])
+        this.item[this.property] = [this.newEntry]
       }
       this.newEntry = {}
     }

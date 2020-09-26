@@ -1,12 +1,11 @@
 import {resolveItemRoute, resolveListRoute} from '@agrzes/yellow-2020-web-vue-router'
 import '@fortawesome/fontawesome-free/css/all.css'
 import _ from 'lodash'
-import Vue from 'vue'
-import { Location} from 'vue-router'
+import Vue, {defineComponent} from 'vue'
 import { resolveEditor } from './editorRegistry'
 import { modal } from './modal'
 
-export const DeleteButton = Vue.extend({
+export const DeleteButton = defineComponent({
   props: {
     item: Object
   },
@@ -27,7 +26,7 @@ export const DeleteButton = Vue.extend({
   }
 })
 
-export const DetailsButton = Vue.extend({
+export const DetailsButton = defineComponent({
   props: {
     item: Object,
     selector: String
@@ -40,13 +39,13 @@ export const DetailsButton = Vue.extend({
 </router-link>
   `,
   computed: {
-    route(): Location {
+    route() {
       return resolveItemRoute(this.item.constructor.typeTag, this.item.constructor.key(this.item), this.selector)
     }
   }
 })
 
-export const ListButton = Vue.extend({
+export const ListButton = defineComponent({
   props: {
     type: String,
     selector: String
@@ -59,13 +58,13 @@ export const ListButton = Vue.extend({
 </router-link>
   `,
   computed: {
-    route(): Location {
+    route() {
       return resolveListRoute(this.type, this.selector)
     }
   }
 })
 
-export const DetailsLink = Vue.extend({
+export const DetailsLink = defineComponent({
   props: {
     selector: String,
     item: Object
@@ -81,7 +80,7 @@ export const DetailsLink = Vue.extend({
     id() {
       return this.item.constructor.key(this.item)
     },
-    route(): Location {
+    route() {
       return resolveItemRoute(this.item.constructor.typeTag, this.id, this.selector)
     },
     label(): string {
@@ -90,7 +89,7 @@ export const DetailsLink = Vue.extend({
   }
 })
 
-export const EditButton = Vue.extend({
+export const EditButton = defineComponent({
   props: {
     item: Object,
     component: Function
@@ -140,7 +139,7 @@ export const EditButton = Vue.extend({
   }
 })
 
-export const CreateButton = Vue.extend({
+export const CreateButton = defineComponent({
   props: {
     type: Function
   },

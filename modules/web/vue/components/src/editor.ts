@@ -1,9 +1,9 @@
 import * as ace from 'ace-builds'
 import 'ace-builds/webpack-resolver'
 import * as YAML from 'js-yaml'
-import Vue from 'vue'
+import Vue, { defineComponent } from 'vue'
 
-export const EditYaml = Vue.extend({
+export const EditYaml = defineComponent({
   props: ['value'],
   template: `
 <div style="height: 200px" ref="editor">{{yaml}}</div>
@@ -30,9 +30,7 @@ export const EditYaml = Vue.extend({
   }
 })
 
-Vue.component('edit-yaml', EditYaml)
-
-export const EditJSON = Vue.extend({
+export const EditJSON = defineComponent({
   props: ['value'],
   template: `
 <div style="height: 200px" ref="editor">{{json}}</div>
@@ -58,5 +56,3 @@ export const EditJSON = Vue.extend({
     }
   }
 })
-
-Vue.component('edit-json', EditJSON)

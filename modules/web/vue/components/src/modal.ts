@@ -1,9 +1,9 @@
 import 'bootstrap'
 import 'jquery'
 import * as _ from 'lodash'
-import Vue from 'vue'
+import {Component, ComponentPublicInstance, defineComponent, createVNode, render} from 'vue'
 
-const Modal = Vue.extend({
+const Modal = defineComponent({
   props: ['component', 'title', 'componentProps', 'buttons'],
   template: `
 <div class="modal" tabindex="-1" role="dialog">
@@ -50,53 +50,53 @@ const Modal = Vue.extend({
     }
   }
 })
-Vue.component('modal-component', Modal)
 
-interface ModalButonClickArguments<Component extends Vue.VueConstructor> {
+interface ModalButonClickArguments<C extends Component> {
   event: Event
-  component: InstanceType<Component>
-  config: ModalButtonConfig<Component>
+  component: C
+  config: ModalButtonConfig<C>
   close(): void
 }
 
-interface ModalButtonConfig<Component extends Vue.VueConstructor> {
+interface ModalButtonConfig<C extends Component> {
   name: string
   label?: string
   class?: string
-  onclick?: (args: ModalButonClickArguments<Component>) => void
+  onclick?: (args: ModalButonClickArguments<C>) => void
 }
 
-interface ModalConfig<Component extends Vue.VueConstructor > {
-  parent: Vue
-  component: string | Component
+interface ModalConfig<C extends Component> {
+  parent: ComponentPublicInstance
+  component: string | C
   title: string
   props?: any
-  buttons?: Array<ModalButtonConfig<Component>>
+  buttons?: Array<ModalButtonConfig<C>>
 }
 
-interface ModalResult<Component extends Vue.VueConstructor> {
-  button: ModalButtonConfig<Component>
-  instance: InstanceType<Component>
+interface ModalResult<C extends Component> {
+  button: ModalButtonConfig<C>
+  instance: C
 }
 
-export const modal = <Component extends Vue.VueConstructor>
-  (options: ModalConfig<Component>): Promise<InstanceType<Component>> => {
+export const modal = <C extends Component>
+  (options: ModalConfig<C>): Promise<C> => {
   return new Promise((resolve, reject) => {
-    const instance = new Modal({
-        parent: options.parent,
-        propsData: {
-          component: options.component,
-          title: options.title,
-          componentProps: options.props,
-          buttons: options.buttons || [{name: 'close', onclick(m) {m.close()}, class: 'btn-secondary'}]
-        }
-    })
-    instance.$mount()
-    options.parent.$el.appendChild(instance.$el)
-    $(instance.$el).modal()
+    const el = document.createElement('div')
+    let vNode = createVNode(Modal, {
+      parent: options.parent,
+      propsData: {
+        component: options.component,
+        title: options.title,
+        componentProps: options.props,
+        buttons: options.buttons || [{name: 'close', onclick(m) {m.close()}, class: 'btn-secondary'}]
+      }
+    }, null)
+    render(vNode, el)
+    options.parent.$el.appendChild(el)
+    $(el).modal()
     .on('hidden.bs.modal', (e) => {
-      $(instance.$el).modal('dispose')
-      resolve(instance.$refs.content as InstanceType<Component>)
+      $(el).modal('dispose')
+      resolve(vNode.component.refs.content as C)
     })
   })
 }

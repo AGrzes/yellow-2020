@@ -1,8 +1,8 @@
 
 import {MenuItem} from '@agrzes/yellow-2020-common-ui-model'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
-export const navigationMenu = Vue.extend({
+export const navigationMenu = defineComponent({
   props: {
     navigation: Array as () => MenuItem[]
   },

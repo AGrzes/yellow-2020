@@ -1,8 +1,7 @@
 import _ from 'lodash'
-import Vue from 'vue'
-import { mapState } from 'vuex'
+import { defineComponent } from 'vue'
 
-export const TextEditor = Vue.extend({
+export const TextEditor = defineComponent({
   props: ['label','property','item'],
   template: `
 <div class="form-group">
@@ -12,7 +11,7 @@ export const TextEditor = Vue.extend({
   `
 })
 
-export const DateEditor = Vue.extend({
+export const DateEditor = defineComponent({
   props: ['label','property','item'],
   template: `
 <div class="form-group">
@@ -22,7 +21,7 @@ export const DateEditor = Vue.extend({
   `
 })
 
-export const NumberEditor = Vue.extend({
+export const NumberEditor = defineComponent({
   props: ['label','property','item'],
   template: `
 <div class="form-group">
@@ -32,7 +31,7 @@ export const NumberEditor = Vue.extend({
   `
 })
 
-export const LongTextEditor = Vue.extend({
+export const LongTextEditor = defineComponent({
   props: ['label','property','item'],
   template: `
 <div class="form-group">
@@ -42,7 +41,7 @@ export const LongTextEditor = Vue.extend({
   `
 })
 
-export const CurrencyEditor = Vue.extend({
+export const CurrencyEditor = defineComponent({
   props: ['label','property','item'],
   template: `
 <div class="form-group">
@@ -52,7 +51,7 @@ export const CurrencyEditor = Vue.extend({
   `
 })
 
-export const BooleanEditor = Vue.extend({
+export const BooleanEditor = defineComponent({
   props: ['label','property','item'],
   template: `
 <div class="form-check">
@@ -62,7 +61,7 @@ export const BooleanEditor = Vue.extend({
   `
 })
 
-export const ChoiceEditor = Vue.extend({
+export const ChoiceEditor = defineComponent({
   props: ['label','property','item','choices'],
   template: `
 <div class="form-group">
