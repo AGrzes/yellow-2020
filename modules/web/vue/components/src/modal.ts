@@ -16,7 +16,7 @@ const Modal = defineComponent({
         </button>
       </div>
       <div class="modal-body">
-        <div :is="component" v-bind="componentProps" ref="content"></div>
+        <component :is="component" v-bind="componentProps" ref="content"></component>
       </div>
       <div class="modal-footer">
         <button
@@ -82,20 +82,18 @@ export const modal = <C extends Component>
   (options: ModalConfig<C>): Promise<C> => {
   return new Promise((resolve, reject) => {
     const el = document.createElement('div')
+    options.parent.$el.appendChild(el)
     let vNode = createVNode(Modal, {
-      parent: options.parent,
-      propsData: {
         component: options.component,
         title: options.title,
         componentProps: options.props,
         buttons: options.buttons || [{name: 'close', onclick(m) {m.close()}, class: 'btn-secondary'}]
-      }
     }, null)
+    vNode.appContext = options.parent.$.vnode.appContext
     render(vNode, el)
-    options.parent.$el.appendChild(el)
-    $(el).modal()
+    $(vNode.el).modal()
     .on('hidden.bs.modal', (e) => {
-      $(el).modal('dispose')
+      $(vNode.el).modal('dispose')
       resolve(vNode.component.refs.content as C)
     })
   })
