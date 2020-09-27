@@ -1,6 +1,7 @@
-import Vue from 'vue'
+import { defineComponent } from 'vue'
+import {EditYaml} from './editor'
 
-export const Edit = Vue.extend({
+export const Edit = defineComponent({
   props: ['content'],
   template: `
 <edit-yaml v-model="current"></edit-yaml>
@@ -9,10 +10,13 @@ export const Edit = Vue.extend({
     return {
       current: this.content
     }
+  },
+  components: {
+    EditYaml
   }
 })
 
-export const Create = Vue.extend({
+export const Create = defineComponent({
   props: ['content'],
   template: `
   <form>
@@ -28,5 +32,8 @@ export const Create = Vue.extend({
       current: this.content,
       key: ''
     }
+  },
+  components: {
+    EditYaml
   }
 })

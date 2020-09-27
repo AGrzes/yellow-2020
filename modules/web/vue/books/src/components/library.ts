@@ -3,11 +3,11 @@ import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { listRelations, itemRelations } from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
 
-export const LibraryList = Vue.extend({
+export const LibraryList = defineComponent({
   props: {
     list: Object
   },
@@ -44,7 +44,7 @@ export const LibraryList = Vue.extend({
   }
 })
 
-export const LibraryDetails = Vue.extend({
+export const LibraryDetails = defineComponent({
   props: {
     item: Object
   },

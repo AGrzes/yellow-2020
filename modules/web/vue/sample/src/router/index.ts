@@ -1,13 +1,11 @@
 import { bookRoutes} from '@agrzes/yellow-2020-web-vue-books'
 import { navigationMenu, NotificationsList } from '@agrzes/yellow-2020-web-vue-components'
-import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
+import { createWebHistory, RouteRecordRaw, createRouter } from 'vue-router'
 import { uiModel } from '../uiModel'
-Vue.use(VueRouter)
 
 async function router() {
     const model = await uiModel()
-    const routes: RouteConfig[] = [{
+    const routes: RouteRecordRaw[] = [{
         name: 'references',
         path: '/references',
         component: {
@@ -35,8 +33,8 @@ async function router() {
         },
         children: [...bookRoutes]
       }]
-    return new VueRouter({
-        mode: 'history',
+    return createRouter({
+        history: createWebHistory(),
         routes,
         linkActiveClass: 'active'
     })

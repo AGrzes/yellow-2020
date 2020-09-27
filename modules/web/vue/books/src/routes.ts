@@ -1,11 +1,11 @@
 import { Author, Book, Genre, Library, Series, Reading, Plan } from '@agrzes/yellow-2020-common-books'
 import { registerItemRoute, registerListRoute, itemComponent, listComponent } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
-import { RouteConfig } from 'vue-router'
+import { RouteRecordRaw } from 'vue-router'
 import { AuthorDetails, AuthorList, BookDetails, BooksList, GenreDetails,
   GenreList, LibraryDetails, LibraryList, SeriesDetails, SeriesList, ReadingDetails, ReadingList, PlanDetails, PlanList } from './components'
 
-export const bookRoutes: RouteConfig[] = [{
+export const bookRoutes: RouteRecordRaw[] = [{
   path: `book/:key`,
   name: `bookDetails`,
   component: itemComponent(Book, BookDetails)

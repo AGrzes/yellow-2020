@@ -4,11 +4,11 @@ import { CreateButton, DeleteButton, DetailsButton,
   TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { listRelations, itemRelations} from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
 
-export const EditBook = Vue.extend({
+export const EditBook = defineComponent({
   props: ['content'],
   template: `
 <form>
@@ -47,7 +47,7 @@ export const EditBook = Vue.extend({
 })
 registerEditor(Book, EditBook)
 
-export const PlanReading = Vue.extend({
+export const PlanReading = defineComponent({
   props: ['content'],
   template: `
 <form>
@@ -68,7 +68,7 @@ export const PlanReading = Vue.extend({
   components: {SingleRelationEditor, DateEditor}
 })
 
-export const PlanReadingButton = Vue.extend({
+export const PlanReadingButton = defineComponent({
   props: {
     item: Object
   },
@@ -115,7 +115,7 @@ export const PlanReadingButton = Vue.extend({
   }
 })
 
-export const BooksList = Vue.extend({
+export const BooksList = defineComponent({
   props: {
     list: Object
   },
@@ -156,7 +156,7 @@ export const BooksList = Vue.extend({
   }
 })
 
-export const BooksTable = Vue.extend({
+export const BooksTable = defineComponent({
   props: {
     list: Object
   },
@@ -184,7 +184,7 @@ export const BooksTable = Vue.extend({
   }
 })
 
-export const BooksCards = Vue.extend({
+export const BooksCards = defineComponent({
   props: {
     list: Object
   },
@@ -208,7 +208,7 @@ export const BooksCards = Vue.extend({
   }
 })
 
-export const BookDetails = Vue.extend({
+export const BookDetails = defineComponent({
   props: {
     item: Object
   },

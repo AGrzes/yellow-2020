@@ -60,10 +60,10 @@ export async function modelState<R>(model: Model2):
         },
         mutations: {
           entities(state, entities) {
-            Vue.set(state, 'entities', entities)
+            state.entities = entities
           },
           relations(state, relations) {
-            Vue.set(state, 'relations', relations)
+            state.relations = relations
           }
         },
         actions: {

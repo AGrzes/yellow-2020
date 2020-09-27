@@ -1,9 +1,9 @@
 import '@fortawesome/fontawesome-free/css/all.css'
 import _ from 'lodash'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import {mapState} from 'vuex'
 
-export const NotificationItem = Vue.extend({
+export const NotificationItem = defineComponent({
   props: {
     notification: Object
   },
@@ -40,7 +40,7 @@ export const NotificationItem = Vue.extend({
   }
 })
 
-export const NotificationsList = Vue.extend({
+export const NotificationsList = defineComponent({
   template: `
 <div class="fixed-top d-flex flex-column align-items-center">
   <notification-item :key="key" v-for="(notification, key) in notifications" :notification="notification"></notification-item>

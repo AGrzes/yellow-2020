@@ -70,9 +70,9 @@ module.exports = {
     resolve: {
         symlinks: false,
         alias: {
-            'vue$': path.resolve('../node_modules/vue/dist/vue.esm.js'),
-            'vuex': path.resolve('../node_modules/vuex/dist/vuex.esm.js'),
-            'vue-router': path.resolve('../node_modules/vue-router/dist/vue-router.esm.js'),
+            'vue$': path.resolve('../node_modules/vue/dist/vue.esm-browser.js'),
+            'vuex': path.resolve('../node_modules/vuex/dist/vuex.esm-browser.js'),
+            'vue-router': path.resolve('../node_modules/vue-router/dist/vue-router.esm-browser.js'),
             'jquery': path.resolve('node_modules/jquery/dist/jquery.min.js'),
             'bootstrap': path.resolve('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'),
             'lodash': path.resolve('node_modules/lodash'),

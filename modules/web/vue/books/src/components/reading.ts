@@ -5,11 +5,11 @@ import { CreateButton, DeleteButton, DetailsButton,
   NestedEntityEditor,NumberEditor, ChoiceEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
 import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
 import _ from 'lodash'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { listSingleRelations, itemSingleRelations, itemSingleRelationResolver } from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
 
-export const FinishReadingButton = Vue.extend({
+export const FinishReadingButton = defineComponent({
   props: {
     item: Object
   },
@@ -42,7 +42,7 @@ export const FinishReadingButton = Vue.extend({
   }
 })
 
-export const ReadingProgress = Vue.extend({
+export const ReadingProgress = defineComponent({
   props: ['content'],
   template: `
 <form>
@@ -57,7 +57,7 @@ export const ReadingProgress = Vue.extend({
   components: {NumberEditor}
 })
 
-export const ReadingProgressButton = Vue.extend({
+export const ReadingProgressButton = defineComponent({
   props: {
     item: Object
   },
@@ -107,7 +107,7 @@ export const ReadingProgressButton = Vue.extend({
   }
 })
 
-export const ReadingList = Vue.extend({
+export const ReadingList = defineComponent({
   props: {
     list: Object
   },
@@ -117,7 +117,7 @@ export const ReadingList = Vue.extend({
     <span class="d-flex align-items-center">
       <span class="mr-1">
         <small>{{item.startDate}}</small>
-        {{book[key].title}}
+        {{book[key] && book[key].title}}
       </span>
       <span class="badge badge-pill badge-primary mr-auto">
         {{item.status}}
@@ -144,7 +144,7 @@ export const ReadingList = Vue.extend({
   }
 })
 
-export const ReadingDetails = Vue.extend({
+export const ReadingDetails = defineComponent({
   props: {
     item: Object
   },
@@ -153,7 +153,7 @@ export const ReadingDetails = Vue.extend({
   <div class="card-body">
     <h1>
       <small>{{item.startDate}}</small>
-      {{book.title}}
+      {{book && book.title}}
       <span class="badge badge-pill badge-primary">
         {{item.status}}
       </span>
@@ -193,7 +193,7 @@ export const ReadingDetails = Vue.extend({
   }
 })
 
-export const EditReading = Vue.extend({
+export const EditReading = defineComponent({
   props: ['content'],
   template: `
 <form>

@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Location } from 'vue-router'
+
 
 interface ItemRouteEntry {
   type: string
@@ -20,7 +20,7 @@ export function registerItemRoute(type: string, name: string,
   })
 }
 
-export function resolveItemRoute(type: string, id: string, selector: string = 'default'): Location {
+export function resolveItemRoute(type: string, id: string, selector: string = 'default') {
   const entry = _.find(itemRouteRegistry, (e) => e.type === type && _.includes(e.selectors, selector))
   if (entry) {
     return {
@@ -47,7 +47,7 @@ export function registerListRoute(type: string, name: string, selectors: string[
   })
 }
 
-export function resolveListRoute(type: string, selector: string = 'default'): Location {
+export function resolveListRoute(type: string, selector: string = 'default') {
   const entry = _.find(listRouteRegistry, (e) => e.type === type && _.includes(e.selectors, selector))
   if (entry) {
     return {
