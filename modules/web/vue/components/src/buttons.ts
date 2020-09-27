@@ -32,7 +32,7 @@ export const DetailsButton = defineComponent({
     selector: String
   },
   template: `
-<router-link :to="route" class="btn btn-outline-info" role="button" title="Details">
+<router-link v-if="route" :to="route" class="btn btn-outline-info" role="button" title="Details">
   <slot>
     <i class="fas fa-eye"></i>
   </slot>
@@ -40,7 +40,8 @@ export const DetailsButton = defineComponent({
   `,
   computed: {
     route() {
-      return resolveItemRoute(this.item.constructor.typeTag, this.item.constructor.key(this.item), this.selector)
+      const key = this.item.constructor.key(this.item)
+      return key ? resolveItemRoute(this.item.constructor.typeTag, key, this.selector) : null
     }
   }
 })
