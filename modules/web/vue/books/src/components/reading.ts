@@ -117,7 +117,7 @@ export const ReadingList = defineComponent({
     <span class="d-flex align-items-center">
       <span class="mr-1">
         <small>{{item.startDate}}</small>
-        {{book[key].title}}
+        {{book[key] && book[key].title}}
       </span>
       <span class="badge badge-pill badge-primary mr-auto">
         {{item.status}}
@@ -153,7 +153,7 @@ export const ReadingDetails = defineComponent({
   <div class="card-body">
     <h1>
       <small>{{item.startDate}}</small>
-      {{book.title}}
+      {{book && book.title}}
       <span class="badge badge-pill badge-primary">
         {{item.status}}
       </span>
