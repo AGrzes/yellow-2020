@@ -1,7 +1,7 @@
 import { Library } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton} from '@agrzes/yellow-2020-web-vue-components'
-import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
+import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
 import { listRelations, itemRelations } from '@agrzes/yellow-2020-web-vue-state'

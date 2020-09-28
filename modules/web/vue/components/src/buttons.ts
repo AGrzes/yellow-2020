@@ -1,4 +1,4 @@
-import {resolveItemRoute, resolveListRoute} from '@agrzes/yellow-2020-web-vue-router'
+import {resolveItemRoute, resolveListRoute} from '@agrzes/yellow-2020-web-vue-plugin'
 import '@fortawesome/fontawesome-free/css/all.css'
 import _ from 'lodash'
 import Vue, {defineComponent} from 'vue'

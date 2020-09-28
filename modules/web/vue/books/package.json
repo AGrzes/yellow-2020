@@ -39,7 +39,8 @@
     "@agrzes/yellow-2020-common-model": "^1.1.8",
     "@agrzes/yellow-2020-web-vue-components": "^1.1.8",
     "@agrzes/yellow-2020-web-vue-router": "^1.1.6",
-    "@agrzes/yellow-2020-web-vue-state": "^1.1.8"
+    "@agrzes/yellow-2020-web-vue-state": "^1.1.8",
+    "@agrzes/yellow-2020-web-vue-plugin": "^1.1.8"
   },
   "files": [
     "/package.json",

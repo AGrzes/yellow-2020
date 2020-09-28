@@ -1,5 +1,6 @@
 import { Author, Book, Genre, Library, Series, Reading, Plan } from '@agrzes/yellow-2020-common-books'
-import { registerItemRoute, registerListRoute, itemComponent, listComponent } from '@agrzes/yellow-2020-web-vue-router'
+import { itemComponent, listComponent } from '@agrzes/yellow-2020-web-vue-router'
+import { registerItemRoute, registerListRoute } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { RouteRecordRaw } from 'vue-router'
 import { AuthorDetails, AuthorList, BookDetails, BooksList, GenreDetails,
