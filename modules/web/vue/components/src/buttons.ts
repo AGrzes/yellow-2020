@@ -2,7 +2,6 @@ import {registry} from '@agrzes/yellow-2020-web-vue-plugin'
 import '@fortawesome/fontawesome-free/css/all.css'
 import _ from 'lodash'
 import Vue, {defineComponent} from 'vue'
-import { resolveEditor } from './editorRegistry'
 import { modal } from './modal'
 
 export const DeleteButton = defineComponent({
@@ -107,7 +106,7 @@ export const EditButton = defineComponent({
       const type = this.item.constructor
       const initialId = this.item.constructor.key(this.item)
       modal({
-        component: resolveEditor(type) as any,
+        component: registry.editorRegistry.resolveEditor(type) as any,
         parent: this.$root,
         title: 'Edit',
         props: {content: this.item},
@@ -154,7 +153,7 @@ export const CreateButton = defineComponent({
   methods: {
     async add() {
       modal({
-        component: resolveEditor(this.type) as any,
+        component: registry.editorRegistry.resolveEditor(this.type) as any,
         parent: this.$root,
         title: 'Create',
         props: {content: {}},
