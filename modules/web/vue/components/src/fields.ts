@@ -36,7 +36,7 @@ export const LongTextEditor = defineComponent({
   template: `
 <div class="form-group">
   <label>{{label}}</label>
-  <textarea type="text" class="form-control" v-model="item[property]"></textarea>
+  <textarea class="form-control" v-model="item[property]"></textarea>
 </div>
   `
 })
