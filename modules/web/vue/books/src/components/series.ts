@@ -33,15 +33,12 @@ export const SeriesList = defineComponent({
       </span>
     </span>
   </li>
-  <li class="list-group-item"><create-button :type="seriesType">Add</create-button></li>
+  <li class="list-group-item"><create-button :type="$models.book.Series">Add</create-button></li>
 </ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink
   },
   computed: {
-    seriesType() {
-      return Series
-    },
     ...listRelations(Series,{books: 'books', authors: 'author'})
   }
 })

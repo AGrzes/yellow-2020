@@ -28,15 +28,12 @@ export const GenreList = defineComponent({
       </span>
     </span>
   </li>
-  <li class="list-group-item"><create-button :type="genreType">Add</create-button></li>
+  <li class="list-group-item"><create-button :type="$models.book.Genre">Add</create-button></li>
 </ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton
   },
   computed: {
-    genreType() {
-      return Genre
-    },
     ...listRelations(Genre,{books: 'books'})
   }
 })

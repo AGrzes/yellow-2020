@@ -131,15 +131,12 @@ export const ReadingList = defineComponent({
       </span>
     </span>
   </li>
-  <li class="list-group-item"><create-button :type="readingType">Add</create-button></li>
+  <li class="list-group-item"><create-button :type="$models.book.Reading">Add</create-button></li>
 </ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, FinishReadingButton, ReadingProgressButton
   },
   computed: {
-    readingType() {
-      return Reading
-    },
     ...listSingleRelations(Reading,{book: 'book'})
   }
 })
@@ -198,7 +195,7 @@ export const EditReading = defineComponent({
   template: `
 <form>
   <date-editor label="Start Date" property="startDate" :item="current"></date-editor>
-  <single-relation-editor label="Book" property="book" :entity="bookType" :item="current"></single-relation-editor>
+  <single-relation-editor label="Book" property="book" :entity="$models.book.Book" :item="current"></single-relation-editor>
   <choice-editor label="Status" property="status" :item="current" :choices="{planned:'Planned',inProgress:'In Progress',finished:'Finished',abandoned:'Abandoned'}"></choice-editor>
   <nested-entity-editor label="Progress" property="progress" :item="current" v-slot="x">
     <date-editor label="Date" property="date" :item="x.entity"></date-editor>
@@ -210,11 +207,6 @@ export const EditReading = defineComponent({
   data() {
     return {
       current: _.cloneDeep(this.$props.content)
-    }
-  },
-  computed: {
-    bookType() {
-      return Book
     }
   },
   components: {SingleRelationEditor, TextEditor, DateEditor, NestedEntityEditor, NumberEditor, ChoiceEditor}
