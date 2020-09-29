@@ -32,7 +32,9 @@
   },
   "author": "Grzegorz Abramczyk <abramczykg@gmail.com>",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "@agrzes/yellow-2020-common-model": "^1.1.8"
+  },
   "files": [
     "/package.json",
     "/package-lock.json",
