@@ -1,4 +1,4 @@
-import { bookRoutes} from '@agrzes/yellow-2020-web-vue-books'
+import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import { navigationMenu, NotificationsList } from '@agrzes/yellow-2020-web-vue-components'
 import { createWebHistory, RouteRecordRaw, createRouter } from 'vue-router'
 import { uiModel } from '../uiModel'
@@ -31,7 +31,7 @@ async function router() {
                navigationMenu, NotificationsList
            }
         },
-        children: [...bookRoutes]
+        children: [...registry.routerRegistry.routes]
       }]
     return createRouter({
         history: createWebHistory(),
