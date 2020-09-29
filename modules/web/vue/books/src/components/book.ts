@@ -1,7 +1,7 @@
 import { Author, Book, Genre, Library, Series, Reading } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
-  TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
+  TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -45,7 +45,6 @@ export const EditBook = defineComponent({
   },
   components: {RelationEditor,RelationEntityEditor, TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor}
 })
-registerEditor(Book, EditBook)
 
 export const PlanReading = defineComponent({
   props: ['content'],

@@ -1,6 +1,6 @@
 import { Reading, Plan, Book } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
-  DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
+  DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -170,4 +170,4 @@ export const EditPlan = defineComponent({
   },
   components: {RelationEditor, DateEditor, ChoiceEditor}
 })
-registerEditor(Plan, EditPlan)
+
