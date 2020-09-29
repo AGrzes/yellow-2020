@@ -82,6 +82,7 @@ module.exports = {
             '@agrzes/yellow-2020-web-vue-components': path.resolve('../components'),
             '@agrzes/yellow-2020-web-vue-router': path.resolve('../router'),
             '@agrzes/yellow-2020-web-vue-state': path.resolve('../state'),
+            '@agrzes/yellow-2020-web-vue-plugin': path.resolve('../plugin'),
         }
     }
 }

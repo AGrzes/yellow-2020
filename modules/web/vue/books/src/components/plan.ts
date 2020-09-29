@@ -1,7 +1,7 @@
 import { Reading, Plan, Book } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
-  DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
-import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
+  DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
+import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
 import { listRelations, itemRelations, itemRelationResolver } from '@agrzes/yellow-2020-web-vue-state'
@@ -140,7 +140,7 @@ export const PlanDetails = defineComponent({
   },
   methods: {
     deleted() {
-      this.$router.push(resolveListRoute('plan'))
+      this.$router.push(registry.routerRegistry.resolveListRoute('plan'))
     }
   },
   computed: {
@@ -170,4 +170,4 @@ export const EditPlan = defineComponent({
   },
   components: {RelationEditor, DateEditor, ChoiceEditor}
 })
-registerEditor(Plan, EditPlan)
+

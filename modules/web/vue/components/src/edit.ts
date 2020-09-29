@@ -1,4 +1,5 @@
 import { defineComponent } from 'vue'
+import {registry} from '@agrzes/yellow-2020-web-vue-plugin'
 import {EditYaml} from './editor'
 
 export const Edit = defineComponent({
@@ -15,6 +16,8 @@ export const Edit = defineComponent({
     EditYaml
   }
 })
+
+registry.editorRegistry.default = Edit
 
 export const Create = defineComponent({
   props: ['content'],

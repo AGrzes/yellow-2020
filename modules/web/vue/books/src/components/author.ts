@@ -1,8 +1,8 @@
 import { Author, Book, Series } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
-  TextEditor, LongTextEditor, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
-import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-router'
+  TextEditor, LongTextEditor} from '@agrzes/yellow-2020-web-vue-components'
+import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
 import { listRelations, itemRelations } from '@agrzes/yellow-2020-web-vue-state'
@@ -33,7 +33,6 @@ export const EditAuthor = defineComponent({
   },
   components: {RelationEditor, TextEditor, LongTextEditor}
 })
-registerEditor(Author, EditAuthor)
 
 export const AuthorList = defineComponent({
   props: {
@@ -104,7 +103,7 @@ export const AuthorDetails = defineComponent({
   },
   methods: {
     deleted() {
-      this.$router.push(resolveListRoute('author'))
+      this.$router.push(registry.routerRegistry.resolveListRoute('author'))
     }
   },
   computed: {
