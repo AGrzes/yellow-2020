@@ -2,7 +2,7 @@ import { Author, Book, Genre, Library, Series, Reading } from '@agrzes/yellow-20
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
   TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
-import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-plugin'
+import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
 import { listRelations, itemRelations} from '@agrzes/yellow-2020-web-vue-state'
@@ -248,7 +248,7 @@ export const BookDetails = defineComponent({
   },
   methods: {
     deleted() {
-      this.$router.push(resolveListRoute('book'))
+      this.$router.push(registry.routerRegistry.resolveListRoute('book'))
     }
   },
   computed: {

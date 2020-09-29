@@ -1,6 +1,6 @@
 import { Author, Book, Genre, Library, Series, Reading, Plan } from '@agrzes/yellow-2020-common-books'
 import { itemComponent, listComponent } from '@agrzes/yellow-2020-web-vue-router'
-import { registerItemRoute, registerListRoute } from '@agrzes/yellow-2020-web-vue-plugin'
+import { RouterRegistry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { RouteRecordRaw } from 'vue-router'
 import { AuthorDetails, AuthorList, BookDetails, BooksList, GenreDetails,
@@ -64,17 +64,22 @@ export const bookRoutes: RouteRecordRaw[] = [{
   component: listComponent(Plan, PlanList)
 }]
 
-registerItemRoute('book', 'bookDetails')
-registerItemRoute('author', 'authorDetails')
-registerItemRoute('library', 'libraryDetails')
-registerItemRoute('genre', 'genreDetails')
-registerItemRoute('series', 'seriesDetails')
-registerItemRoute('reading', 'readingDetails')
-registerItemRoute('plan', 'planDetails')
-registerListRoute('book', 'bookList')
-registerListRoute('author', 'authorList')
-registerListRoute('library', 'libraryList')
-registerListRoute('genre', 'genreList')
-registerListRoute('series', 'seriesList')
-registerListRoute('reading', 'readingList')
-registerListRoute('plan', 'planList')
+export function registerRoutes(registry: RouterRegistry): void {
+  registry.registerItemRoute('book', 'bookDetails')
+  registry.registerItemRoute('author', 'authorDetails')
+  registry.registerItemRoute('library', 'libraryDetails')
+  registry.registerItemRoute('genre', 'genreDetails')
+  registry.registerItemRoute('series', 'seriesDetails')
+  registry.registerItemRoute('reading', 'readingDetails')
+  registry.registerItemRoute('plan', 'planDetails')
+  registry.registerListRoute('book', 'bookList')
+  registry.registerListRoute('author', 'authorList')
+  registry.registerListRoute('library', 'libraryList')
+  registry.registerListRoute('genre', 'genreList')
+  registry.registerListRoute('series', 'seriesList')
+  registry.registerListRoute('reading', 'readingList')
+  registry.registerListRoute('plan', 'planList')
+  _.forEach(bookRoutes,(route) => registry.route(route))
+}
+
+

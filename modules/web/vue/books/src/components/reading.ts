@@ -3,7 +3,7 @@ import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, 
   TextEditor, DateEditor, SingleRelationEditor,
   NestedEntityEditor,NumberEditor, ChoiceEditor, modal, registerEditor} from '@agrzes/yellow-2020-web-vue-components'
-import { resolveListRoute } from '@agrzes/yellow-2020-web-vue-plugin'
+import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
 import { listSingleRelations, itemSingleRelations, itemSingleRelationResolver } from '@agrzes/yellow-2020-web-vue-state'
@@ -185,7 +185,7 @@ export const ReadingDetails = defineComponent({
   },
   methods: {
     deleted() {
-      this.$router.push(resolveListRoute('reading'))
+      this.$router.push(registry.routerRegistry.resolveListRoute('reading'))
     }
   },
   computed: {
