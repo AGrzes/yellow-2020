@@ -93,15 +93,12 @@ export const PlanList = defineComponent({
       </span>
     </span>
   </li>
-  <li class="list-group-item"><create-button :type="planType">Add</create-button></li>
+  <li class="list-group-item"><create-button :type="$models.book.Plan">Add</create-button></li>
 </ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, PlanRolloverButton
   },
   computed: {
-    planType() {
-      return Plan
-    },
     ...listRelations(Plan,{items: 'items'})
   }
 })
@@ -155,17 +152,12 @@ export const EditPlan = defineComponent({
   <date-editor label="Start Date" property="startDate" :item="current"></date-editor>
   <date-editor label="End Date" property="endDate" :item="current"></date-editor>
   <choice-editor label="Status" property="status" :item="current" :choices="{scheduled:'Scheduled',open:'Open',closed:'Closed'}"></choice-editor>
-  <relation-editor label="Items" property="items" :entity="readingType" :item="current"></relation-editor>
+  <relation-editor label="Items" property="items" :entity="$models.book.Reading" :item="current"></relation-editor>
 </form>
   `,
   data() {
     return {
       current: _.cloneDeep(this.$props.content)
-    }
-  },
-  computed: {
-    readingType() {
-      return Reading
     }
   },
   components: {RelationEditor, DateEditor, ChoiceEditor}

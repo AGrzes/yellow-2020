@@ -131,15 +131,12 @@ export const ReadingList = defineComponent({
       </span>
     </span>
   </li>
-  <li class="list-group-item"><create-button :type="readingType">Add</create-button></li>
+  <li class="list-group-item"><create-button :type="$models.book.Reading">Add</create-button></li>
 </ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, FinishReadingButton, ReadingProgressButton
   },
   computed: {
-    readingType() {
-      return Reading
-    },
     ...listSingleRelations(Reading,{book: 'book'})
   }
 })

@@ -14,21 +14,13 @@ export const EditAuthor = defineComponent({
 <form>
   <text-editor label="Name" property="name" :item="current"></text-editor>
   <long-text-editor label="Description" property="description" :item="current"></long-text-editor>
-  <relation-editor label="Books" property="books" :entity="bookType" :item="current"></relation-editor>
-  <relation-editor label="Series" property="series" :entity="seriesType" :item="current"></relation-editor>
+  <relation-editor label="Books" property="books" :entity="$models.book.Book" :item="current"></relation-editor>
+  <relation-editor label="Series" property="series" :entity="$models.book.Series" :item="current"></relation-editor>
 </form>
   `,
   data() {
     return {
       current: _.cloneDeep(this.$props.content)
-    }
-  },
-  computed: {
-    bookType() {
-      return Book
-    },  
-    seriesType() {
-      return Series
     }
   },
   components: {RelationEditor, TextEditor, LongTextEditor}

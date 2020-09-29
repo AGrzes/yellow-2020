@@ -31,15 +31,12 @@ export const LibraryList = defineComponent({
       </span>
     </span>
   </li>
-  <li class="list-group-item"><create-button :type="libraryType">Add</create-button></li>
+  <li class="list-group-item"><create-button :type="$models.book.Library">Add</create-button></li>
 </ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton
   },
   computed: {
-    libraryType() {
-      return Library
-    },
     ...listRelations(Library,{entries: 'entries'})
   }
 })

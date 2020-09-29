@@ -14,10 +14,10 @@ export const EditBook = defineComponent({
 <form>
   <text-editor label="Title" property="title" :item="current"></text-editor>
   <long-text-editor label="Description" property="description" :item="current"></long-text-editor>
-  <relation-editor label="Author" property="author" :entity="authorType" :item="current"></relation-editor>
-  <relation-editor label="Genre" property="genre" :entity="genreType" :item="current"></relation-editor>
-  <relation-editor label="Series" property="series" :entity="seriesType" :item="current"></relation-editor>
-  <relation-entity-editor label="Libraries" property="libraries" :entity="libraryType" :item="current" nestedProperty="library" v-slot="x">
+  <relation-editor label="Author" property="author" :entity="$models.book.Author" :item="current"></relation-editor>
+  <relation-editor label="Genre" property="genre" :entity="$models.book.Genre" :item="current"></relation-editor>
+  <relation-editor label="Series" property="series" :entity="$models.book.Series" :item="current"></relation-editor>
+  <relation-entity-editor label="Libraries" property="libraries" :entity="$models.book.Library" :item="current" nestedProperty="library" v-slot="x">
     <text-editor label="Url" property="url" :item="x.entity"></text-editor>
     <currency-editor label="Price" property="price" :item="x.entity"></currency-editor>
     <boolean-editor label="Owned" property="owned" :item="x.entity"></boolean-editor>
@@ -29,20 +29,6 @@ export const EditBook = defineComponent({
       current: _.cloneDeep(this.$props.content)
     }
   },
-  computed: {
-    authorType() {
-      return Author
-    },
-    genreType() {
-      return Genre
-    },    
-    seriesType() {
-      return Series
-    },    
-    libraryType() {
-      return Library
-    }
-  },
   components: {RelationEditor,RelationEntityEditor, TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor}
 })
 
@@ -51,14 +37,9 @@ export const PlanReading = defineComponent({
   template: `
 <form>
   <date-editor label="Start Date" property="startDate" :item="current"></date-editor>
-  <single-relation-editor label="Book" property="book" :entity="bookType" :item="current"></single-relation-editor>
+  <single-relation-editor label="Book" property="book" :entity="$models.book.Book" :item="current"></single-relation-editor>
 </form>
   `,
-  computed: {
-    bookType() {
-      return Book
-    }
-  },
   data() {
     return {
       current: _.cloneDeep(this.$props.content)
@@ -142,7 +123,7 @@ export const BooksList = defineComponent({
       </span>
     </span>
   </li>
-  <li class="list-group-item"><create-button :type="bookType">Add</create-button></li>
+  <li class="list-group-item"><create-button :type="$models.book.Book">Add</create-button></li>
 </ul>`,
   components: {
     DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, PlanReadingButton
