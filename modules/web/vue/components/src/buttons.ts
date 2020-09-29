@@ -1,4 +1,4 @@
-import {resolveItemRoute, resolveListRoute} from '@agrzes/yellow-2020-web-vue-plugin'
+import {registry} from '@agrzes/yellow-2020-web-vue-plugin'
 import '@fortawesome/fontawesome-free/css/all.css'
 import _ from 'lodash'
 import Vue, {defineComponent} from 'vue'
@@ -41,7 +41,7 @@ export const DetailsButton = defineComponent({
   computed: {
     route() {
       const key = this.item.constructor.key(this.item)
-      return key ? resolveItemRoute(this.item.constructor.typeTag, key, this.selector) : null
+      return key ? registry.routerRegistry.resolveItemRoute(this.item.constructor.typeTag, key, this.selector) : null
     }
   }
 })
@@ -60,7 +60,7 @@ export const ListButton = defineComponent({
   `,
   computed: {
     route() {
-      return resolveListRoute(this.type, this.selector)
+      return registry.routerRegistry.resolveListRoute(this.type, this.selector)
     }
   }
 })
@@ -82,7 +82,7 @@ export const DetailsLink = defineComponent({
       return this.item.constructor.key(this.item)
     },
     route() {
-      return resolveItemRoute(this.item.constructor.typeTag, this.id, this.selector)
+      return registry.routerRegistry.resolveItemRoute(this.item.constructor.typeTag, this.id, this.selector)
     },
     label(): string {
       return this.item.constructor.label(this.item)
