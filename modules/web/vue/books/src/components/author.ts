@@ -7,17 +7,18 @@ import _ from 'lodash'
 import { defineComponent } from 'vue'
 import { listRelations, itemRelations } from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
+import { h } from 'vue'
 
 export const EditAuthor = defineComponent({
   props: ['content'],
-  template: `
-<form>
-  <text-editor label="Name" property="name" :item="current"></text-editor>
-  <long-text-editor label="Description" property="description" :item="current"></long-text-editor>
-  <relation-editor label="Books" property="books" :entity="$models.book.Book" :item="current"></relation-editor>
-  <relation-editor label="Series" property="series" :entity="$models.book.Series" :item="current"></relation-editor>
-</form>
-  `,
+  render() {
+    return h('form',null,[
+      h(TextEditor,{label:'Name',property:'name',item: this.current}),
+      h(LongTextEditor,{label:'Description',property:'description',item: this.current}),
+      h(RelationEditor,{label:'Books',property:'books',item: this.current, entity: this.$models.book.Book}),
+      h(RelationEditor,{label:'Series',property:'series',item: this.current, entity: this.$models.book.Series})
+    ])
+  },
   data() {
     return {
       current: _.cloneDeep(this.$props.content)
