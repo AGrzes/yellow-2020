@@ -1,23 +1,26 @@
 import { Author, Book, Series } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
-  DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
-  TextEditor, LongTextEditor} from '@agrzes/yellow-2020-web-vue-components'
+  DetailsLink, EditButton, ListButton, RelationEditor, 
+  TextEditor, LongTextEditor, EditorDescriptor, renderForm} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
 import { listRelations, itemRelations } from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
-import { h } from 'vue'
+
+
+const authorEditorDefinition: EditorDescriptor[] = [
+  {component: TextEditor ,label:'Name',property:'name'},
+  {component: LongTextEditor ,label:'Description',property:'description'},
+  {component: RelationEditor ,label:'Books',property:'books', entity: Book},
+  {component: RelationEditor ,label:'Series',property:'series', entity: Series},
+]
+
 
 export const EditAuthor = defineComponent({
   props: ['content'],
   render() {
-    return h('form',null,[
-      h(TextEditor,{label:'Name',property:'name',item: this.current}),
-      h(LongTextEditor,{label:'Description',property:'description',item: this.current}),
-      h(RelationEditor,{label:'Books',property:'books',item: this.current, entity: this.$models.book.Book}),
-      h(RelationEditor,{label:'Series',property:'series',item: this.current, entity: this.$models.book.Series})
-    ])
+    return renderForm(this, authorEditorDefinition)
   },
   data() {
     return {
