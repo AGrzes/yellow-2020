@@ -1,31 +1,55 @@
-import { Book, Reading } from '@agrzes/yellow-2020-common-books'
+import { Author, Book, Genre, Library, Reading, Series } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
   TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
-import { defineComponent, h } from 'vue'
+import { DefineComponent, defineComponent, h } from 'vue'
 import { listRelations, itemRelations} from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
+
+interface EditorDescriptor {
+  component: DefineComponent
+  label: string,
+  property: string
+  nestedProperty?: string
+  entity?: Entity<unknown>
+  children?: EditorDescriptor[]
+}
+
+const bookEditorDefinition: EditorDescriptor[] = [
+  {component: TextEditor ,label:'Title',property:'title'},
+  {component: LongTextEditor ,label:'Description',property:'description'},
+  {component: RelationEditor ,label:'Author',property:'author', entity: Author},
+  {component: RelationEditor ,label:'Genre',property:'genre', entity: Genre},
+  {component: RelationEditor ,label:'Series',property:'series', entity: Series},
+  {component: RelationEntityEditor ,label:'Libraries',property:'libraries', 
+    entity: Library, nestedProperty: 'library', children: [
+      {component: TextEditor ,label:'Url',property:'url'},
+      {component: CurrencyEditor ,label:'Price',property:'price'},
+      {component: BooleanEditor ,label:'Owned',property:'owned'}
+    ]},
+]
+
+function renderEditor(instance: any,{component,label,property,entity,nestedProperty,children}: EditorDescriptor) {
+  return h(component,{label,property,item: instance, entity, nestedProperty}, children ? 
+    {
+      default: ({entity:item}) => (_.map(children, (childEditor) => renderEditor(item,childEditor)))
+    }
+    : null)
+}
+
+function renderForm(instance: any, editors: EditorDescriptor[]) {
+  return h('form',null,[
+    _.map(editors, (editor) => renderEditor(instance.current,editor))
+  ])
+}
+
 
 export const EditBook = defineComponent({
   props: ['content'],
   render() {
-    return h('form',null,[
-      h(TextEditor,{label:'Title',property:'title',item: this.current}),
-      h(LongTextEditor,{label:'Description',property:'description',item: this.current}),
-      h(RelationEditor,{label:'Author',property:'author',item: this.current, entity: this.$models.book.Author}),
-      h(RelationEditor,{label:'Genre',property:'genre',item: this.current, entity: this.$models.book.Author}),
-      h(RelationEditor,{label:'Series',property:'series',item: this.current, entity: this.$models.book.Series}),
-      h(RelationEntityEditor,{label:'Libraries',libraries:'series',item: this.current, 
-        entity: this.$models.book.Library,nestedProperty: 'library'},{
-          default: ({entity:item}) => ([
-            h(TextEditor,{label:'Url',property:'url',item}),
-            h(CurrencyEditor,{label:'Price',property:'price',item}),
-            h(BooleanEditor,{label:'Owned',property:'owned',item})
-          ])
-        })
-      ])
+    return renderForm(this, bookEditorDefinition)
   },
   data() {
     return {
