@@ -4,7 +4,7 @@ import { CreateButton, DeleteButton, DetailsButton,
   TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, modal, EditorDescriptor, renderForm} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
-import { DefineComponent, defineComponent, h } from 'vue'
+import { defineComponent} from 'vue'
 import { listRelations, itemRelations} from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
 
