@@ -1,29 +1,32 @@
-import { Author, Book, Genre, Library, Series, Reading } from '@agrzes/yellow-2020-common-books'
+import { Book, Reading } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
   TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
-import { defineComponent } from 'vue'
+import { defineComponent, h } from 'vue'
 import { listRelations, itemRelations} from '@agrzes/yellow-2020-web-vue-state'
 import { Entity} from '@agrzes/yellow-2020-common-model'
 
 export const EditBook = defineComponent({
   props: ['content'],
-  template: `
-<form>
-  <text-editor label="Title" property="title" :item="current"></text-editor>
-  <long-text-editor label="Description" property="description" :item="current"></long-text-editor>
-  <relation-editor label="Author" property="author" :entity="$models.book.Author" :item="current"></relation-editor>
-  <relation-editor label="Genre" property="genre" :entity="$models.book.Genre" :item="current"></relation-editor>
-  <relation-editor label="Series" property="series" :entity="$models.book.Series" :item="current"></relation-editor>
-  <relation-entity-editor label="Libraries" property="libraries" :entity="$models.book.Library" :item="current" nestedProperty="library" v-slot="x">
-    <text-editor label="Url" property="url" :item="x.entity"></text-editor>
-    <currency-editor label="Price" property="price" :item="x.entity"></currency-editor>
-    <boolean-editor label="Owned" property="owned" :item="x.entity"></boolean-editor>
-  </relation-entity-editor>
-</form>
-  `,
+  render() {
+    return h('form',null,[
+      h(TextEditor,{label:'Title',property:'title',item: this.current}),
+      h(LongTextEditor,{label:'Description',property:'description',item: this.current}),
+      h(RelationEditor,{label:'Author',property:'author',item: this.current, entity: this.$models.book.Author}),
+      h(RelationEditor,{label:'Genre',property:'genre',item: this.current, entity: this.$models.book.Author}),
+      h(RelationEditor,{label:'Series',property:'series',item: this.current, entity: this.$models.book.Series}),
+      h(RelationEntityEditor,{label:'Libraries',libraries:'series',item: this.current, 
+        entity: this.$models.book.Library,nestedProperty: 'library'},{
+          default: ({entity:item}) => ([
+            h(TextEditor,{label:'Url',property:'url',item}),
+            h(CurrencyEditor,{label:'Price',property:'price',item}),
+            h(BooleanEditor,{label:'Owned',property:'owned',item})
+          ])
+        })
+      ])
+  },
   data() {
     return {
       current: _.cloneDeep(this.$props.content)
