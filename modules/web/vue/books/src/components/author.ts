@@ -1,7 +1,7 @@
 import { Author, Book, Series } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, 
-  TextEditor, LongTextEditor, EditorDescriptor, renderForm} from '@agrzes/yellow-2020-web-vue-components'
+  TextEditor, LongTextEditor, EditorDescriptor, renderForm, RelationSection} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -70,20 +70,8 @@ export const AuthorDetails = defineComponent({
 <div class="card h-100" v-if="item">
   <div class="card-body">
     <h1>{{item.name}}</h1>
-    <h2>Books</h2>
-    <ul>
-      <li v-for="book in books">
-        <details-link :item="book">{{book.title}}</details-link>
-      </li>
-    </ul>
-    <template v-if="series">
-      <h2>Series</h2>
-      <ul>
-        <li v-for="serie in series">
-          <details-link :item="serie">{{serie.name}}</details-link>
-        </li>
-      </ul>
-    </template>
+    <relation-section :relation="books" label="Books"></relation-section>
+    <relation-section :relation="series" label="Series"></relation-section>
   </div>
   <div class="card-footer text-right">
     <edit-button :item="item">Edit</edit-button>
@@ -92,7 +80,7 @@ export const AuthorDetails = defineComponent({
   </div>
 </div>`,
   components: {
-    DeleteButton, EditButton, DetailsLink, ListButton
+    DeleteButton, EditButton, ListButton,RelationSection
   },
   methods: {
     deleted() {
