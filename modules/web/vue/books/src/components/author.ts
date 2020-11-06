@@ -39,7 +39,7 @@ export const AuthorList = defineComponent({
   <li v-for="(item,key) in list" class="list-group-item">
     <span class="d-flex">
       <span class="mr-auto">
-        {{item.name}}
+        <simple-value :item="item" property="name"></simple-value>
         <span class="badge badge-pill badge-primary" v-if="books[key]">{{books[key].length}}</span>
         <small v-for="serie in series[key]">
           <details-link :item="serie">{{serie.name}}</details-link>
@@ -53,7 +53,7 @@ export const AuthorList = defineComponent({
   <li class="list-group-item"><create-button :type="$models.book.Author">Add</create-button></li>
 </ul>`,
   components: {
-    CreateButton, DetailsLink, ListItemButtons
+    CreateButton, DetailsLink, ListItemButtons, SimpleValue
   },
   computed: {
     ...listRelations(Author,{books: 'books',series:'series'})
