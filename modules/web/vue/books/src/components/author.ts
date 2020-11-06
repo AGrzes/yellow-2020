@@ -2,7 +2,7 @@ import { Author, Book, Series } from '@agrzes/yellow-2020-common-books'
 import { CreateButton,
   DetailsLink, RelationEditor, 
   TextEditor, LongTextEditor, EditorDescriptor, renderForm, RelationSection, CardWrapper, 
-  DetailsButtons, ListItemButtons} from '@agrzes/yellow-2020-web-vue-components'
+  DetailsButtons, ListItemButtons, SimpleValue} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -67,7 +67,7 @@ export const AuthorDetails = defineComponent({
   template: `
 <card-wrapper v-if="item">
   <template v-slot:title>
-    {{item.name}}
+    <simple-value :item="item" property="name"></simple-value>
   </template>
   <template v-slot:default>
     <relation-section :relation="books" label="Books"></relation-section>
@@ -78,7 +78,7 @@ export const AuthorDetails = defineComponent({
   </template>
 </card-wrapper>`,
   components: {
-    RelationSection, CardWrapper, DetailsButtons
+    RelationSection, CardWrapper, DetailsButtons, SimpleValue
   },
   methods: {
     deleted() {

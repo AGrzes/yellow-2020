@@ -1,6 +1,17 @@
 import { defineComponent } from "vue"
 import { DetailsLink } from './buttons'
 
+export const SimpleValue = defineComponent({
+  props: {
+    item: Object,
+    property: String
+  },
+  template: `
+  {{item[property]}}
+  `,
+  components: {DetailsLink}
+})
+
 export const RelationSection = defineComponent({
   props: {
     relation: Object,
