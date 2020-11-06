@@ -8,7 +8,7 @@ export const RelationSection = defineComponent({
   },
   template: `
     <template v-if="relation">
-      <h2>{{label}}</h2>
+      <h6 class="card-subtitle">{{label}}</h6>
       <ul>
         <li v-for="item in relation">
           <details-link :item="item"></details-link>
@@ -19,3 +19,16 @@ export const RelationSection = defineComponent({
   components: {DetailsLink}
 })
 
+export const CardWrapper = defineComponent({
+  template: `
+  <div class="card h-100">
+    <div class="card-body">
+      <h5 v-if="$slots.title" class="card-title"><slot name="title"></slot></h5>
+      <slot></slot>
+    </div>
+    <div class="card-footer text-right">
+      <slot name="footer"></slot>
+    </div>
+  </div>
+  `
+})

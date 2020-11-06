@@ -1,7 +1,7 @@
 import { Author, Book, Series } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, 
-  TextEditor, LongTextEditor, EditorDescriptor, renderForm, RelationSection} from '@agrzes/yellow-2020-web-vue-components'
+  TextEditor, LongTextEditor, EditorDescriptor, renderForm, RelationSection, CardWrapper} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -67,20 +67,22 @@ export const AuthorDetails = defineComponent({
     item: Object
   },
   template: `
-<div class="card h-100" v-if="item">
-  <div class="card-body">
-    <h1>{{item.name}}</h1>
+<card-wrapper v-if="item">
+  <template v-slot:title>
+    {{item.name}}
+  </template>
+  <template v-slot:default>
     <relation-section :relation="books" label="Books"></relation-section>
     <relation-section :relation="series" label="Series"></relation-section>
-  </div>
-  <div class="card-footer text-right">
+  </template>
+  <template v-slot:footer>
     <edit-button :item="item">Edit</edit-button>
     <list-button type="author">Back</list-button>
     <delete-button :item="item" @delete="deleted">Delete</delete-button>
-  </div>
-</div>`,
+  </template>
+</card-wrapper>`,
   components: {
-    DeleteButton, EditButton, ListButton,RelationSection
+    DeleteButton, EditButton, ListButton,RelationSection, CardWrapper
   },
   methods: {
     deleted() {
