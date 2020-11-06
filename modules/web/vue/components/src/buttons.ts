@@ -183,3 +183,44 @@ export const CreateButton = defineComponent({
     }
   }
 })
+
+
+export const DetailsButtons = defineComponent({
+  props: {
+    item: Object,
+    parent: String
+  },
+  template: `
+  <edit-button :item="item">
+    Edit
+  </edit-button>
+  <list-button :type="parent">
+    Back
+  </list-button>
+  <delete-button :item="item" @delete="deleted">
+    Delete
+  </delete-button>
+  `,
+  methods: {
+    deleted() {
+      this.$router.push(registry.routerRegistry.resolveListRoute(this.parent))
+    }
+  },
+  components: {
+    DeleteButton, EditButton, ListButton
+  },
+})
+
+export const ListItemButtons = defineComponent({
+  props: {
+    item: Object
+  },
+  template: `
+  <edit-button :item="item"></edit-button>
+  <details-button :item="item"></details-button>
+  <delete-button :item="item"></delete-button>
+  `,
+  components: {
+    DeleteButton, EditButton, DetailsButton
+  },
+})
