@@ -29,6 +29,18 @@ export const RelationSection = defineComponent({
   `,
   components: {DetailsLink}
 })
+export const SmallLinks = defineComponent({
+  props: {
+    relation: Object
+  },
+  template: `
+  <small v-for="item in relation">
+    <details-link :item="item"></details-link>
+  </small>
+  `,
+  components: {DetailsLink}
+})
+
 export const CountBadge = defineComponent({
   props: {
     value: Object,
