@@ -35,7 +35,7 @@ export const SmallLinks = defineComponent({
     relation: Object
   },
   template: `
-  <small v-for="item in relation">
+  <small v-for="item in relation" class="mr-1">
     <details-link :item="item"></details-link>
   </small>
   `,
