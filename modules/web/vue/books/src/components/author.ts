@@ -1,8 +1,6 @@
 import { Author, Book, Series } from '@agrzes/yellow-2020-common-books'
-import { CreateButton,
-  DetailsLink, RelationEditor, 
-  TextEditor, LongTextEditor, EditorDescriptor, renderForm, RelationSection, CardWrapper, 
-  DetailsButtons, ListItemButtons, SimpleValue, CountBadge, SmallLinks} from '@agrzes/yellow-2020-web-vue-components'
+import { CreateButton, RelationEditor, TextEditor, LongTextEditor, EditorDescriptor, renderForm, RelationSection, CardWrapper, 
+  DetailsButtons, ListItemButtons, SimpleValue, CountBadge, SmallLinks, ListWrapper} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -35,23 +33,22 @@ export const AuthorList = defineComponent({
     list: Object
   },
   template: `
-<ul class="list-group">
-  <li v-for="(item,key) in list" class="list-group-item">
-    <span class="d-flex">
-      <span class="mr-auto">
-        <simple-value :item="item" property="name"></simple-value>
-        <count-badge :value="books[key]"></count-badge>
-        <small-links :relation="series[key]"></small-links>
-      </span>
-      <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <list-item-buttons :item="item"></list-item-buttons>
-      </span>
-    </span>
-  </li>
-  <li class="list-group-item"><create-button :type="$models.book.Author">Add</create-button></li>
-</ul>`,
+<list-wrapper :list="list">
+  <template v-slot:default="{item,key}">
+    <simple-value :item="item" property="name"></simple-value>
+    <count-badge :value="books[key]"></count-badge>
+    <small-links :relation="series[key]"></small-links>
+  </template>
+  <template v-slot:itemActions="{item}">
+    <list-item-buttons :item="item"></list-item-buttons>
+  </template>
+  <template v-slot:listActions>
+    <create-button :type="$models.book.Author">Add</create-button>
+  </template>
+</list-wrapper>
+`,
   components: {
-    CreateButton, DetailsLink, ListItemButtons, SimpleValue, CountBadge, SmallLinks
+    CreateButton, ListItemButtons, SimpleValue, CountBadge, SmallLinks, ListWrapper
   },
   computed: {
     ...listRelations(Author,{books: 'books',series:'series'})

@@ -73,3 +73,26 @@ export const CardWrapper = defineComponent({
   </div>
   `
 })
+
+export const ListWrapper = defineComponent({
+  props: {
+    list: Object
+  },
+  template: `
+  <ul class="list-group">
+    <li v-for="(item,key) in list" class="list-group-item">
+      <span class="d-flex">
+        <span class="mr-auto">
+          <slot :item="item" :key="key"></slot>
+        </span>
+        <span class="flex-grow-0 flex-shrink-0 align-self-center">
+          <slot name="itemActions" :item="item" :key="key"></slot>
+        </span>
+      </span>
+    </li>
+    <li class="list-group-item">
+      <slot name="listActions"></slot>
+    </li>
+  </ul>
+  `
+})
