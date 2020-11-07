@@ -2,7 +2,7 @@ import { Author, Book, Series } from '@agrzes/yellow-2020-common-books'
 import { CreateButton,
   DetailsLink, RelationEditor, 
   TextEditor, LongTextEditor, EditorDescriptor, renderForm, RelationSection, CardWrapper, 
-  DetailsButtons, ListItemButtons, SimpleValue} from '@agrzes/yellow-2020-web-vue-components'
+  DetailsButtons, ListItemButtons, SimpleValue, CountBadge} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -40,7 +40,7 @@ export const AuthorList = defineComponent({
     <span class="d-flex">
       <span class="mr-auto">
         <simple-value :item="item" property="name"></simple-value>
-        <span class="badge badge-pill badge-primary" v-if="books[key]">{{books[key].length}}</span>
+        <count-badge :value="books[key]"></count-badge>
         <small v-for="serie in series[key]">
           <details-link :item="serie">{{serie.name}}</details-link>
         </small>
@@ -53,7 +53,7 @@ export const AuthorList = defineComponent({
   <li class="list-group-item"><create-button :type="$models.book.Author">Add</create-button></li>
 </ul>`,
   components: {
-    CreateButton, DetailsLink, ListItemButtons, SimpleValue
+    CreateButton, DetailsLink, ListItemButtons, SimpleValue, CountBadge
   },
   computed: {
     ...listRelations(Author,{books: 'books',series:'series'})

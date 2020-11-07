@@ -29,6 +29,24 @@ export const RelationSection = defineComponent({
   `,
   components: {DetailsLink}
 })
+export const CountBadge = defineComponent({
+  props: {
+    value: Object,
+    style: String
+  },
+  template: `
+   <span :class="clazz" v-if="value">{{value.length}}</span>
+  `,
+  computed: {
+    clazz() {
+      return {
+        badge: true,
+        'badge-pill': true,
+        [`badge-${this.style || 'primary'}`]: true
+      }
+    }
+  }
+})
 
 export const CardWrapper = defineComponent({
   template: `
