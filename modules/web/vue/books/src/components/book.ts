@@ -1,9 +1,9 @@
 import { Author, Book, Genre, Library, Reading, Series } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
-  DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
+  EditButton, RelationEditor, RelationEntityEditor, 
   TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, 
   modal, EditorDescriptor, renderForm, CardWrapper, RelationSection, DetailsButtons, SimpleValue,
-  ListBadge} from '@agrzes/yellow-2020-web-vue-components'
+  ListBadge, ListItemButtons, CountBadge, SmallLinks, ListWrapper} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent} from 'vue'
@@ -105,33 +105,24 @@ export const BooksList = defineComponent({
     list: Object
   },
   template: `
-<ul class="list-group">
-  <li v-for="(item,key) in list" class="list-group-item">
-    <span class="d-flex align-items-center">
-      <span class="mr-1">
-        {{item.title}}
-        <small v-for="author in authors[key]" class="ml-1">
-          <details-link :item="author">{{author.name}}</details-link>
-        </small>
-        <small v-for="serie in series[key]" class="ml-1">
-          <details-link :item="serie">{{serie.name}}</details-link>
-        </small>
-      </span>
-      <span class="badge badge-pill badge-primary mr-1" v-for="genre in genres[key]">
-        {{genre.name}}
-      </span>
-      <span class="flex-grow-0 flex-shrink-0 align-self-center ml-auto">
-        <edit-button :item="item"></edit-button>
-        <details-button :item="item"></details-button>
-        <delete-button :item="item"></delete-button>
-        <plan-reading-button :item="item"></plan-reading-button>
-      </span>
-    </span>
-  </li>
-  <li class="list-group-item"><create-button :type="$models.book.Book">Add</create-button></li>
-</ul>`,
+<list-wrapper :list="list">
+  <template v-slot:default="{item,key}">
+    <simple-value :item="item" property="title"></simple-value>
+    <small-links :relation="authors[key]"></small-links>
+    <small-links :relation="series[key]"></small-links>
+    <list-badge :value="genres[key]"></list-badge>
+  </template>
+  <template v-slot:itemActions="{item}">
+    <list-item-buttons :item="item"></list-item-buttons>
+    <plan-reading-button :item="item"></plan-reading-button>
+  </template>
+  <template v-slot:listActions>
+    <create-button :type="$models.book.Book">Add</create-button>
+  </template>
+</list-wrapper>
+`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, PlanReadingButton
+    CreateButton, ListItemButtons, SimpleValue, CountBadge, SmallLinks, ListWrapper, PlanReadingButton, ListBadge
   },
   computed: {
     ...listRelations(Book,{authors: 'author',genres:'genre',series:'series'})
