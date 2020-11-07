@@ -1,3 +1,4 @@
+import { EntitiesBuilderImpl, Entity } from "@agrzes/yellow-2020-common-model/types"
 import { defineComponent } from "vue"
 import { DetailsLink } from './buttons'
 
@@ -56,6 +57,32 @@ export const CountBadge = defineComponent({
         'badge-pill': true,
         [`badge-${this.style || 'primary'}`]: true
       }
+    }
+  }
+})
+export const ListBadge = defineComponent({
+  props: {
+    value: Object,
+    style: String
+  },
+  template: `
+  <span :class="clazz" v-for="item in value">
+    {{label(item)}}
+  </span>
+  `,
+  computed: {
+    clazz() {
+      return {
+        badge: true,
+        'badge-pill': true,
+        [`badge-${this.style || 'primary'}`]: true,
+        'mr-1': true
+      }
+    }
+  },
+  methods: {
+    label(entity: InstanceType<Entity<any>>) {
+      return entity.constructor.label(entity)
     }
   }
 })

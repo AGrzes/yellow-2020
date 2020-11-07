@@ -1,7 +1,9 @@
 import { Author, Book, Genre, Library, Reading, Series } from '@agrzes/yellow-2020-common-books'
 import { CreateButton, DeleteButton, DetailsButton,
   DetailsLink, EditButton, ListButton, RelationEditor, RelationEntityEditor, 
-  TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, modal, EditorDescriptor, renderForm} from '@agrzes/yellow-2020-web-vue-components'
+  TextEditor, LongTextEditor, CurrencyEditor, BooleanEditor, DateEditor, SingleRelationEditor, 
+  modal, EditorDescriptor, renderForm, CardWrapper, RelationSection, DetailsButtons, SimpleValue,
+  ListBadge} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent} from 'vue'
@@ -193,43 +195,23 @@ export const BookDetails = defineComponent({
     item: Object
   },
   template: `
-<div class="card h-100" v-if="item">
-  <div class="card-body">
-    <h1>
-      {{item.title}}
-      <span class="badge badge-pill badge-primary mr-1" v-for="genre in genres">
-        {{genre.name}}
-      </span>
-    </h1>
-    <h2>Authors</h2>
-    <ul>
-      <li v-for="author in authors">
-        <details-link :item="author">{{author.name}}</details-link>
-      </li>
-    </ul>
-    <template v-if="series">
-      <h2>Series</h2>
-      <ul>
-        <li v-for="serie in series">
-          <details-link :item="serie">{{serie.name}}</details-link>
-        </li>
-      </ul>
-    </template>
-  </div>
-  <div class="card-footer text-right">
-    <edit-button :item="item">Edit</edit-button>
-    <list-button type="book">Back</list-button>
-    <delete-button :item="item" @delete="deleted">Delete</delete-button>
+<card-wrapper v-if="item">
+  <template v-slot:title>
+    <simple-value :item="item" property="title"></simple-value>
+    <list-badge :value="genres"></list-badge>
+  </template>
+  <template v-slot:default>
+    <relation-section :relation="authors" label="Authors"></relation-section>
+    <relation-section :relation="series" label="Series"></relation-section>
+  </template>
+  <template v-slot:footer>
+    <details-buttons :item="item" parent="book"></details-buttons>
     <plan-reading-button :item="item"></plan-reading-button>
-  </div>
-</div>`,
+  </template>
+</card-wrapper>
+`,
   components: {
-    DeleteButton, EditButton, DetailsLink, ListButton, PlanReadingButton
-  },
-  methods: {
-    deleted() {
-      this.$router.push(registry.routerRegistry.resolveListRoute('book'))
-    }
+    PlanReadingButton, CardWrapper, RelationSection, DetailsButtons, SimpleValue, ListBadge
   },
   computed: {
     ...itemRelations(Book,{authors:'author',genres:'genre',series: 'series'})

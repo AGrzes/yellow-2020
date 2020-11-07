@@ -75,11 +75,6 @@ export const AuthorDetails = defineComponent({
   components: {
     RelationSection, CardWrapper, DetailsButtons, SimpleValue
   },
-  methods: {
-    deleted() {
-      this.$router.push(registry.routerRegistry.resolveListRoute('author'))
-    }
-  },
   computed: {
     ...itemRelations(Author,{books:'books',series: 'series'})
   }
