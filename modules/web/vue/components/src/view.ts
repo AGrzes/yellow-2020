@@ -91,8 +91,8 @@ export const ListBadge = defineComponent({
 
 export const ValueBadge = defineComponent({
   props: {
-    value: String,
-    style: String
+    value: null,
+    type: String
   },
   template: `
   <span :class="clazz" v-if="value">
@@ -104,7 +104,7 @@ export const ValueBadge = defineComponent({
       return {
         badge: true,
         'badge-pill': true,
-        [`badge-${this.style || 'primary'}`]: true,
+        [`badge-${this.type || 'primary'}`]: true,
         'mr-1': true
       }
     }

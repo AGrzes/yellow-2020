@@ -24,12 +24,8 @@ export const ReadingDetails = defineComponent({
         <small>
           {{increment.date}}
         </small>
-        <span class="badge badge-pill badge-success">
-        {{increment.progress}}
-        </span>
-        <span class="badge badge-pill badge-primary" v-if="increment.change">
-          +{{increment.change}}
-        </span>
+        <value-badge :value="increment.progress" type="success"></value-badge>
+        <value-badge :value="increment.change?'+'+increment.change:null"></value-badge>
       </li>
     </ul>
   </template>
