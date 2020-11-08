@@ -1,6 +1,7 @@
 import { Library } from '@agrzes/yellow-2020-common-books'
-import { CreateButton, DeleteButton, DetailsButton,
-  DetailsLink, EditButton, ListButton} from '@agrzes/yellow-2020-web-vue-components'
+import { CreateButton, DeleteButton, DetailsButton, ListItemButtons, SimpleValue, 
+  CountBadge, SmallLinks, ListWrapper, DetailsLink, EditButton, ListButton,
+  RelationSection, CardWrapper, DetailsButtons, ValueBadge} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -12,29 +13,22 @@ export const LibraryList = defineComponent({
     list: Object
   },
   template: `
-<ul class="list-group">
-  <li v-for="(item,key) in list" class="list-group-item">
-    <span class="d-flex align-items-center">
-      <span class="badge badge-info mr-1" v-if="item.kind">
-        {{item.kind}}
-      </span>
-      <span class="mr-1">
-        {{item.name}}
-      </span>
-      <span class="badge badge-pill badge-primary mr-auto">
-        {{entries[key].length}} books
-      </span>
-      <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button :item="item"></edit-button>
-        <details-button :item="item"></details-button>
-        <delete-button :item="item"></delete-button>
-      </span>
-    </span>
-  </li>
-  <li class="list-group-item"><create-button :type="$models.book.Library">Add</create-button></li>
-</ul>`,
+<list-wrapper :list="list">
+  <template v-slot:default="{item,key}">
+    <value-badge :value="item.kind"></value-badge>
+    <simple-value :item="item" property="name"></simple-value>
+    <count-badge :value="entries[key]"></count-badge>
+  </template>
+  <template v-slot:itemActions="{item}">
+    <list-item-buttons :item="item"></list-item-buttons>
+  </template>
+  <template v-slot:listActions>
+    <create-button :type="$models.book.Library">Add</create-button>
+  </template>
+</list-wrapper>
+`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton
+    CreateButton, ListItemButtons, SimpleValue, CountBadge, SmallLinks, ListWrapper, ValueBadge
   },
   computed: {
     ...listRelations(Library,{entries: 'entries'})
@@ -46,14 +40,12 @@ export const LibraryDetails = defineComponent({
     item: Object
   },
   template: `
-<div class="card h-100" v-if="item">
-  <div class="card-body">
-    <h1>
-      <span class="badge badge-info mr-1" v-if="item.kind">
-        {{item.kind}}
-      </span>
-      {{item.name}}
-    </h1>
+<card-wrapper v-if="item">
+  <template v-slot:title>
+    <value-badge :value="item.kind"></value-badge>
+    <simple-value :item="item" property="name"></simple-value>
+  </template>
+  <template v-slot:default>
     <p v-if="item.description">{{item.description}}</p>
     <h2>Books</h2>
     <ul>
@@ -70,20 +62,13 @@ export const LibraryDetails = defineComponent({
         </a>
       </li>
     </ul>
-  </div>
-  <div class="card-footer text-right">
-    <edit-button :item="item">Edit</edit-button>
-    <list-button type="library">Back</list-button>
-    <delete-button :item="item" @delete="deleted">Delete</delete-button>
-  </div>
-</div>`,
+  </template>
+  <template v-slot:footer>
+    <details-buttons :item="item" parent="author"></details-buttons>
+  </template>
+</card-wrapper>`,
   components: {
-    DeleteButton, EditButton, DetailsLink, ListButton
-  },
-  methods: {
-    deleted() {
-      this.$router.push(registry.routerRegistry.resolveListRoute('library'))
-    }
+    RelationSection, CardWrapper, DetailsButtons, SimpleValue, ValueBadge, DetailsLink
   },
   computed: {
     ...itemRelations(Library,{entries:'entries'})

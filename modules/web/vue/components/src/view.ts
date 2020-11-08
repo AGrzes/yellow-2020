@@ -87,6 +87,28 @@ export const ListBadge = defineComponent({
   }
 })
 
+export const ValueBadge = defineComponent({
+  props: {
+    value: String,
+    style: String
+  },
+  template: `
+  <span :class="clazz" v-if="value">
+    {{value}}
+  </span>
+  `,
+  computed: {
+    clazz() {
+      return {
+        badge: true,
+        'badge-pill': true,
+        [`badge-${this.style || 'primary'}`]: true,
+        'mr-1': true
+      }
+    }
+  }
+})
+
 export const CardWrapper = defineComponent({
   template: `
   <div class="card h-100">

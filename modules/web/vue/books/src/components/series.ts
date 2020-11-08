@@ -1,6 +1,6 @@
 import { Series} from '@agrzes/yellow-2020-common-books'
-import { CreateButton, DeleteButton, DetailsButton,
-  DetailsLink, EditButton, ListButton} from '@agrzes/yellow-2020-web-vue-components'
+import { CreateButton, ListItemButtons, SimpleValue, CountBadge, 
+  SmallLinks, ListWrapper, RelationSection, CardWrapper, DetailsButtons} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -12,31 +12,22 @@ export const SeriesList = defineComponent({
     list: Object
   },
   template: `
-<ul class="list-group">
-  <li v-for="(item,key) in list" class="list-group-item">
-    <span class="d-flex align-items-center">
-      <span class="mr-1">
-        {{item.name}}
-      </span>
-      <small v-for="author in authors[key]" class="mr-1">
-        <details-link :item="author" class="mr-auto">
-          {{author.name}}
-        </details-link>
-      </small>
-      <span class="badge badge-pill badge-primary mr-auto">
-        {{books[key].length}} books
-      </span>
-      <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button :item="item"></edit-button>
-        <details-button :item="item"></details-button>
-        <delete-button :item="item"></delete-button>
-      </span>
-    </span>
-  </li>
-  <li class="list-group-item"><create-button :type="$models.book.Series">Add</create-button></li>
-</ul>`,
+<list-wrapper :list="list">
+  <template v-slot:default="{item,key}">
+    <simple-value :item="item" property="name"></simple-value>
+    <small-links :relation="authors[key]"></small-links>
+    <count-badge :value="books[key]"></count-badge>
+  </template>
+  <template v-slot:itemActions="{item}">
+    <list-item-buttons :item="item"></list-item-buttons>
+  </template>
+  <template v-slot:listActions>
+    <create-button :type="$models.book.Series">Add</create-button>
+  </template>
+</list-wrapper>
+`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink
+    CreateButton, ListItemButtons, SimpleValue, CountBadge, SmallLinks, ListWrapper
   },
   computed: {
     ...listRelations(Series,{books: 'books', authors: 'author'})
@@ -48,41 +39,20 @@ export const SeriesDetails = defineComponent({
     item: Object
   },
   template: `
-<div class="card h-100" v-if="item">
-  <div class="card-body">
-    <h1>
-      {{item.name}}
-    </h1>
-    <h2>Books</h2>
-    <ul>
-      <li v-for="book in books">
-        <details-link :item="book" class="mr-auto">
-          {{book.title}}
-        </details-link>
-      </li>
-    </ul>
-    <template v-if="authors">
-      <h2>Authors</h2>
-      <ul>
-        <li v-for="author in authors">
-          <details-link :item="author">{{author.name}}</details-link>
-        </li>
-      </ul>
-    </template>
-  </div>
-  <div class="card-footer text-right">
-    <edit-button :item="item">Edit</edit-button>
-    <list-button type="series">Back</list-button>
-    <delete-button :item="item" @delete="deleted">Delete</delete-button>
-  </div>
-</div>`,
+<card-wrapper v-if="item">
+  <template v-slot:title>
+    <simple-value :item="item" property="name"></simple-value>
+  </template>
+  <template v-slot:default>
+    <relation-section :relation="books" label="Books"></relation-section>
+    <relation-section :relation="authors" label="Authors"></relation-section>
+  </template>
+  <template v-slot:footer>
+    <details-buttons :item="item" parent="series"></details-buttons>
+  </template>
+</card-wrapper>`,
   components: {
-    DeleteButton, EditButton, DetailsLink, ListButton
-  },
-  methods: {
-    deleted() {
-      this.$router.push(registry.routerRegistry.resolveListRoute('series'))
-    }
+    RelationSection, CardWrapper, DetailsButtons, SimpleValue
   },
   computed: {
     ...itemRelations(Series,{books:'books',authors:'author'})
