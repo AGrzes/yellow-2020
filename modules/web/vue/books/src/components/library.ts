@@ -1,6 +1,6 @@
 import { Library } from '@agrzes/yellow-2020-common-books'
-import { CreateButton, DeleteButton, DetailsButton, ListItemButtons, SimpleValue, 
-  CountBadge, SmallLinks, ListWrapper, DetailsLink, EditButton, ListButton,
+import { CreateButton, ListItemButtons, SimpleValue, 
+  CountBadge, SmallLinks, ListWrapper, DetailsLink, 
   RelationSection, CardWrapper, DetailsButtons, ValueBadge} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
