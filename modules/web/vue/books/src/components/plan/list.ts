@@ -13,9 +13,9 @@ export const PlanList = defineComponent({
   template: `
 <list-wrapper :list="list">
   <template v-slot:default="{item,key}">
-    <span class="mr-1">
-      {{item.startDate}} - {{item.endDate}}
-    </span>
+    <simple-value :item="item" property="startDate"></simple-value>
+    -
+    <simple-value :item="item" property="endDate"></simple-value>
     <count-badge :value="items[key]"></count-badge>
   </template>
   <template v-slot:itemActions="{item}">

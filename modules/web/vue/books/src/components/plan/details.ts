@@ -13,12 +13,13 @@ export const PlanDetails = defineComponent({
   template: `
 <card-wrapper v-if="item">
   <template v-slot:title>
-    {{item.startDate}} - {{item.endDate}}
+    <simple-value :item="item" property="startDate"></simple-value>
+    -
+    <simple-value :item="item" property="endDate"></simple-value>
     <value-badge :value="item.status"></value-badge>
   </template>
   <template v-slot:default>
     <relation-section :relation="items" label="Items"></relation-section>
-    <relation-section :relation="series" label="Series"></relation-section>
   </template>
   <template v-slot:footer>
     <details-buttons :item="item" parent="plan"></details-buttons>
