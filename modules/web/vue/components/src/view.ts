@@ -22,8 +22,10 @@ export const RelationSection = defineComponent({
     <template v-if="relation">
       <h6 class="card-subtitle">{{label}}</h6>
       <ul>
-        <li v-for="item in relation">
-          <details-link :item="item"></details-link>
+        <li v-for="(item,key) in relation">
+          <slot :item="item" :key="key">
+            <details-link :item="item"></details-link>
+          </slot>
         </li>
       </ul>
     </template>
@@ -95,6 +97,29 @@ export const ValueBadge = defineComponent({
   template: `
   <span :class="clazz" v-if="value">
     {{value}}
+  </span>
+  `,
+  computed: {
+    clazz() {
+      return {
+        badge: true,
+        'badge-pill': true,
+        [`badge-${this.style || 'primary'}`]: true,
+        'mr-1': true
+      }
+    }
+  }
+})
+
+export const BooleanBadge = defineComponent({
+  props: {
+    value: Boolean,
+    style: String,
+    label: String
+  },
+  template: `
+  <span :class="clazz" v-if="value">
+    {{label}}
   </span>
   `,
   computed: {
