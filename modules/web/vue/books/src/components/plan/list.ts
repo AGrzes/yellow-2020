@@ -20,10 +20,10 @@ export const PlanList = defineComponent({
   </template>
   <template v-slot:itemActions="{item}">
     <list-item-buttons :item="item"></list-item-buttons>
+    <plan-rollover-button :item="item"></plan-rollover-button>
   </template>
   <template v-slot:listActions>
     <create-button :type="$models.book.Plan">Add</create-button>
-    <plan-rollover-button :item="item"></plan-rollover-button>
   </template>
 </list-wrapper>
 `,
