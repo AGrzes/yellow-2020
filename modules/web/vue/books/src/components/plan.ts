@@ -1,6 +1,8 @@
 import { Reading, Plan, Book } from '@agrzes/yellow-2020-common-books'
-import { CreateButton, DeleteButton, DetailsButton,
-  DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
+import { CreateButton, DeleteButton,
+  DetailsLink, EditButton, ListButton, RelationEditor, DateEditor, ChoiceEditor, modal,
+  RelationSection, CardWrapper, DetailsButtons, ValueBadge, 
+  ListItemButtons, SimpleValue, CountBadge, ListWrapper} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -76,27 +78,24 @@ export const PlanList = defineComponent({
     list: Object
   },
   template: `
-<ul class="list-group">
-  <li v-for="(item,key) in list" class="list-group-item">
-    <span class="d-flex align-items-center">
-      <span class="mr-1">
-        {{item.startDate}} - {{item.endDate}}
-      </span>
-      <span class="badge badge-pill badge-primary mr-auto">
-        {{items[key].length}}
-      </span>
-      <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button :item="item"></edit-button>
-        <details-button :item="item"></details-button>
-        <delete-button :item="item"></delete-button>
-        <plan-rollover-button :item="item"></plan-rollover-button>
-      </span>
+<list-wrapper :list="list">
+  <template v-slot:default="{item,key}">
+    <span class="mr-1">
+      {{item.startDate}} - {{item.endDate}}
     </span>
-  </li>
-  <li class="list-group-item"><create-button :type="$models.book.Plan">Add</create-button></li>
-</ul>`,
+    <count-badge :value="items[key]"></count-badge>
+  </template>
+  <template v-slot:itemActions="{item}">
+    <list-item-buttons :item="item"></list-item-buttons>
+  </template>
+  <template v-slot:listActions>
+    <create-button :type="$models.book.Plan">Add</create-button>
+    <plan-rollover-button :item="item"></plan-rollover-button>
+  </template>
+</list-wrapper>
+`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, PlanRolloverButton
+    CreateButton, ListItemButtons, SimpleValue, CountBadge, ListWrapper, PlanRolloverButton
   },
   computed: {
     ...listRelations(Plan,{items: 'items'})
@@ -108,37 +107,22 @@ export const PlanDetails = defineComponent({
     item: Object
   },
   template: `
-<div class="card h-100" v-if="item">
-  <div class="card-body">
-    <h1>
-      {{item.startDate}} - {{item.endDate}}
-      <span class="badge badge-pill badge-primary">
-        {{item.status}}
-      </span>
-    </h1>
-    <template v-if="items">
-      <h2>Items</h2>
-      <ul>
-        <li v-for="reading in items">
-          <details-link :item="reading"></details-link>
-        </li>
-      </ul>
-    </template>
-  </div>
-  <div class="card-footer text-right">
-    <edit-button :item="item">Edit</edit-button>
-    <list-button type="reading">Back</list-button>
-    <delete-button :item="item" @delete="deleted">Delete</delete-button>
+<card-wrapper v-if="item">
+  <template v-slot:title>
+    {{item.startDate}} - {{item.endDate}}
+    <value-badge :value="item.status"></value-badge>
+  </template>
+  <template v-slot:default>
+    <relation-section :relation="items" label="Items"></relation-section>
+    <relation-section :relation="series" label="Series"></relation-section>
+  </template>
+  <template v-slot:footer>
+    <details-buttons :item="item" parent="plan"></details-buttons>
     <plan-rollover-button :item="item"></plan-rollover-button>
-  </div>
-</div>`,
+  </template>
+</card-wrapper>`,
   components: {
-    DeleteButton, EditButton, DetailsLink, ListButton, PlanRolloverButton
-  },
-  methods: {
-    deleted() {
-      this.$router.push(registry.routerRegistry.resolveListRoute('plan'))
-    }
+    RelationSection, CardWrapper, DetailsButtons, ValueBadge, SimpleValue, PlanRolloverButton
   },
   computed: {
     ...itemRelations(Plan,{items: 'items'})
