@@ -1,8 +1,7 @@
 import { Book, Reading } from '@agrzes/yellow-2020-common-books'
-import { CreateButton, DeleteButton, DetailsButton,
-  DetailsLink, EditButton, ListButton, 
-  TextEditor, DateEditor, SingleRelationEditor,
-  NestedEntityEditor,NumberEditor, ChoiceEditor, modal} from '@agrzes/yellow-2020-web-vue-components'
+import { CreateButton, DetailsLink, TextEditor, DateEditor, SingleRelationEditor,
+  NestedEntityEditor,NumberEditor, ChoiceEditor, modal, ValueBadge, RelationSection, CardWrapper, DetailsButtons,
+  ListItemButtons, SimpleValue, CountBadge, ListWrapper} from '@agrzes/yellow-2020-web-vue-components'
 import { registry } from '@agrzes/yellow-2020-web-vue-plugin'
 import _ from 'lodash'
 import { defineComponent } from 'vue'
@@ -112,29 +111,24 @@ export const ReadingList = defineComponent({
     list: Object
   },
   template: `
-<ul class="list-group">
-  <li v-for="(item,key) in list" class="list-group-item">
-    <span class="d-flex align-items-center">
-      <span class="mr-1">
-        <small>{{item.startDate}}</small>
-        {{book[key] && book[key].title}}
-      </span>
-      <span class="badge badge-pill badge-primary mr-auto">
-        {{item.status}}
-      </span>
-      <span class="flex-grow-0 flex-shrink-0 align-self-center">
-        <edit-button :item="item"></edit-button>
-        <details-button :item="item"></details-button>
-        <delete-button :item="item"></delete-button>
-        <reading-progress-button :item="item"></reading-progress-button>
-        <finish-reading-button :item="item"></finish-reading-button>
-      </span>
-    </span>
-  </li>
-  <li class="list-group-item"><create-button :type="$models.book.Reading">Add</create-button></li>
-</ul>`,
+<list-wrapper :list="list">
+  <template v-slot:default="{item,key}">
+    <simple-value :item="item" property="startDate"></simple-value>
+    <details-link :item="book[key]"></details-link>
+    <value-badge :value="item.status"></value-badge>
+  </template>
+  <template v-slot:itemActions="{item}">
+    <list-item-buttons :item="item"></list-item-buttons>
+    <reading-progress-button :item="item"></reading-progress-button>
+    <finish-reading-button :item="item"></finish-reading-button>
+  </template>
+  <template v-slot:listActions>
+    <create-button :type="$models.book.Reading">Add</create-button>
+  </template>
+</list-wrapper>
+`,
   components: {
-    DeleteButton, EditButton, DetailsButton, CreateButton, DetailsLink, FinishReadingButton, ReadingProgressButton
+    CreateButton, ListItemButtons, SimpleValue, CountBadge, ListWrapper, ValueBadge, FinishReadingButton, ReadingProgressButton, DetailsLink
   },
   computed: {
     ...listSingleRelations(Reading,{book: 'book'})
@@ -146,15 +140,13 @@ export const ReadingDetails = defineComponent({
     item: Object
   },
   template: `
-<div class="card h-100" v-if="item">
-  <div class="card-body">
-    <h1>
-      <small>{{item.startDate}}</small>
-      {{book && book.title}}
-      <span class="badge badge-pill badge-primary">
-        {{item.status}}
-      </span>
-    </h1>
+<card-wrapper v-if="item">
+  <template v-slot:title>
+    <simple-value :item="item" property="startDate"></simple-value>
+    <details-link :item="book"></details-link>
+    <value-badge :value="item.status"></value-badge>
+  </template>
+  <template v-slot:default>
     <ul class="list-group">
       <li class="list-group-item" v-for="increment in item.progress">
         <small>
@@ -168,22 +160,15 @@ export const ReadingDetails = defineComponent({
         </span>
       </li>
     </ul>
-  </div>
-  <div class="card-footer text-right">
-    <edit-button :item="item">Edit</edit-button>
-    <list-button type="reading">Back</list-button>
-    <delete-button :item="item" @delete="deleted">Delete</delete-button>
+  </template>
+  <template v-slot:footer>
+    <details-buttons :item="item" parent="reading"></details-buttons>
     <reading-progress-button :item="item"></reading-progress-button>
     <finish-reading-button :item="item"></finish-reading-button>
-  </div>
-</div>`,
+  </template>
+</card-wrapper>`,
   components: {
-    DeleteButton, EditButton, DetailsLink, ListButton, FinishReadingButton, ReadingProgressButton
-  },
-  methods: {
-    deleted() {
-      this.$router.push(registry.routerRegistry.resolveListRoute('reading'))
-    }
+    RelationSection, CardWrapper, DetailsButtons, SimpleValue, FinishReadingButton, ReadingProgressButton, DetailsLink, ValueBadge
   },
   computed: {
     ...itemSingleRelations(Reading,{book:'book'})

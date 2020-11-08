@@ -70,7 +70,7 @@ export const DetailsLink = defineComponent({
     item: Object
   },
   template: `
-<router-link :to="route">
+<router-link :to="route" v-if="item">
   <slot>
     {{label}}
   </slot>
