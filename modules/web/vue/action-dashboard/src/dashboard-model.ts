@@ -7,8 +7,8 @@ export interface Icon {
 export interface Item {
   title?: string
   subtitle?: string
-  icons: Icon[]
-  optionalIcons: Icon[]
+  icons?: Icon[]
+  optionalIcons?: Icon[]
 }
 
 export interface Group {
