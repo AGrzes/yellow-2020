@@ -15,6 +15,14 @@ function actionTypeIcon(type: string): Icon {
   }
 }
 
+function peopleIcon(people: string[]): Icon {
+  return  people? {
+    symbol: 'user',
+    text: _.join(people)
+  }: null
+}
+
+
 
 export function actionsToDashboard(actions: Action[]): Group[] {
   return [{
@@ -24,7 +32,8 @@ export function actionsToDashboard(actions: Action[]): Group[] {
     items: _.map(actions,(action): Item => ({
       title: action.summary,
       subtitle: action.project?.name,
-      icons: [actionTypeIcon(action.type)]
+      icons: [actionTypeIcon(action.type)],
+      optionalIcons: _.filter([peopleIcon(action.people)])
     }))
   }]
 }

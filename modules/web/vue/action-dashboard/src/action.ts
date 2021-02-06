@@ -37,7 +37,7 @@ export const actions: Action[] = [{
   minimumTime: '15m',
   location: null,
   minimumEnergy: 'high',
-  people: ['piotr dybowski','micah żuchowski'],
+  people: ['piotr dybowski','michał żuchowski'],
   project: {
     name: 'Demo Cars',
     area: ['work'],

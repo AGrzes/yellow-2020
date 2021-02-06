@@ -21,13 +21,19 @@ export const ActionItem = defineComponent({
     <small class="ml-1"><a href="#">{{item.subtitle}}</a></small>
   </span>
   <span class="optional-icons  p-1">
-    <i v-for="icon in item.optionalIcons" class="fas m-1" :class="'fa-'+icon.symbol"></i>
+    <span v-for="icon in item.optionalIcons" data-toggle="tooltip" data-placement="bottom" :title="icon.text">
+      <i class="fas m-1" :class="'fa-'+icon.symbol"></i>
+    </span>
+    
   </span>
   <span class="actions  p-1">
 
   </span>
 </span>
-  `
+  `,
+  mounted() {
+    $('[data-toggle="tooltip"]').tooltip()
+  }
 })
 
 export const ActionList = defineComponent({
