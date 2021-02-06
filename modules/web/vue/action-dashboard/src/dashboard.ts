@@ -12,11 +12,7 @@ export const ActionItem = defineComponent({
 
   </span>
   <span class="mandatory-icons p-1">
-    <i class="fas fa-user m-1"></i>
-    <i class="fas fa-user m-1"></i>
-    <i class="fas fa-user m-1"></i>
-    <i class="fas fa-user m-1"></i>
-    <i class="fas fa-user m-1"></i>
+    <i v-for="icon in item.icons" class="fas m-1" :class="'fa-'+icon.symbol"></i>
   </span>
   <span class="main-title  p-1">
     <a href="#">{{item.title}}</a>
@@ -25,11 +21,7 @@ export const ActionItem = defineComponent({
     <small class="ml-1"><a href="#">{{item.subtitle}}</a></small>
   </span>
   <span class="optional-icons  p-1">
-    <i class="fas fa-user p-1"></i>
-    <i class="fas fa-user p-1"></i>
-    <i class="fas fa-user p-1"></i>
-    <i class="fas fa-user p-1"></i>
-    <i class="fas fa-user p-1"></i>
+    <i v-for="icon in item.optionalIcons" class="fas m-1" :class="'fa-'+icon.symbol"></i>
   </span>
   <span class="actions  p-1">
 
@@ -71,12 +63,8 @@ export const ActionDashboard = defineComponent({
     </div>
     <div class="col-9">
       <div class="row">
-        <div class="col-4">
+        <div class="col-6">
           <action-list v-for="group in groups" :group="group"></action-list>
-        </div>
-        <div class="col-4">
-        </div>
-        <div class="col-4">
         </div>
       </div>
     </div>
