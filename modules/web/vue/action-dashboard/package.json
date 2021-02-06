@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack",
     "test": "true",
-    "watch": "webpack -w -d"
+    "watch": "webpack -w -d",
+    "dev": "webpack serve"
   },
   "nyc": {
     "all": true,
@@ -33,6 +34,7 @@
   "author": "Grzegorz Abramczyk <grzegorz.abramczyk@tuatara.pl>",
   "license": "MIT",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.2",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "jquery": "^3.5.0",
