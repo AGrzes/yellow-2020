@@ -1,0 +1,6 @@
+version: '2'
+services:
+  action-dashboard:
+    image: agrzes/action-dashboard:feature-Y21-37
+    ports: 
+      - 19000:9000
