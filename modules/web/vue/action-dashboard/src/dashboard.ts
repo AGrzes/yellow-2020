@@ -1,6 +1,7 @@
 import { defineComponent } from "vue"
 import { actions } from "./action"
 import { actionsToDashboard } from "./actions-to-dashboard"
+import './action-source'
 
 export const ActionItem = defineComponent({
   props: {
