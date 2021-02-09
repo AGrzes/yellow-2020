@@ -63,6 +63,7 @@ module.exports = {
             Popper: ['popper.js', 'default']
         }),
         new ForkTsCheckerWebpackPlugin(),
+        new webpack.EnvironmentPlugin(['JIRA_URL', 'JIRA_USERNAME','JIRA_PASSWORD'])
     ],
     resolve: {
         symlinks: false,
