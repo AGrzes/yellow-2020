@@ -37,12 +37,14 @@
   "dependencies": {
     "@agrzes/jira-adapter": "^0.0.4",
     "@fortawesome/fontawesome-free": "^5.15.2",
+    "@types/pouchdb": "^6.4.0",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "jquery": "^3.5.0",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
-    "popper.js": "^1.14.6"
+    "popper.js": "^1.14.6",
+    "pouchdb": "^7.2.2"
   },
   "devDependencies": {
     "@types/bootstrap": "^4.6.0",
