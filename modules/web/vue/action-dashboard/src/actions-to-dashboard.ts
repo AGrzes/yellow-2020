@@ -10,7 +10,7 @@ const actionTypeMap = {
 
 function actionTypeIcon(type: string): Icon {
   return {
-    symbol: actionTypeMap[type],
+    symbol: actionTypeMap[type] || 'question',
     text: type
   }
 }
