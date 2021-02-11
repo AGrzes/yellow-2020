@@ -1,8 +1,10 @@
 import {JiraClient} from '@agrzes/jira-adapter'
 import axios from 'axios'
 import { toArray, mergeMap,map } from 'rxjs/operators';
-import {Observable, concat, from, of, combineLatest} from 'rxjs'
+import {Observable, concat, from, of, combineLatest, merge} from 'rxjs'
 import PouchDB from 'pouchdb'
+import { Action } from './action'
+import _ from 'lodash'
 const jiraClient = new JiraClient(axios.create({
   baseURL: process.env.JIRA_URL,
   auth: {
@@ -27,15 +29,28 @@ const save = async (p) => {
 export function projects(): Observable<any[]> {
   const projects = jiraClient.query(`project='GTD' and type in (Project, Thread, Activity) `)
   projects.subscribe(save)
-  return concat(from(db.allDocs({include_docs: true})).pipe(mergeMap( r => of(...r.rows)),map(d => d.doc),toArray()),projects.pipe(toArray()))
+  return projects
 }
 
 export function actions(): Observable<any[]> {
   const actions = jiraClient.query(`project = GTD and (resolutiondate is null or resolutiondate >-1w) and type in (Action,Condition)`)
   actions.subscribe(save)
-  return concat(from(db.allDocs({include_docs: true})).pipe(mergeMap( r => of(...r.rows)),map(d => d.doc),toArray()),actions.pipe(toArray()))
+  return actions
 }
 
-export function data(): Observable<any[]> {
-  return combineLatest([projects(),actions()]).pipe(map(([p,a]) => ([...p,...a])))
+function ticketsToActions(tickets: any[]): Action[] {
+  const byKey = _.keyBy(tickets,'key')
+  return _(tickets).filter((ticket) => _.includes(['Action'],ticket.fields.issuetype?.name)).map((ticket) => {
+    return {
+      summary: ticket.fields.summary,
+      status: ticket.fields.status?.name
+    }
+  }).value()
+}
+
+export function data(): Observable<Action[]> {
+  return concat(
+    from(db.allDocs({include_docs: true})).pipe(mergeMap( r => of(...r.rows)),map(d => d.doc),toArray()),
+    merge(projects(),actions()).pipe(toArray())
+  ).pipe(map(ticketsToActions))
 }

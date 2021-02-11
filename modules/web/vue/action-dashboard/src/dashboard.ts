@@ -82,7 +82,9 @@ export const ActionDashboard = defineComponent({
     ActionList
   },
   mounted() {
-    data().subscribe((actions) => console.log(actions))
+    data().subscribe((actions) => {
+      this.$data.groups = actionsToDashboard(actions)
+    })
   },
   data() {
     return {
