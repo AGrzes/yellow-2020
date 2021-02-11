@@ -1,7 +1,7 @@
 import { defineComponent } from "vue"
 import { actions } from "./action"
 import { actionsToDashboard } from "./actions-to-dashboard"
-import './action-source'
+import {actions as actionsSource} from './action-source'
 
 export const ActionItem = defineComponent({
   props: {
@@ -80,6 +80,9 @@ export const ActionDashboard = defineComponent({
   `,
   components: {
     ActionList
+  },
+  mounted() {
+    actionsSource().subscribe((actions) => console.log(actions))
   },
   data() {
     return {
