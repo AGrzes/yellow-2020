@@ -3,7 +3,7 @@ import axios from 'axios'
 import { toArray, mergeMap,map } from 'rxjs/operators';
 import {Observable, concat, from, of, combineLatest, merge} from 'rxjs'
 import PouchDB from 'pouchdb'
-import { Action } from './action'
+import { Action, Project } from './action'
 import _ from 'lodash'
 const jiraClient = new JiraClient(axios.create({
   baseURL: process.env.JIRA_URL,
@@ -40,10 +40,39 @@ export function actions(): Observable<any[]> {
 
 function ticketsToActions(tickets: any[]): Action[] {
   const byKey = _.keyBy(tickets,'key')
+  const lookupProject = (ticket): Project => {
+    const link = _.find(ticket.fields.issuelinks,(link) => link.outwardIssue && link.type?.outward === 'supports')
+    if (link && link.outwardIssue.key) {
+      const project = byKey[link.outwardIssue.key]
+      return {
+        name: project.fields.summary,
+        area: _.filter(project.fields.labels, (label) => _.startsWith(label,'AOC.')),
+        priority: project.fields.priority?.name,
+        tags: _.filter(project.fields.labels, (label) => !_.startsWith(label,'AOC.'))
+      }
+    }
+  }
+
+
   return _(tickets).filter((ticket) => _.includes(['Action'],ticket.fields.issuetype?.name)).map((ticket) => {
     return {
       summary: ticket.fields.summary,
-      status: ticket.fields.status?.name
+      status: ticket.fields.status?.name,
+      description: ticket.fields.description,
+      comments:  _.map(ticket.fields.comment?.comments,(comment) => ({
+        content: comment.body,
+        timestamp: comment.created,
+        author: comment.author?.name
+      })),
+      project: lookupProject(ticket),
+      minimumTime: _.join(ticket.fields.customfield_10102,', '),
+      fullTime: _.join(ticket.fields.customfield_10102,', '),
+      minimumEnergy: _.join(ticket.fields.customfield_10101,', '),
+      context: ticket.fields.customfield_10000,
+      location: ticket.fields.customfield_10002,
+      people: ticket.fields.customfield_10001,
+      tags: ticket.fields.labels,
+      type: ticket.fields.issuetype?.name,
     }
   }).value()
 }
