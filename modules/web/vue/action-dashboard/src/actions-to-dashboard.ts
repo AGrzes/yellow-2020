@@ -22,6 +22,23 @@ function peopleIcon(people: string[]): Icon {
   }: null
 }
 
+const contextMap = {
+  home: 'home',
+  pc: 'desktop',
+  wl: 'laptop',
+  desk: 'inbox',
+  errands: 'tree',
+  office: 'briefcase',
+  online: 'signal',
+  any: 'question'
+}
+
+function contextIcon(context: string): Icon {
+  return {
+    symbol: contextMap[context] || 'question',
+    text: context
+  }
+}
 
 
 export function actionsToDashboard(actions: Action[]): Group[] {
@@ -32,7 +49,7 @@ export function actionsToDashboard(actions: Action[]): Group[] {
     items: _.map(actions,(action): Item => ({
       title: action.summary,
       subtitle: action.project?.name,
-      icons: [actionTypeIcon(action.type)],
+      icons: [..._.map(action.context,contextIcon),actionTypeIcon(action.type)],
       optionalIcons: _.filter([peopleIcon(action.people)])
     }))
   }]
