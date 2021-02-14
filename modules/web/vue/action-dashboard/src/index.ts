@@ -2,7 +2,7 @@ import 'bootstrap'
 import 'jquery'
 import 'popper.js'
 import '../node_modules/bootstrap/scss/bootstrap.scss'
-import '../node_modules/@fortawesome/fontawesome-free/js/all'
+import '../node_modules/@fortawesome/fontawesome-free/css/all.css'
 import {createApp} from 'vue'
 import {ActionDashboard} from './dashboard'
 
