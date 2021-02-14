@@ -12,6 +12,7 @@ export interface Project {
 }
 
 export interface Action {
+  key?: string
   summary: string
   description?: string
   comments?: Comment[]

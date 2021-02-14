@@ -72,7 +72,8 @@ function ticketsToActions(tickets: any[]): Action[] {
       location: ticket.fields.customfield_10002,
       people: ticket.fields.customfield_10001,
       tags: ticket.fields.labels,
-      type: ticket.fields.issuetype?.name,
+      type: _.head(ticket.fields.customfield_10100 as string[]),
+      key: ticket.key
     }
   }).value()
 }
