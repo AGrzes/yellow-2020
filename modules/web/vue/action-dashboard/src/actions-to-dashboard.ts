@@ -51,14 +51,14 @@ const statusMap = {
 
 function statusIcon(status: string): Icon {
   return {
-    symbol: statusMap[status] || 'fa-question',
+    symbol: statusMap[status] || 'far fa-question',
     text: status
   }
 }
 
 function locationIcon(location: string): Icon {
   return  location? {
-    symbol: 'fa-map-marker',
+    symbol: 'far fa-map-marker',
     text: location
   }: null
 }
