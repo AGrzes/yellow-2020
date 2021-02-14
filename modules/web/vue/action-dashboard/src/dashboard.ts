@@ -13,7 +13,9 @@ export const ActionItem = defineComponent({
 
   </span>
   <span class="mandatory-icons p-1">
-    <i v-for="icon in item.icons" class="fas m-1" :class="'fa-'+icon.symbol"></i>
+  <span v-for="icon in item.icons" data-toggle="tooltip" data-placement="bottom" :title="icon.text">
+    <i class="fas m-1" :class="'fa-'+icon.symbol"></i>
+  </span>
   </span>
   <span class="main-title  p-1">
     <a href="#">{{item.title}}</a>
