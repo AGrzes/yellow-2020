@@ -14,7 +14,7 @@ export const ActionItem = defineComponent({
   </span>
   <span class="mandatory-icons p-1">
   <span v-for="icon in item.icons" data-toggle="tooltip" data-placement="bottom" :title="icon.text">
-    <i class="fas m-1" :class="'fa-'+icon.symbol"></i>
+    <i class="m-1" :class="icon.symbol"></i>
   </span>
   </span>
   <span class="main-title  p-1">
@@ -25,7 +25,7 @@ export const ActionItem = defineComponent({
   </span>
   <span class="optional-icons  p-1">
     <span v-for="icon in item.optionalIcons" data-toggle="tooltip" data-placement="bottom" :title="icon.text">
-      <i class="fas m-1" :class="'fa-'+icon.symbol"></i>
+      <i class="m-1" :class="icon.symbol"></i>
     </span>
     
   </span>
@@ -34,7 +34,7 @@ export const ActionItem = defineComponent({
   </span>
 </span>
   `,
-  mounted() {
+  updated() {
     $('[data-toggle="tooltip"]').tooltip()
   }
 })

@@ -3,43 +3,65 @@ import { Action } from "./action";
 import { Group, Icon, Item } from "./dashboard-model";
 
 const actionTypeMap = {
-  do: 'exclamation',
-  brainstorm: 'brain',
-  discuss: 'comments'
+  do: 'fas fa-exclamation',
+  brainstorm: 'fas fa-brain',
+  discuss: 'fas fa-comments'
 }
 
 function actionTypeIcon(type: string): Icon {
   return {
-    symbol: actionTypeMap[type] || 'question',
+    symbol: actionTypeMap[type] || 'fas fa-question',
     text: type
   }
 }
 
 function peopleIcon(people: string[]): Icon {
   return  people? {
-    symbol: 'user',
+    symbol: 'fas fa-user',
     text: _.join(people)
   }: null
 }
 
 const contextMap = {
-  home: 'home',
-  pc: 'desktop',
-  wl: 'laptop',
-  desk: 'inbox',
-  errands: 'tree',
-  office: 'briefcase',
-  online: 'signal',
-  any: 'question'
+  home: 'fas fa-home',
+  pc: 'fas fa-desktop',
+  wl: 'fas fa-laptop',
+  desk: 'fas fa-inbox',
+  errands: 'fasfa-tree',
+  office: 'fas fa-briefcase',
+  online: 'fas fa-signal',
+  any: 'fas fa-question'
 }
 
 function contextIcon(context: string): Icon {
   return {
-    symbol: contextMap[context] || 'question',
+    symbol: contextMap[context] || 'fas fa-question',
     text: context
   }
 }
 
+const statusMap = {
+  Defined: 'far fa-square',
+  'In Progress': 'far fa-caret-square-right',
+  Done: 'far fa-check-square',
+  Integrated: 'fas fa-square-full',
+  Abandoned: 'far fa-minus-square',
+  'Tuned Out': 'far fa-caret-square-left'
+}
+
+function statusIcon(status: string): Icon {
+  return {
+    symbol: statusMap[status] || 'fa-question',
+    text: status
+  }
+}
+
+function locationIcon(location: string): Icon {
+  return  location? {
+    symbol: 'fa-map-marker',
+    text: location
+  }: null
+}
 
 export function actionsToDashboard(actions: Action[]): Group[] {
   return [{
@@ -49,8 +71,8 @@ export function actionsToDashboard(actions: Action[]): Group[] {
     items: _.map(actions,(action): Item => ({
       title: action.summary,
       subtitle: action.project?.name,
-      icons: [..._.map(action.context,contextIcon),actionTypeIcon(action.type)],
-      optionalIcons: _.filter([peopleIcon(action.people)])
+      icons: [statusIcon(action.status),..._.map(action.context,contextIcon),actionTypeIcon(action.type)],
+      optionalIcons: _.filter([peopleIcon(action.people),locationIcon(action.location)])
     }))
   }]
 }
