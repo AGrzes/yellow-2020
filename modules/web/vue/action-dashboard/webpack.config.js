@@ -62,8 +62,7 @@ module.exports = {
             'window.jQuery': 'jquery',
             Popper: ['popper.js', 'default']
         }),
-        new ForkTsCheckerWebpackPlugin(),
-        new webpack.EnvironmentPlugin(['JIRA_URL', 'JIRA_USERNAME','JIRA_PASSWORD'])
+        new ForkTsCheckerWebpackPlugin()
     ],
     resolve: {
         symlinks: false,
@@ -79,6 +78,9 @@ module.exports = {
     devServer: {
       contentBase: path.join(__dirname, 'static'),
       compress: true,
-      port: 9000
+      port: 9000,
+      proxy: {
+        '/api': 'http://localhost:3000',
+      },
     }
 }
