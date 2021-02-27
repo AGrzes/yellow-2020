@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "es2019",
+        "module": "commonjs",
+        "sourceMap": true,
+        "outDir": "target",
+        "rootDir": "src",
+        "esModuleInterop": true
+    },
+    "include": [
+        "src"
+    ]
+}
