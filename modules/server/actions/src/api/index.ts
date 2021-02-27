@@ -1,16 +1,14 @@
 import {json, Router} from 'express'
 import {data} from './action-source'
-import { last } from 'rxjs/operators';
+import { take } from 'rxjs/operators'
 import  { BehaviorSubject} from 'rxjs'
 const router = Router()
 router.use(json())
 
-const subject = new BehaviorSubject(null);
-data().subscribe(subject);
+let last;
+data().subscribe((l) => last =l);
 
 router.get('/actions', (req, res) => {
-  subject.subscribe(thing => {
-    res.send(thing)
-  })
+  res.send(last)
 })
 export default router
