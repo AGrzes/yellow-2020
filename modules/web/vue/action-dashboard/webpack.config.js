@@ -80,7 +80,7 @@ module.exports = {
       compress: true,
       port: 9000,
       proxy: {
-        '/api': 'http://localhost:3000',
+        '/api': process.env.ACTIONS_SERVER || 'http://localhost:3000',
       },
     }
 }
