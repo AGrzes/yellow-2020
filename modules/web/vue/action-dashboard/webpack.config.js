@@ -79,6 +79,7 @@ module.exports = {
       contentBase: path.join(__dirname, 'static'),
       compress: true,
       port: 9000,
+      disableHostCheck: true,
       proxy: {
         '/api': process.env.ACTIONS_SERVER || 'http://localhost:3000',
       },
