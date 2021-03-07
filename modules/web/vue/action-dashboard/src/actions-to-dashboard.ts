@@ -64,15 +64,15 @@ function locationIcon(location: string): Icon {
 }
 
 export function actionsToDashboard(actions: Action[]): Group[] {
-  return [{
+  return _(actions).flatMap((a) => (a.context ? _.map(a.context,(c) => ({...a, mainContext: c})) : [a])).groupBy('mainContext').map((ac,g) => ({
     header: {
-      title: 'Actions'
+      title: g
     },
-    items: _.map(actions,(action): Item => ({
+    items: _.map(ac,(action): Item => ({
       title: action.summary,
       subtitle: action.project?.name,
       icons: [statusIcon(action.status),..._.map(action.context,contextIcon),actionTypeIcon(action.type)],
       optionalIcons: _.filter([peopleIcon(action.people),locationIcon(action.location)])
     }))
-  }]
+  })).value()
 }
