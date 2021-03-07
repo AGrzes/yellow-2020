@@ -82,6 +82,10 @@ module.exports = {
       disableHostCheck: true,
       proxy: {
         '/api': process.env.ACTIONS_SERVER || 'http://localhost:3000',
-      },
+        '/rx': {
+          target: process.env.ACTIONS_SERVER || 'ws://localhost:3000',
+          ws: true
+        }
+      }
     }
 }
