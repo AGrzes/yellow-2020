@@ -70,11 +70,18 @@ export const ActionDashboard = defineComponent({
         <p class="card-text">Last updated 3 mins ago</p>
       </div>
     </div>
-    <div class="col-9">
+    <div class="col-8">
       <div class="row">
-        <div class="col-6">
+        <div class="col-12">
           <action-list v-for="group in groups" :group="group"></action-list>
         </div>
+      </div>
+    </div>
+    <div class="col-2 pl-0">
+      <div class="bg-dark text-white pt-4 pl-2 h-100">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        <p class="card-text">Last updated 3 mins ago</p>
       </div>
     </div>
   </div>
