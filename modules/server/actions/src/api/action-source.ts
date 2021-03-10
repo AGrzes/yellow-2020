@@ -4,6 +4,7 @@ import { toArray, mergeMap,map } from 'rxjs/operators';
 import {Observable, concat, from, of, combineLatest, merge} from 'rxjs'
 import PouchDB from 'pouchdb'
 import _ from 'lodash'
+import moment from 'moment';
 
 export interface Comment {
   content: string
@@ -16,6 +17,7 @@ export interface Project {
   priority?: string
   area?: string[]
   tags?: string[]
+  status?: string
 }
 
 export interface Action {
@@ -31,8 +33,9 @@ export interface Action {
   location?: string
   people?: string[]
   tags?: string[]
-  status: string,
+  status: string
   type?: string
+  actionable: boolean
 }
 
 const jiraClient = new JiraClient(axios.create({
@@ -78,13 +81,15 @@ function ticketsToActions(tickets: any[]): Action[] {
         name: project.fields.summary,
         area: _.filter(project.fields.labels, (label) => _.startsWith(label,'AOC.')),
         priority: project.fields.priority?.name,
-        tags: _.filter(project.fields.labels, (label) => !_.startsWith(label,'AOC.'))
+        tags: _.filter(project.fields.labels, (label) => !_.startsWith(label,'AOC.')),
+        status: project.fields.status?.name
       }
     }
   }
 
 
   return _(tickets).filter((ticket) => _.includes(['Action'],ticket.fields.issuetype?.name)).map((ticket) => {
+    const project = lookupProject(ticket)
     return {
       summary: ticket.fields.summary,
       status: ticket.fields.status?.name,
@@ -94,7 +99,7 @@ function ticketsToActions(tickets: any[]): Action[] {
         timestamp: comment.created,
         author: comment.author?.name
       })),
-      project: lookupProject(ticket),
+      project: project,
       minimumTime: _.join(ticket.fields.customfield_10102,', '),
       fullTime: _.join(ticket.fields.customfield_10102,', '),
       minimumEnergy: _.join(ticket.fields.customfield_10101,', '),
@@ -103,7 +108,10 @@ function ticketsToActions(tickets: any[]): Action[] {
       people: ticket.fields.customfield_10001,
       tags: ticket.fields.labels,
       type: _.head(ticket.fields.customfield_10100 as string[]),
-      key: ticket.key
+      key: ticket.key,
+      actionable: ticket.fields.status?.name === 'Defined' 
+        && (!project || project.status === 'Active') 
+        && (!ticket.fields.customfield_10200 || moment(ticket.fields.customfield_10200).isBefore(moment()))
     }
   }).value()
 }
