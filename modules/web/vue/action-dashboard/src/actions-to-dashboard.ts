@@ -64,7 +64,7 @@ function locationIcon(location: string): Icon {
 }
 
 export function actionsToDashboard(actions: Action[]): Group[] {
-  return _(actions).filter(a => a.status !== 'Tuned Out' && a.status !== 'Integrated' && a.status !== 'Done').flatMap((a) => (a.context ? _.map(a.context,(c) => ({...a, mainContext: c})) : [a])).groupBy('mainContext').map((ac,g) => ({
+  return _(actions).filter(a => a.actionable).flatMap((a) => (a.context ? _.map(a.context,(c) => ({...a, mainContext: c})) : [a])).groupBy('mainContext').map((ac,g) => ({
     header: {
       title: g
     },

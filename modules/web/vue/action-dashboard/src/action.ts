@@ -24,8 +24,9 @@ export interface Action {
   location?: string
   people?: string[]
   tags?: string[]
-  status: string,
+  status: string
   type?: string
+  actionable: boolean
 }
 
 export const actions: Action[] = [{
