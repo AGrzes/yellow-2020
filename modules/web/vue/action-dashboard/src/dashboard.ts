@@ -34,8 +34,10 @@ export const ActionItem = defineComponent({
   </span>
 </span>
   `,
-  updated() {
-    $('[data-toggle="tooltip"]').tooltip()
+  watch: {
+    item() {
+      $('[data-toggle="tooltip"]').tooltip()
+    }
   }
 })
 
