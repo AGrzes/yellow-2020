@@ -63,26 +63,25 @@ export const ActionList = defineComponent({
   }
 })
 
-
-export const ContextFilterControl = defineComponent({
+export const OptionListControl = defineComponent({
   props: {
-    values: Array,
-    contexts: Subject
+    values: Object,
+    subject: Subject
   },
   template: `
   <form>
-    <div class="form-check" v-for="context in values">
-      <input class="form-check-input" type="checkbox" :checked="selected[context]" @change="set(context, $event.target.checked)" :id="context">
-      <label class="form-check-label" :for="context">
-        {{context}}
+    <div class="form-check" v-for="(label,key) in values">
+      <input class="form-check-input" type="checkbox" :checked="selected[key]" @change="set(key, $event.target.checked)" :id="key">
+      <label class="form-check-label" :for="key">
+        {{label}}
       </label>
     </div>
   </form>
   `,
   mounted() {
-    this.$props.contexts
-    .subscribe((contexts) => {
-      this.$data.selected = _(contexts).keyBy().mapValues(()=> true).value()
+    this.$props.subject
+    .subscribe((selected: string[]) => {
+      this.$data.selected = _(selected).keyBy().mapValues(()=> true).value()
     })
   },
   data() {
@@ -91,9 +90,9 @@ export const ContextFilterControl = defineComponent({
     }
   },
   methods: {
-    set(context: string, enabled: boolean) {
-      this.$data.selected[context] = enabled
-      this.$props.contexts.next(_(this.$data.selected).pickBy().keys().value())
+    set(key: string, enabled: boolean) {
+      this.$data.selected[key] = enabled
+      this.$props.subject.next(_(this.$data.selected).pickBy().keys().value())
     }
   }
 })
@@ -105,7 +104,7 @@ export const ActionDashboard = defineComponent({
   <div class="row">
     <div class="col-2 pl-0">
       <div class="bg-dark text-white pt-4 pl-2 h-100">
-        <context-filter-control :values="['pc','home','wl','errands','desk']" :contexts="contexts"></context-filter-control>
+        <option-list-control :values="contextValues" :subject="contexts"></option-list-control>
       </div>
     </div>
     <div class="col-8">
@@ -126,7 +125,7 @@ export const ActionDashboard = defineComponent({
 </div>
   `,
   components: {
-    ActionList,ContextFilterControl
+    ActionList,OptionListControl
   },
   mounted() {
     data().pipe(
@@ -141,7 +140,8 @@ export const ActionDashboard = defineComponent({
   data() {
     return {
       groups: null,
-      contexts: new BehaviorSubject(['pc'])
+      contexts: new BehaviorSubject(['pc']),
+      contextValues: _.keyBy(['pc','home','wl','errands','desk'])
     }
   }
 })
