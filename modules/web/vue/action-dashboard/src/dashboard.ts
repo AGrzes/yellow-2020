@@ -1,7 +1,7 @@
 import { defineComponent } from "vue"
 import { actionsToDashboard } from "./actions-to-dashboard"
 import { data } from './action-source'
-import { of} from 'rxjs'
+import { of, Subject, BehaviorSubject} from 'rxjs'
 import { map } from 'rxjs/operators'
 import _ from 'lodash'
 import { filterActionable, filterContext, managedMap } from './transformers'
@@ -63,6 +63,41 @@ export const ActionList = defineComponent({
   }
 })
 
+
+export const ContextFilterControl = defineComponent({
+  props: {
+    values: Array,
+    contexts: Subject
+  },
+  template: `
+  <form>
+    <div class="form-check" v-for="context in values">
+      <input class="form-check-input" type="checkbox" :checked="selected[context]" @change="set(context, $event.target.checked)" :id="context">
+      <label class="form-check-label" :for="context">
+        {{context}}
+      </label>
+    </div>
+  </form>
+  `,
+  mounted() {
+    this.$props.contexts
+    .subscribe((contexts) => {
+      this.$data.selected = _(contexts).keyBy().mapValues(()=> true).value()
+    })
+  },
+  data() {
+    return {
+      selected: {}
+    }
+  },
+  methods: {
+    set(context: string, enabled: boolean) {
+      this.$data.selected[context] = enabled
+      this.$props.contexts.next(_(this.$data.selected).pickBy().keys().value())
+    }
+  }
+})
+
 export const ActionDashboard = defineComponent({
 
   template: `
@@ -70,9 +105,7 @@ export const ActionDashboard = defineComponent({
   <div class="row">
     <div class="col-2 pl-0">
       <div class="bg-dark text-white pt-4 pl-2 h-100">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        <p class="card-text">Last updated 3 mins ago</p>
+        <context-filter-control :values="['pc','home','wl','errands','desk']" :contexts="contexts"></context-filter-control>
       </div>
     </div>
     <div class="col-8">
@@ -93,11 +126,11 @@ export const ActionDashboard = defineComponent({
 </div>
   `,
   components: {
-    ActionList
+    ActionList,ContextFilterControl
   },
   mounted() {
     data().pipe(
-      managedMap(filterContext,of(['pc','home'])),
+      managedMap(filterContext,this.$data.contexts),
       managedMap(filterActionable,of(true)),
       map(actionsToDashboard)
     )
@@ -107,7 +140,8 @@ export const ActionDashboard = defineComponent({
   },
   data() {
     return {
-      groups: null
+      groups: null,
+      contexts: new BehaviorSubject(['pc'])
     }
   }
 })
