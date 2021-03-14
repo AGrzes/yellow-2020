@@ -1,7 +1,9 @@
 import { defineComponent } from "vue"
-import { actions } from "./action"
 import { actionsToDashboard } from "./actions-to-dashboard"
 import {data} from './action-source'
+import {combineLatest, of} from 'rxjs'
+import {map} from 'rxjs/operators'
+import _ from 'lodash'
 
 export const ActionItem = defineComponent({
   props: {
@@ -93,13 +95,22 @@ export const ActionDashboard = defineComponent({
     ActionList
   },
   mounted() {
-    data().subscribe((actions) => {
-      this.$data.groups = actionsToDashboard(actions)
+    combineLatest([data(),of(['pc','home'])]).pipe(
+      map(([data, contexts]) => {
+        if (contexts?.length) {
+          return _.filter(data,(action) => _.some(contexts,context => _.includes(action.context,context) ))
+        } else {
+          return data
+        }
+      }), 
+      map(actionsToDashboard))
+    .subscribe((groups) => {
+      this.$data.groups = groups
     })
   },
   data() {
     return {
-      groups: actionsToDashboard(actions)
+      groups: null
     }
   }
 })
