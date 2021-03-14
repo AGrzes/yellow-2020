@@ -4,6 +4,7 @@ import {data} from './action-source'
 import {combineLatest, of} from 'rxjs'
 import {map} from 'rxjs/operators'
 import _ from 'lodash'
+import { filterContext } from './transformers'
 
 export const ActionItem = defineComponent({
   props: {
@@ -96,13 +97,7 @@ export const ActionDashboard = defineComponent({
   },
   mounted() {
     combineLatest([data(),of(['pc','home'])]).pipe(
-      map(([data, contexts]) => {
-        if (contexts?.length) {
-          return _.filter(data,(action) => _.some(contexts,context => _.includes(action.context,context) ))
-        } else {
-          return data
-        }
-      }), 
+      map(filterContext), 
       map(actionsToDashboard))
     .subscribe((groups) => {
       this.$data.groups = groups
