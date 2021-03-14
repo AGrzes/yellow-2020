@@ -58,7 +58,7 @@ function statusIcon(status: string): Icon {
 
 function locationIcon(location: string): Icon {
   return  location? {
-    symbol: 'far fa-map-marker',
+    symbol: 'fas fa-map-marker',
     text: location
   }: null
 }
