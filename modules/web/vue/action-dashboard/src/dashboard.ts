@@ -2,7 +2,7 @@ import { defineComponent } from "vue"
 import { actionsToDashboard } from "./actions-to-dashboard"
 import { data } from './action-source'
 import { of, Subject, BehaviorSubject} from 'rxjs'
-import { map } from 'rxjs/operators'
+import { map, distinctUntilChanged } from 'rxjs/operators'
 import _ from 'lodash'
 import { filterActionable, filterContext, managedMap } from './transformers'
 
@@ -63,6 +63,41 @@ export const ActionList = defineComponent({
   }
 })
 
+export const SelectControl = defineComponent({
+  props: {
+    values: Object,
+    subject: Subject,
+    label: String
+  },
+  template: `
+  <form>
+    <div class="form-group">
+      <label>{{label}}</label>
+      <select class="form-control" :value="selected" @change="set($event.target.value)" >
+        <option v-for="(label,key) in values" :value="key">{{label}}</option>
+      </select>
+    </div>
+  </form>
+  `,
+  mounted() {
+    this.$props.subject
+    .subscribe((selected: string) => {
+      this.$data.selected = selected
+    })
+  },
+  data() {
+    return {
+      selected: {}
+    }
+  },
+  methods: {
+    set(key: string) {
+      console.log(key)
+      this.$props.subject.next(key)
+    }
+  }
+})
+
 export const OptionListControl = defineComponent({
   props: {
     values: Object,
@@ -102,8 +137,9 @@ export const ActionDashboard = defineComponent({
   template: `
 <div class="container-fluid">
   <div class="row">
-    <div class="col-2 pl-0">
-      <div class="bg-dark text-white pt-4 pl-2 h-100">
+    <div class="col-2 pl-0 bg-dark text-white">
+      <div class=" pt-4 pl-2 h-100">
+        <select-control label="Context Preset" :values="contextPresetValues" :subject="contextPreset"></select-control>
         <option-list-control :values="contextValues" :subject="contexts"></option-list-control>
       </div>
     </div>
@@ -125,7 +161,7 @@ export const ActionDashboard = defineComponent({
 </div>
   `,
   components: {
-    ActionList,OptionListControl
+    ActionList,OptionListControl, SelectControl
   },
   mounted() {
     data().pipe(
@@ -138,10 +174,32 @@ export const ActionDashboard = defineComponent({
     })
   },
   data() {
+    const contexts = new BehaviorSubject<string[]>(['pc'])
+    const contextPreset = new BehaviorSubject<string>(null)
+
+    const presetMap: Record<string,string[]> = {
+      personal: ['pc','home','desk','any'],
+      work: ['wl','office','any'],
+      errands: ['errands','any']
+    }
+    const inversePresetMap = new Map<string[],string>(_(presetMap).toPairs().map(([k,v]):[string[],string,] => ([v,k])).value())
+
+    contexts.pipe(
+      map((c) => inversePresetMap.get(c)),
+      distinctUntilChanged()
+    ).subscribe(contextPreset)
+
+    contextPreset.pipe(
+      map(p => presetMap[p]),
+      distinctUntilChanged()
+    ).subscribe(contexts)
+
     return {
       groups: null,
-      contexts: new BehaviorSubject(['pc']),
-      contextValues: _.keyBy(['pc','home','wl','errands','desk'])
+      contexts,
+      contextPreset,
+      contextValues: _.keyBy(['pc','home','wl','errands','desk','office','any']),
+      contextPresetValues: _(presetMap).keys().keyBy().value()
     }
   }
 })
