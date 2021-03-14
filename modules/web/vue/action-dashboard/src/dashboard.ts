@@ -1,10 +1,10 @@
 import { defineComponent } from "vue"
 import { actionsToDashboard } from "./actions-to-dashboard"
-import {data} from './action-source'
-import {combineLatest, of} from 'rxjs'
-import {map} from 'rxjs/operators'
+import { data } from './action-source'
+import { of} from 'rxjs'
+import { map } from 'rxjs/operators'
 import _ from 'lodash'
-import { filterContext } from './transformers'
+import { filterActionable, filterContext, managedMap } from './transformers'
 
 export const ActionItem = defineComponent({
   props: {
@@ -96,9 +96,11 @@ export const ActionDashboard = defineComponent({
     ActionList
   },
   mounted() {
-    combineLatest([data(),of(['pc','home'])]).pipe(
-      map(filterContext), 
-      map(actionsToDashboard))
+    data().pipe(
+      managedMap(filterContext,of(['pc','home'])),
+      managedMap(filterActionable,of(true)),
+      map(actionsToDashboard)
+    )
     .subscribe((groups) => {
       this.$data.groups = groups
     })
