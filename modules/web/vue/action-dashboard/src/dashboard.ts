@@ -4,7 +4,7 @@ import { data } from './action-source'
 import { of, Subject, BehaviorSubject} from 'rxjs'
 import { map, distinctUntilChanged } from 'rxjs/operators'
 import _ from 'lodash'
-import { filterActionable, filterContext, managedMap } from './transformers'
+import { filterActionable, filterContext, managedMap, filterMinimumTime } from './transformers'
 
 export const ActionItem = defineComponent({
   props: {
@@ -166,6 +166,7 @@ export const ActionDashboard = defineComponent({
     data().pipe(
       managedMap(filterContext,this.$data.contexts),
       managedMap(filterActionable,of(true)),
+      managedMap(filterMinimumTime,of([null,30])),
       map(actionsToDashboard)
     )
     .subscribe((groups) => {

@@ -24,3 +24,24 @@ export function filterActionable(actions: Action[], enable: boolean): Action[] {
     return actions
   }
 }
+
+function timeToNumber(time:string): Number {
+  if (time) {
+    const hours = time.match(/(\d+)h/)
+    const minutes = time.match(/(\d+)m/)
+    if (hours) {
+      return _.parseInt(hours[1])*60
+    } else if (minutes) {
+      return _.parseInt(minutes[1])
+    }
+  }
+}
+
+export function filterMinimumTime(actions: Action[], [minTime,maxTime]: [number, number]): Action[] {
+  minTime = minTime || 0
+  maxTime = maxTime || Number.MAX_SAFE_INTEGER
+  return _.filter(actions,(action) => {
+    const actualTime = timeToNumber(action.minimumTime)
+    return minTime <= actualTime && actualTime <= maxTime
+  })
+}
