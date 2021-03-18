@@ -92,7 +92,6 @@ export const SelectControl = defineComponent({
   },
   methods: {
     set(key: string) {
-      console.log(key)
       this.$props.subject.next(key)
     }
   }
