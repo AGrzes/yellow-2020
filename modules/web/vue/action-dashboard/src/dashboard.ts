@@ -140,6 +140,8 @@ export const ActionDashboard = defineComponent({
       <div class=" pt-4 pl-2 h-100">
         <select-control label="Context Preset" :values="contextPresetValues" :subject="contextPreset"></select-control>
         <option-list-control :values="contextValues" :subject="contexts"></option-list-control>
+        <select-control label="Min Time" :values="minTimeValues" :subject="minTime"></select-control>
+        <select-control label="Max Time" :values="maxTimeValues" :subject="maxTime"></select-control>
       </div>
     </div>
     <div class="col-8">
@@ -203,9 +205,13 @@ export const ActionDashboard = defineComponent({
       groups: null,
       contexts,
       contextPreset,
+      minTime,
+      maxTime,
       time,
       contextValues: _.keyBy(['pc','home','wl','errands','desk','office','any']),
-      contextPresetValues: _(presetMap).keys().keyBy().value()
+      contextPresetValues: _(presetMap).keys().keyBy().value(),
+      minTimeValues: { 0: 'any', 5: '5m',15: '15m',30: '30m',60: '1h', 120: '2h', 180: '3h',240: '4h'},
+      maxTimeValues: { 5: '5m',15: '15m',30: '30m',60: '1h', 120: '2h', 180: '3h',240: '4h', [Number.MAX_SAFE_INTEGER]: 'any', },
     }
   }
 })
