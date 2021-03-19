@@ -1,4 +1,4 @@
-FROM node:12 as build
+FROM node:12-slim as build
 ADD package.json package-lock.json tsconfig.json /actions/
 WORKDIR /actions
 RUN npm ci 

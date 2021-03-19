@@ -1,4 +1,4 @@
-FROM node:10 as build
+FROM node:10-slim as build
 ADD . /yellow-2020
 WORKDIR /yellow-2020
 RUN npm ci 
