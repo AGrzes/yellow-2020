@@ -1,7 +1,7 @@
 import { defineComponent } from "vue"
 import { actionsToDashboard } from "./actions-to-dashboard"
 import { data } from './action-source'
-import { of, Subject, BehaviorSubject} from 'rxjs'
+import { of, Subject, BehaviorSubject, combineLatest} from 'rxjs'
 import { map, distinctUntilChanged } from 'rxjs/operators'
 import _ from 'lodash'
 import { filterActionable, filterContext, managedMap, filterMinimumTime } from './transformers'
@@ -166,7 +166,7 @@ export const ActionDashboard = defineComponent({
     data().pipe(
       managedMap(filterContext,this.$data.contexts),
       managedMap(filterActionable,of(true)),
-      managedMap(filterMinimumTime,of([null,30])),
+      managedMap(filterMinimumTime,this.$data.time),
       map(actionsToDashboard)
     )
     .subscribe((groups) => {
@@ -176,6 +176,11 @@ export const ActionDashboard = defineComponent({
   data() {
     const contexts = new BehaviorSubject<string[]>(['pc'])
     const contextPreset = new BehaviorSubject<string>(null)
+
+    const minTime = new BehaviorSubject<number>(0)
+    const maxTime = new BehaviorSubject<number>(Number.MAX_SAFE_INTEGER)
+
+    const time = combineLatest([minTime,maxTime]).pipe(distinctUntilChanged())
 
     const presetMap: Record<string,string[]> = {
       personal: ['pc','home','desk','any'],
@@ -198,6 +203,7 @@ export const ActionDashboard = defineComponent({
       groups: null,
       contexts,
       contextPreset,
+      time,
       contextValues: _.keyBy(['pc','home','wl','errands','desk','office','any']),
       contextPresetValues: _(presetMap).keys().keyBy().value()
     }
