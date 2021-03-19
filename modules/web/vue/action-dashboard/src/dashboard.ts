@@ -4,7 +4,7 @@ import { data } from './action-source'
 import { of, Subject, BehaviorSubject, combineLatest} from 'rxjs'
 import { map, distinctUntilChanged } from 'rxjs/operators'
 import _ from 'lodash'
-import { filterActionable, filterContext, managedMap, filterMinimumTime } from './transformers'
+import { filterActionable, filterContext, managedMap, filterMinimumTime, filterMinimumEnergy } from './transformers'
 
 export const ActionItem = defineComponent({
   props: {
@@ -142,6 +142,8 @@ export const ActionDashboard = defineComponent({
         <option-list-control :values="contextValues" :subject="contexts"></option-list-control>
         <select-control label="Min Time" :values="minTimeValues" :subject="minTime"></select-control>
         <select-control label="Max Time" :values="maxTimeValues" :subject="maxTime"></select-control>
+        <select-control label="Min Energy" :values="energyValues" :subject="minEnergy"></select-control>
+        <select-control label="Max Energy" :values="energyValues" :subject="maxEnergy"></select-control>
       </div>
     </div>
     <div class="col-8">
@@ -169,6 +171,7 @@ export const ActionDashboard = defineComponent({
       managedMap(filterContext,this.$data.contexts),
       managedMap(filterActionable,of(true)),
       managedMap(filterMinimumTime,this.$data.time),
+      managedMap(filterMinimumEnergy,this.$data.energy),
       map(actionsToDashboard)
     )
     .subscribe((groups) => {
@@ -183,6 +186,11 @@ export const ActionDashboard = defineComponent({
     const maxTime = new BehaviorSubject<number>(Number.MAX_SAFE_INTEGER)
 
     const time = combineLatest([minTime,maxTime]).pipe(distinctUntilChanged())
+
+    const minEnergy = new BehaviorSubject<string>('low')
+    const maxEnergy = new BehaviorSubject<string>('high')
+
+    const energy = combineLatest([minEnergy,maxEnergy]).pipe(distinctUntilChanged())
 
     const presetMap: Record<string,string[]> = {
       personal: ['pc','home','desk','any'],
@@ -208,10 +216,14 @@ export const ActionDashboard = defineComponent({
       minTime,
       maxTime,
       time,
+      minEnergy,
+      maxEnergy,
+      energy,
       contextValues: _.keyBy(['pc','home','wl','errands','desk','office','any']),
       contextPresetValues: _(presetMap).keys().keyBy().value(),
       minTimeValues: { 0: 'any', 5: '5m',15: '15m',30: '30m',60: '1h', 120: '2h', 180: '3h',240: '4h'},
       maxTimeValues: { 5: '5m',15: '15m',30: '30m',60: '1h', 120: '2h', 180: '3h',240: '4h', [Number.MAX_SAFE_INTEGER]: 'any', },
+      energyValues: _.keyBy(['low','medium','high']),
     }
   }
 })

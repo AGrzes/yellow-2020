@@ -45,3 +45,22 @@ export function filterMinimumTime(actions: Action[], [minTime,maxTime]: [number,
     return minTime <= actualTime && actualTime <= maxTime
   })
 }
+
+function energyToNumber(energy:string): Number {
+  if (energy) {
+    switch (energy) {
+      case 'high': return 3
+      case 'medium': return 2
+      case 'low': return 1
+    }
+  }
+}
+
+export function filterMinimumEnergy(actions: Action[], [minEnergy,maxEnergy]: [string, string]): Action[] {
+  const min = minEnergy ? energyToNumber(minEnergy) : 0
+  const max = maxEnergy ? energyToNumber(maxEnergy) : Number.MAX_SAFE_INTEGER
+  return _.filter(actions,(action) => {
+    const actual = energyToNumber(action.minimumEnergy)
+    return min <= actual && actual <= max
+  })
+}
