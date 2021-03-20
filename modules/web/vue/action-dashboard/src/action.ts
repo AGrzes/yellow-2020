@@ -27,4 +27,5 @@ export interface Action {
   status: string
   type?: string
   actionable: boolean
+  priority: string
 }

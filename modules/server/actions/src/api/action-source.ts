@@ -36,6 +36,7 @@ export interface Action {
   status: string
   type?: string
   actionable: boolean
+  priority: string
 }
 
 const jiraClient = new JiraClient(axios.create({
@@ -69,6 +70,24 @@ export function actions(): Observable<any[]> {
   const actions = jiraClient.query(`project = GTD and (resolutiondate is null or resolutiondate >-1w) and type in (Action,Condition)`)
   actions.subscribe(save)
   return actions
+}
+
+function priority(action,project: Project): string {
+  switch(action.fields.priority?.name) {
+    case "High" : return "high"
+    case "Medium": if (project) {
+      switch(project.priority) {
+        case "High" : return "high"
+        case "Medium": return "medium"
+        case "Low": return "low"
+        default: return "medium"
+      }
+    } else {
+      return "medium"
+    }
+    case "Low": return "low"
+    default: return "medium"
+  }
 }
 
 function ticketsToActions(tickets: any[]): Action[] {
@@ -111,7 +130,8 @@ function ticketsToActions(tickets: any[]): Action[] {
       key: ticket.key,
       actionable: ticket.fields.status?.name === 'Defined' 
         && (!project || project.status === 'Active') 
-        && (!ticket.fields.customfield_10200 || moment(ticket.fields.customfield_10200).isBefore(moment()))
+        && (!ticket.fields.customfield_10200 || moment(ticket.fields.customfield_10200).isBefore(moment())),
+      priority: priority(ticket,project)
     }
   }).value()
 }

@@ -64,3 +64,22 @@ export function filterMinimumEnergy(actions: Action[], [minEnergy,maxEnergy]: [s
     return min <= actual && actual <= max
   })
 }
+
+function priorityToNumber(priority:string): Number {
+  if (priority) {
+    switch (priority) {
+      case 'high': return 3
+      case 'medium': return 2
+      case 'low': return 1
+    }
+  }
+}
+
+export function filterPriority(actions: Action[], [minPriority,maxPriority]: [string, string]): Action[] {
+  const min = minPriority ? priorityToNumber(minPriority) : 0
+  const max = maxPriority ? priorityToNumber(maxPriority) : Number.MAX_SAFE_INTEGER
+  return _.filter(actions,(action) => {
+    const actual = priorityToNumber(action.priority)
+    return min <= actual && actual <= max
+  })
+}
