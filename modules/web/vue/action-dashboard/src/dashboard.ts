@@ -71,11 +71,13 @@ export const SelectControl = defineComponent({
   },
   template: `
   <form>
-    <div class="form-group">
-      <label>{{label}}</label>
-      <select class="form-control" :value="selected" @change="set($event.target.value)" >
-        <option v-for="(label,key) in values" :value="key">{{label}}</option>
-      </select>
+    <div class="form-group row">
+      <label class="col-6 col-form-label">{{label}}</label>
+      <div class="col-6">
+        <select class="form-control" :value="selected" @change="set($event.target.value)" >
+          <option v-for="(label,key) in values" :value="key">{{label}}</option>
+        </select>
+      </div>
     </div>
   </form>
   `,
@@ -104,11 +106,15 @@ export const OptionListControl = defineComponent({
   },
   template: `
   <form>
-    <div class="form-check" v-for="(label,key) in values">
-      <input class="form-check-input" type="checkbox" :checked="selected[key]" @change="set(key, $event.target.checked)" :id="key">
-      <label class="form-check-label" :for="key">
-        {{label}}
-      </label>
+    <div class="form-row">
+      <div class="col-4" v-for="(label,key) in values">
+        <div class="form-check" >
+          <input class="form-check-input" type="checkbox" :checked="selected[key]" @change="set(key, $event.target.checked)" :id="key">
+          <label class="form-check-label" :for="key">
+            {{label}}
+          </label>
+        </div>
+      </div>
     </div>
   </form>
   `,
